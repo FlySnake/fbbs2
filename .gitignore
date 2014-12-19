@@ -1,0 +1,7 @@
+*.pyc
+.project
+.pydevproject
+.settings/
+tmp/
+*.db3*
+*.log
