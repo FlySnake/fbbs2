@@ -12,12 +12,9 @@ import build
 
 def __log_request_decorator(func):
     def wrap(*args, **kwargs):
+        log.debug("{addr} ==> {method} {qry}".format(addr=request.remote_addr, method=request.method, qry=request.path))
         r = func(*args, **kwargs)
-        log.debug("{addr} -- {method} {qry} {result} {size}".format(addr=request.remote_addr,
-                                                                 method=request.method, 
-                                                                 qry=request.path, 
-                                                                 result=r.status_line, 
-                                                                 size=r.get_header('Content-Length')))
+        log.debug("{addr} <== {result} {size}".format(addr=request.remote_addr, result=r.status_line, size=r.get_header('Content-Length')))
         return r
     return wrap
 
