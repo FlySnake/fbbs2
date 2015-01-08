@@ -11,7 +11,7 @@
 # Description: Feature Branches Build Server - Worker daemon
 ### END INIT INFO
 
-INSTAL_DIR=/opt/fbbs2/worker
+INSTAL_DIR=$(dirname $(readlink -f $0))
 if [ -n "$2" ]; then
     CONFIGFILE=$2
 else
@@ -21,13 +21,13 @@ PIDFILE=/var/run/fbbs2/worker/${CONFIGFILE##*/}_pidfile
 PYTHON=python3
 
 function _start {
-    echo "Starting fbbs2 worker with config $CONFIGFILE"
+    echo "Starting fbbs2 worker with config $CONFIGFILE and pidfile $PIDFILE"
     $PYTHON $INSTAL_DIR/main.py -d start -c $CONFIGFILE -p $PIDFILE
 }
 
 function _stop {
     echo "Stopping fbbs2 worker"
-    $PYTHON $INSTAL_DIR/main.py -d stop -p $PIDFILE
+    $PYTHON $INSTAL_DIR/main.py -d stop -c $CONFIGFILE -p $PIDFILE
 }
 
 case "$1" in

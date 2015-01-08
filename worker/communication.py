@@ -11,49 +11,70 @@ import utils.config
 import build
 
 def __log_request_decorator(func):
-    def wrap(*args):
-        log.debug(str(request))
-        return func(*args)
+    def wrap(*args, **kwargs):
+        r = func(*args, **kwargs)
+        log.debug("{addr} -- {method} {qry} {result} {size}".format(addr=request.remote_addr,
+                                                                 method=request.method, 
+                                                                 qry=request.path, 
+                                                                 result=r.status_line, 
+                                                                 size=r.get_header('Content-Length')))
+        return r
     return wrap
 
 @get("/")
 @__log_request_decorator
 def index():
-    return build_start()
     return utils.config.Config().get_raw_cfg()
 
 @get("/download/<name>")
 @__log_request_decorator
 def download(name):
-    return static_file(name, utils.config.Config().artefacts_path)
+    try:
+        return static_file(name, utils.config.Config().artefacts_path)
+    except:
+        log.exception("error uploading file '{f}'".format(f=name))
+        raise
 
 @delete("/download/<name>")
 @__log_request_decorator
 def download_delete(name):
     try:
-        remove(path.join(config.Config().artefacts_path, name))
-    except Exception as e:
-        response.status = 500
-        return str(e)
+        filepath = path.join(config.Config().artefacts_path, name)
+        remove(filepath)
+    except:
+        log.exception("error removing file '{f}'".format(f=filepath))
+        raise
     
 @get("/build")
 @__log_request_decorator
 def build_check():
-    return build.status()
+    try:
+        return build.status()
+    except:
+        log.exception("error checking build status")
+        raise
 
 @put("/build")
 @__log_request_decorator
 def build_start():
-    params = {}
-    d = request.query.decode().dict
-    for k in d:
-        params[k] = d[k][0] if d[k] else None
-    return build.start(**params)
+    try:
+        params = {}
+        d = request.query.decode().dict
+        for k in d:
+            params[k] = d[k][0] if d[k] else None
+        return build.start(**params)
+    except:
+        log.exception("error starting build")
+        raise
 
 @delete("/build")
 @__log_request_decorator
 def build_stop():
-    return build.stop()
+    try:
+        return build.stop()
+    except:
+        log.exception("error stopping build")
+        raise
 
 def start():
     run(host=utils.config.Config().bind_addr, port=utils.config.Config().bind_port)
