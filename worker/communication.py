@@ -19,6 +19,7 @@ def __log_request_decorator(func):
 @get("/")
 @__log_request_decorator
 def index():
+    return build_start()
     return utils.config.Config().get_raw_cfg()
 
 @get("/download/<name>")

@@ -12,9 +12,13 @@ class Config(object, metaclass=utils.singleton.Singleton):
             raise OSError("config file {c} does not exists".format(c=filepath))
         with open(filepath, 'r') as ymlfile:
             self.__cfg = load(ymlfile)
+            self.__filepath = filepath
             
     def get_raw_cfg(self):
         return self.__cfg
+    
+    def get_filepath(self):
+        return self.__filepath
     
     @property        
     def logfile(self):

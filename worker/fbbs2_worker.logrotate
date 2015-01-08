@@ -1,0 +1,11 @@
+/var/log/fbbs2/worker/*.log {
+    daily
+    dateext
+    dateformat .%Y-%m-%d
+    missingok
+    rotate 365
+    compress
+    delaycompress
+    notifempty
+    copytruncate
+}

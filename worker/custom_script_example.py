@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-QT4_PATH = "/path/to/qt4"
-QT5_PATH = "/path/to/qt5"
+QT4_PATH = "/home/builder/android/qt/4.8.3/"
+QT5_PATH = "/home/builder/android/qt/5.4.1/"
 BUILDNUM_SRV = "http://localhost:12345/development/buildnum"
 BUILD_CMD_PATTERN = "./build-android.sh -v {full_version} -f {artefact_name} -d {artefacts_path} -q {qt_path}"
 ARTEFACT_NAME_PATTERN = "STMobile-android-{full_version}-{branch}-{date}-{commit}-{platform}"

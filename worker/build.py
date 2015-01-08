@@ -5,6 +5,8 @@ from threading import Thread, Event
 from os import path
 from time import time, strftime, localtime
 from traceback import format_exc
+from socket import gethostbyname, gethostname
+from platform import platform
 from logging import getLogger
 
 log = getLogger(__name__)
@@ -12,6 +14,7 @@ log = getLogger(__name__)
 import utils.shell
 import utils.git
 import utils.config
+import version
         
 class BuildTerminateException(RuntimeError):
     pass
@@ -42,6 +45,9 @@ class Builder(Thread):
         except:
             log.exception("cannot import custom script '{s}'".format(s=utils.config.Config().custom_script))
             raise
+        
+    def __del__(self):
+        self.terminate()
     
     def error(self):
         return self.__error
@@ -63,22 +69,23 @@ class Builder(Thread):
     
     def run(self):
         try:
-            self.__append_to_log("fbbs2 worker version XXX running on YYY")
+            self.__append_to_log("fbbs2 worker version {v} running on {h}({n}) [{p}] with config file {c}".\
+                                 format(v=version.VERSION, h=gethostbyname(gethostname()), n=gethostname(), p=platform(), c=utils.config.Config().get_filepath()))
             
             self.__start_time = time()
             self.__append_to_log("build started")
             git = utils.git.Git(self.__params["repository_path"])
             
-            self.__append_to_log("fetching")
+            self.__append_to_log("fetch")
             self.__append_to_log(git.fetch())
             
-            self.__append_to_log("resetting local changes")
+            self.__append_to_log("revert local changes")
             self.__append_to_log(git.reset_local_changes())
             
-            self.__append_to_log("checking out " + self.__params["branch"])
+            self.__append_to_log("checkout " + self.__params["branch"])
             self.__append_to_log(git.checkout(self.__params["branch"]))
             
-            self.__append_to_log("merging " + self.__params["branch"])
+            self.__append_to_log("merge " + self.__params["branch"])
             self.__append_to_log(git.merge("origin/" + self.__params["branch"]))
             
             self.__last_commit_info = {"commit": git.last_commit_abbrev(),
@@ -88,7 +95,7 @@ class Builder(Thread):
             self.__append_to_log("last commit info: " + str(self.__last_commit_info))
             self.__params["commit"] = self.__last_commit_info["commit"]
             
-            self.__append_to_log("getting version info")
+            self.__append_to_log("get version info")
             self.__params["full_version"] = self.__custom_script.get_version(**self.__params)
             self.__append_to_log("full version: " + self.__params["full_version"])
             
@@ -127,7 +134,6 @@ class Builder(Thread):
             self.__error = True
         finally:
             self.__end_time = time()
-            print(self.__log)
     
     def terminate(self):
         if not self.is_alive():
@@ -139,6 +145,9 @@ class Builder(Thread):
         return not self.is_alive()
     
     def __append_to_log(self, msg, duplicate_to_systemlog=True):
+        if msg.isspace() or not msg:
+            return
+        msg = msg.strip()
         if duplicate_to_systemlog:
             log.info(msg)
         lines = msg.split("\n")

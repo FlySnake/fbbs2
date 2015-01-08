@@ -13,7 +13,7 @@ class Git:
         try:
             (r,o,e) = utils.shell.execute(cli, repo)
             self.__raise_if_error(cli, r, e, o)
-            log.info("using git version {v}".format(v=o))   
+            log.info("using git: {v}".format(v=o.strip()))   
         except OSError as e:
             log.exception("error communicating with git")
             raise RuntimeError("error communicating with git: " + srt(e))
