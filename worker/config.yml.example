@@ -1,7 +1,7 @@
 logging:
     file: /home/flysnake/Desktop/fbbs2_worker.log
     level: debug
-    
+
 repository:
     path: /home/flysnake/Desktop/fbbs2_worker_repo
     
@@ -10,5 +10,7 @@ artefact:
     
 communication:
     bind_to: 0.0.0.0:5001
-    buildnum_service: localhost:12345
+    
+build:
+    custom_script: /home/flysnake/Documents/Projects/AptanaStudio3Workspace/fbbs2/worker/custom_script_example.py
     

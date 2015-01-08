@@ -8,6 +8,7 @@ from logging import getLogger
 log = getLogger(__name__)
 
 import utils.config
+import build
 
 def __log_request_decorator(func):
     def wrap(*args):
@@ -18,7 +19,7 @@ def __log_request_decorator(func):
 @get("/")
 @__log_request_decorator
 def index():
-    return "It works! Current config: " + str(utils.config.Config().get_raw_cfg())
+    return utils.config.Config().get_raw_cfg()
 
 @get("/download/<name>")
 @__log_request_decorator
@@ -37,24 +38,21 @@ def download_delete(name):
 @get("/build")
 @__log_request_decorator
 def build_check():
-    pass
+    return build.status()
 
 @put("/build")
 @__log_request_decorator
 def build_start():
-    try:
-        branch = request.query.getall("branch")[0]
-        platform = request.query.getall("platform")[0]
-        dbid = request.query.getall("id")[0]
-        commercial_version = request.query.getall("commercial_version")[0]
-    except Eception as e:
-        response.status = 500
-        return str(e)
+    params = {}
+    d = request.query.decode().dict
+    for k in d:
+        params[k] = d[k][0] if d[k] else None
+    return build.start(**params)
 
 @delete("/build")
 @__log_request_decorator
 def build_stop():
-    pass
+    return build.stop()
 
 def start():
     run(host=utils.config.Config().bind_addr, port=utils.config.Config().bind_port)

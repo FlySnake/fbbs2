@@ -11,10 +11,10 @@ class Git:
     def __init__(self, repo):
         cli = "git --version"
         try:
-            (r,o,e) = utils.execute(cli, repo)
+            (r,o,e) = utils.shell.execute(cli, repo)
             self.__raise_if_error(cli, r, e, o)
             log.info("using git version {v}".format(v=o))   
-        except OsError as e:
+        except OSError as e:
             log.exception("error communicating with git")
             raise RuntimeError("error communicating with git: " + srt(e))
         self.__repo__ = repo

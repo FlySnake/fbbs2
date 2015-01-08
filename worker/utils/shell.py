@@ -16,7 +16,7 @@ def make_process_merged_stdout_stderr(popen_cli, cwd):
 
 def exec_process(process):
     out, err = process.communicate()
-    return (process.returncode, out.decode('utf-8'), err.decode('utf-8'))
+    return (process.returncode, out.decode('utf-8') if out else "", err.decode('utf-8') if err else "")
 
 def execute(cli, cwd=getcwd()):
     return exec_process(make_process(make_cli(cli), cwd))
@@ -25,7 +25,7 @@ def execute_merged_stdout_stderr(cli, cwd=getcwd()):
     return exec_process(make_process_merged_stdout_stderr(make_cli(cli), cwd))
 
 class AsyncExecutor(Thread):
-    def __init__(self, onfinish_callback=None, merged_stdout_stderr=False):
+    def __init__(self, merged_stdout_stderr=False, onfinish_callback=None):
         Thread.__init__(self)
         self.setDaemon(True)
         self.__onfinish = onfinish_callback
@@ -41,6 +41,8 @@ class AsyncExecutor(Thread):
         return self.__process.pid
     
     def kill(self):
+        if not self.__process:
+            return None
         script_path = path.join(path.dirname(path.realpath(__file__)), "kill_all_children.sh")
         (r,o,e) = execute(script_path + " " + str(self.__process.pid))
         execute("kill -TERM {pid}".format(pid=self.__process.pid))

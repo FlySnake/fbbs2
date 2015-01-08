@@ -41,5 +41,5 @@ class Config(object, metaclass=utils.singleton.Singleton):
         return self.__cfg["repository"]["path"]
     
     @property
-    def buildnum_service(self):
-        return self.__cfg["communication"]["buildnum_service"]
+    def custom_script(self):
+        return self.__cfg["build"]["custom_script"]

@@ -38,6 +38,7 @@ def bootstrap(configfile, console_app):
     
     info("using config file: '{c}'".format(c=configfile))
     debug("working directory: '{w}'".format(w=getcwd()))
+    debug("config:\n" + str(conf.get_raw_cfg()))
     signal(SIGTERM, signal_handler)
     
 def app():
