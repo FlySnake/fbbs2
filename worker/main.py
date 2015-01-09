@@ -10,8 +10,10 @@ from os import chdir, getcwd, path
 import utils.config
 import utils.daemon
 import communication
+import build
 
 def signal_handler(signum, frame):
+    build.stop()
     warning("terminated")
     exit(0)
 
