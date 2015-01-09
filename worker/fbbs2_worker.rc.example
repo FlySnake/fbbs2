@@ -12,7 +12,9 @@
 ### END INIT INFO
 
 CONFIGFILE=/home/builder/fbbs2_config/example.yml
+USERNAME=builder
+DAEMON_CONTROL_FILE=/opt/fbbs2/worker/daemon_control.sh
 
-su - builder -c "/opt/fbbs2/worker/fbbs2_worker.sh $1 $CONFIGFILE"
+su - $USERNAME -c "$DAEMON_CONTROL_FILE $1 $CONFIGFILE"
 
 exit $1

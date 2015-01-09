@@ -32,7 +32,7 @@ class Version(object):
                 return f.read().rstrip("\n").rstrip("\r")
         except:
             if log:
-                log.exception("error getting relese number, 0 will be used")
+                log.exception("error getting release number, 0 will be used")
             return "0"
         
     def __fetch_buildnum(self, branch, commit):

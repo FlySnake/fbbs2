@@ -5,13 +5,13 @@ from logging import getLogger
 
 log = getLogger(__name__)
 
-import utils.shell
+import utils.shell as shell
 
 class Git:
     def __init__(self, repo):
         cli = "git --version"
         try:
-            (r,o,e) = utils.shell.execute(cli, repo)
+            (r,o,e) = shell.execute(cli, repo)
             self.__raise_if_error(cli, r, e, o)
             log.info("using git: {v}".format(v=o.strip()))   
         except OSError as e:
@@ -63,6 +63,6 @@ class Git:
             raise RuntimeError("error executing '{cli}': {err};{out}, code {c}".format(cli=cli, err=stderr, out=stdout, c=returncode))
         
     def __exec(self, cli):
-        (r, o, e) = utils.shell.execute(cli, self.__repo__)
+        (r, o, e) = shell.execute(cli, self.__repo__)
         self.__raise_if_error(cli, r, e, o)
         return (r, o, e)

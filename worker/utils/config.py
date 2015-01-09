@@ -4,9 +4,9 @@
 from yaml import load
 from os import path
 
-import utils.singleton
+import utils.singleton as singleton
 
-class Config(object, metaclass=utils.singleton.Singleton):
+class Config(object, metaclass=singleton.Singleton):
     def __init__(self, filepath):
         if not path.isfile(filepath):
             raise OSError("config file {c} does not exists".format(c=filepath))

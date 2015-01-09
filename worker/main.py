@@ -7,10 +7,10 @@ from signal import signal, SIGTERM
 from logging import basicConfig, getLogger, StreamHandler, Formatter, info, DEBUG, INFO, ERROR, WARNING, warning, debug, critical, exception
 from os import chdir, getcwd, path
 
-import utils.config
-import utils.daemon
-import communication
-import build
+import utils.config as config
+import utils.daemon as daemon
+import control.communication as comm
+import build.buildctl as build
 
 def signal_handler(signum, frame):
     build.stop()
@@ -18,7 +18,7 @@ def signal_handler(signum, frame):
     exit(0)
 
 def bootstrap(configfile, console_app):
-    conf = utils.config.Config(configfile)
+    conf = config.Config(configfile)
     
     loglevels = {"debug": DEBUG, "info": INFO, "error": ERROR, "warning": WARNING }
     
@@ -44,9 +44,9 @@ def bootstrap(configfile, console_app):
     signal(SIGTERM, signal_handler)
     
 def app():
-    communication.start()
+    comm.start()
     
-class DaemonApp(utils.daemon.Daemon): 
+class DaemonApp(daemon.Daemon): 
     def run(self):
         try:
             debug("daemon working directory: '{w}'".format(w=getcwd()))

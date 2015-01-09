@@ -11,21 +11,21 @@ from logging import getLogger
 
 log = getLogger(__name__)
 
-import utils.shell
-import utils.git
-import utils.config
-import version
+import utils.shell as shell
+import utils.git as gitc
+import utils.config as config
+import version as version
         
 class BuildTerminateException(RuntimeError):
     pass
 
-class Builder(Thread):
+class BuildJob(Thread):
     def __init__(self, **kwargs):
         Thread.__init__(self)
         self.setDaemon(True)
         self.__params = kwargs
-        self.__params["repository_path"] = utils.config.Config().repo_path
-        self.__params["artefacts_path"] = utils.config.Config().artefacts_path
+        self.__params["repository_path"] = config.Config().repo_path
+        self.__params["artefacts_path"] = config.Config().artefacts_path
         self.__start_time = 0
         self.__end_time = 0
         self.__log = ""
@@ -40,10 +40,10 @@ class Builder(Thread):
     def __import_custom_script(self):
         try:
             import imp
-            self.__custom_script = imp.load_source("custom_script", utils.config.Config().custom_script)
+            self.__custom_script = imp.load_source("custom_script", config.Config().custom_script)
             self.__custom_script.log = log
         except:
-            log.exception("cannot import custom script '{s}'".format(s=utils.config.Config().custom_script))
+            log.exception("cannot import custom script '{s}'".format(s=config.Config().custom_script))
             raise
         
     def __del__(self):
@@ -70,11 +70,11 @@ class Builder(Thread):
     def run(self):
         try:
             self.__append_to_log("fbbs2 worker version {v} running on {h}({n}) [{p}] with config file {c}".\
-                                 format(v=version.VERSION, h=gethostbyname(gethostname()), n=gethostname(), p=platform(), c=utils.config.Config().get_filepath()))
+                                 format(v=version.VERSION, h=gethostbyname(gethostname()), n=gethostname(), p=platform(), c=config.Config().get_filepath()))
             
             self.__start_time = time()
             self.__append_to_log("build started")
-            git = utils.git.Git(self.__params["repository_path"])
+            git = gitc.Git(self.__params["repository_path"])
             
             self.__append_to_log("fetch")
             self.__append_to_log(git.fetch())
@@ -109,7 +109,7 @@ class Builder(Thread):
                 raise BuildTerminateException("terminated befor build command exec")
             
             self.__append_to_log("exec '" + self.__params["build_cmd"] + "'")
-            self.__build_executor = utils.shell.AsyncExecutor(True)
+            self.__build_executor = shell.AsyncExecutor(True)
             self.__build_executor.execute(self.__params["build_cmd"], self.__params["repository_path"])
             self.__build_executor.join()
             
@@ -157,49 +157,4 @@ class Builder(Thread):
             s2 = "#" * min(len(msg), 100)
         s2 += "\n"
         self.__log += (s2 + msg + "\n" + s2)
-
-builder = None
-
-def status():
-    global builder
-    if not builder:
-        return {"busy": False,
-                "error": False,
-                "terminated": False,
-                "run_duration": 0,
-                "last_commit_info": {},
-                "build_log": "",
-                "params": {}
-               }
-    else:
-        return {"busy": builder.is_alive(),
-                "error": builder.error(),
-                "terminated": builder.terminated(),
-                "run_duration": builder.run_duration(),
-                "last_commit_info": builder.last_commit_info(),
-                "build_log": builder.build_log(),
-                "params": builder.params()
-                }
-    
-def start(**kwargs):
-    global builder
-    try:
-        if not builder or not builder.is_alive():
-            builder = Builder(**kwargs)
-            builder.start()
-            builder.join(timeout=1) # should be enouth for starting
-    except:
-        log.exception("error starting builder")
-    finally:
-        return status()
-
-def stop():
-    global builder
-    try:
-        if builder and builder.is_alive():
-            builder.terminate()
-    except:
-        log.exception("error stopping builder")
-    finally:
-        return status()
         

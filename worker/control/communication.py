@@ -7,33 +7,31 @@ from logging import getLogger
 
 log = getLogger(__name__)
 
-import utils.config
-import build
+import utils.config as config
+import build.buildctl as buildctl
 
-def __log_request_decorator(func):
+def request_logging(func):
     def wrap(*args, **kwargs):
-        log.debug("{addr} ==> {method} {qry}".format(addr=request.remote_addr, method=request.method, qry=request.path))
-        r = func(*args, **kwargs)
-        log.debug("{addr} <== {result} {size}".format(addr=request.remote_addr, result=r.status_line, size=r.get_header('Content-Length')))
-        return r
+        log.debug("{addr} -- {method} {qry}".format(addr=request.remote_addr, method=request.method, qry=request.path))
+        return func(*args, **kwargs)
     return wrap
 
 @get("/")
-@__log_request_decorator
+@request_logging
 def index():
-    return utils.config.Config().get_raw_cfg()
+    return config.Config().get_raw_cfg()
 
 @get("/download/<name>")
-@__log_request_decorator
+@request_logging
 def download(name):
     try:
-        return static_file(name, utils.config.Config().artefacts_path)
+        return static_file(name, config.Config().artefacts_path)
     except:
         log.exception("error uploading file '{f}'".format(f=name))
         raise
 
 @delete("/download/<name>")
-@__log_request_decorator
+@request_logging
 def download_delete(name):
     try:
         filepath = path.join(config.Config().artefacts_path, name)
@@ -43,36 +41,36 @@ def download_delete(name):
         raise
     
 @get("/build")
-@__log_request_decorator
+@request_logging
 def build_check():
     try:
-        return build.status()
+        return buildctl.BuildCtl().status()
     except:
         log.exception("error checking build status")
         raise
 
 @put("/build")
-@__log_request_decorator
+@request_logging
 def build_start():
     try:
         params = {}
         d = request.query.decode().dict
         for k in d:
             params[k] = d[k][0] if d[k] else None
-        return build.start(**params)
+        return buildctl.BuildCtl().start(**params)
     except:
         log.exception("error starting build")
         raise
 
 @delete("/build")
-@__log_request_decorator
+@request_logging
 def build_stop():
     try:
-        return build.stop()
+        return buildctl.BuildCtl().stop()
     except:
         log.exception("error stopping build")
         raise
 
 def start():
-    run(host=utils.config.Config().bind_addr, port=utils.config.Config().bind_port)
+    run(host=config.Config().bind_addr, port=config.Config().bind_port)
     
