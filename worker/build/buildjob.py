@@ -41,7 +41,8 @@ class BuildJob(Thread):
         try:
             import imp
             self.__custom_script = imp.load_source("custom_script", config.Config().custom_script)
-            self.__custom_script.log = log
+            if self.__custom_script.log:
+                self.__custom_script.log = log
         except:
             log.exception("cannot import custom script '{s}'".format(s=config.Config().custom_script))
             raise
@@ -99,11 +100,11 @@ class BuildJob(Thread):
             self.__params["full_version"] = self.__custom_script.get_version(**self.__params)
             self.__append_to_log("full version: " + self.__params["full_version"])
             
-            self.__params["artefact_name"] = self.__custom_script.get_artefact_name(**self.__params)
-            self.__append_to_log("artefact name: '" + self.__params["artefact_name"] + "'")
+            self.__params["artefacts_names"] = self.__custom_script.get_artefacts_names(**self.__params)
+            self.__append_to_log("artefacts names: " + str(self.__params["artefacts_names"]))
             
             self.__params["build_cmd"] = self.__custom_script.get_build_cmd(**self.__params)
-            self.__append_to_log("build command: '" + self.__params["build_cmd"] +"'")
+            self.__append_to_log("build command: " + self.__params["build_cmd"])
             
             if self.__terminate_flag.is_set():
                 raise BuildTerminateException("terminated befor build command exec")
@@ -140,7 +141,7 @@ class BuildJob(Thread):
             return False
         self.__terminate_flag.set()
         pids = self.__build_executor.kill()
-        log.warn("terminated PIDs: " + str(pids))
+        log.warning("terminated PIDs: " + str(pids))
         self.join(timeout=30)
         return not self.is_alive()
     

@@ -8,17 +8,20 @@ import utils.singleton as singleton
 
 class Config(object, metaclass=singleton.Singleton):
     def __init__(self, filepath):
-        if not path.isfile(filepath):
-            raise OSError("config file {c} does not exists".format(c=filepath))
-        with open(filepath, 'r') as ymlfile:
-            self.__cfg = load(ymlfile)
-            self.__filepath = filepath
+        self.__filepath = filepath
+        self.load()
             
     def get_raw_cfg(self):
         return self.__cfg
     
     def get_filepath(self):
         return self.__filepath
+    
+    def load(self):
+        if not path.isfile(self.__filepath):
+            raise OSError("config file {c} does not exists".format(c=self.__filepath))
+        with open(self.__filepath, 'r') as ymlfile:
+            self.__cfg = load(ymlfile)
     
     @property        
     def logfile(self):

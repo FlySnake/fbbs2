@@ -1,12 +1,12 @@
 logging:
-    file: /home/flysnake/Desktop/fbbs2_worker.log
+    file: /home/flysnake/Documents/Projects/AptanaStudio3Workspace/fbbs2/worker/tmp/worker.log
     level: debug
 
 repository:
-    path: /home/flysnake/Desktop/fbbs2_worker_repo
+    path: /home/flysnake/Documents/Projects/AptanaStudio3Workspace/fbbs2/worker/tmp/repo
     
 artefact:
-    path: /home/flysnake/Desktop/fbbs2_worker_artefacts
+    path: /home/flysnake/Documents/Projects/AptanaStudio3Workspace/fbbs2/worker/tmp/artefacts
     
 communication:
     bind_to: 0.0.0.0:5001

@@ -57,16 +57,17 @@ def get_build_cmd(**kwargs):
                  artefacts_path=artefacts_path,
                  qt_path=(QT5_PATH if "qt5" in platform else QT4_PATH))
 
-def get_artefact_name(**kwargs):
+def get_artefacts_names(**kwargs):
     full_version = kwargs["full_version"]
     platform = kwargs["platform"]
     branch = kwargs["branch"]
     commit = kwargs["commit"]
-    return ARTEFACT_NAME_PATTERN.format(platform=platform,
+    basename = ARTEFACT_NAME_PATTERN.format(platform=platform,
                  full_version=full_version,
                  branch=branch,
                  date=strftime("%Y.%m.%d_%H.%M.%S", localtime()),
                  commit=commit)
+    return [basename + ".apk", basename + ".zip"]
 
 def get_version(**kwargs):
     commercial_version = kwargs["commercial_version"]

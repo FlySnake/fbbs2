@@ -5,7 +5,7 @@ from sys import exit, stdout
 from optparse import OptionParser
 from signal import signal, SIGTERM
 from logging import basicConfig, getLogger, StreamHandler, Formatter, info, DEBUG, INFO, ERROR, WARNING, warning, debug, critical, exception
-from os import chdir, getcwd, path
+from os import chdir, getcwd, path, getpid
 
 import utils.config as config
 import utils.daemon as daemon
@@ -13,7 +13,7 @@ import control.communication as comm
 import build.buildctl as build
 
 def signal_handler(signum, frame):
-    build.stop()
+    build.BuildCtl().stop()
     warning("terminated")
     exit(0)
 
@@ -39,7 +39,7 @@ def bootstrap(configfile, console_app):
         info("started as daemon")
     
     info("using config file: '{c}'".format(c=configfile))
-    debug("working directory: '{w}'".format(w=getcwd()))
+    debug("working directory: '{w}', pid: '{pid}'".format(w=getcwd(), pid=getpid()))
     debug("config:\n" + str(conf.get_raw_cfg()))
     signal(SIGTERM, signal_handler)
     
