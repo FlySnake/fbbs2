@@ -1,10 +1,28 @@
 !!!
 %html
   %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %title Control
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
+    %title FBBS2 Control Host
+    %meta{:content => content_for?(:description) ? yield(:description) : "App_Name", :name => "description"}
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
+    = yield(:head)
   %body
-    = yield
+    #main{:role => "main"}
+      %nav.navbar.navbar-inverse{:role => "navigation"}
+        .container
+          = link_to "Main Page", root_path, class: "navbar-brand"
+          .collapse.navbar-collapse
+            %ul.nav.navbar-nav
+              /%li{:class => active_class_for('devices')}= link_to 'Devices', devices_path
+              /%li{:class => active_class_for('media_items')}= link_to 'Media items', media_items_path
+              /%li{:class => active_class_for('playlists')}= link_to 'Playlists', playlists_path
+            
+      .container
+        .content
+          .row
+            .col-md-12
+              = render 'layouts/messages'
+            .col-md-12
+              = yield
