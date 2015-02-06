@@ -37,6 +37,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.0)
+    bcrypt (3.1.10)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.2.0.2)
@@ -140,6 +141,8 @@ GEM
       json (~> 1.4)
     ruby_parser (3.6.4)
       sexp_processor (~> 4.1)
+    rufus-scheduler (3.0.9)
+      tzinfo
     sass (3.4.11)
     sass-rails (5.0.1)
       railties (>= 4.0.0, < 5.0)
@@ -187,6 +190,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bcrypt (~> 3.1.7)
   bootstrap-sass (~> 3.2.0)
   bootstrap_form
   byebug
@@ -199,6 +203,7 @@ DEPENDENCIES
   pry-rails
   puma
   rails (= 4.2.0)
+  rufus-scheduler
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   select2-rails
