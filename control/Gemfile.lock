@@ -62,6 +62,14 @@ GEM
     columnize (0.9.0)
     debug_inspector (0.0.2)
     debugger-linecache (1.2.0)
+    devise (3.4.1)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 3.2.6, < 5)
+      responders
+      thread_safe (~> 0.1)
+      warden (~> 1.2.3)
+    devise-bootstrap-views (0.0.4)
     diff-lcs (1.2.5)
     erb2haml (0.1.5)
       html2haml
@@ -69,6 +77,7 @@ GEM
     execjs (2.3.0)
     globalid (0.3.3)
       activesupport (>= 4.1.0)
+    gravtastic (3.2.6)
     haml (4.0.6)
       tilt
     haml-rails (0.8.2)
@@ -105,6 +114,7 @@ GEM
     multi_json (1.10.1)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
+    orm_adapter (0.5.0)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -143,6 +153,8 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
+    responders (2.1.0)
+      railties (>= 4.2.0, < 5)
     rspec-core (3.2.0)
       rspec-support (~> 3.2.0)
     rspec-expectations (3.2.0)
@@ -199,6 +211,8 @@ GEM
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     uniform_notifier (1.7.0)
+    warden (1.2.3)
+      rack (>= 1.0)
     web-console (2.0.0)
       activemodel (~> 4.0)
       binding_of_caller (>= 0.7.2)
@@ -218,7 +232,10 @@ DEPENDENCIES
   bullet
   byebug
   coffee-rails (~> 4.1.0)
+  devise
+  devise-bootstrap-views
   erb2haml
+  gravtastic
   haml-rails
   jbuilder (~> 2.0)
   jquery-rails
