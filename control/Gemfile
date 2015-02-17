@@ -55,5 +55,7 @@ group :development, :test do
   
   gem 'erb2haml'
   gem 'pry-rails'
+  gem 'bullet'
+  gem 'rspec-rails', '~> 3.0'
 end
 
