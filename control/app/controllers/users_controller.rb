@@ -1,9 +1,11 @@
-class UsersController < ApplicationController
+class UsersController < BaseAdminController
   before_filter :authenticate_user!
-  before_filter :check_user_admin
   before_filter :set_user, only: [:show, :edit, :update, :destroy]
+  skip_before_filter :check_user_admin, only: [:profile]
   
+  # GET /users/profile
   def profile
+    @user = current_user
   end
   
   # GET /users
@@ -16,24 +18,23 @@ class UsersController < ApplicationController
   end
 
   # GET /users/new
-  def new
-    @user = User.new
-  end
+  #def new
+  #  @user = User.new
+  #end
 
   # GET /users/1/edit
   def edit
   end
 
   # POST /users
-  def create
-    @user = User.new(user_params)
-
-    if @user.save
-      redirect_to @user, notice: 'User was successfully created.'
-    else
-      render action: "new"
-    end
-  end
+  #def create
+  #  @user = User.new(user_params)
+  #  if @user.save
+  #    redirect_to @user, notice: 'User was successfully created.'
+  #  else
+  #    render action: "new"
+  #  end
+  #end
 
   # PUT /users/1
   def update
@@ -56,12 +57,6 @@ class UsersController < ApplicationController
   end
   
   private
-  
-  def check_user_admin
-    if not current_user or not current_user.admin?
-      redirect_to root_path, alert: 'You have to be admin in order to manage users accounts.'
-    end
-  end
   
   def set_user
     @user = User.find(params[:id])

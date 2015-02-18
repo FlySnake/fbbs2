@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   
   devise_for :users
   scope "/admin" do
-    resources :users
+    resources :users, except: [:new, :create]
   end
   get 'users/profile', as: 'user_root'
   
