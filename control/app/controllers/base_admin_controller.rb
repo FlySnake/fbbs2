@@ -5,7 +5,7 @@ class BaseAdminController < ApplicationController
   
   def check_user_admin
     if not current_user or not current_user.admin?
-      redirect_to root_path, alert: 'You have to be admin in order to manage users accounts.'
+      redirect_to root_path, alert: 'You have to be admin in order to access requested page.'
     end
   end
 end

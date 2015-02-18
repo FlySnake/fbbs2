@@ -23,7 +23,6 @@
             %ul.pull-right.nav.navbar-text
               %li
               - if user_signed_in?
-                Logged in as
                 = succeed "." do
                   %strong= current_user.email
                   = image_tag current_user.gravatar_url, size: "24x24", alt: "gravatar", class: "img-rounded"

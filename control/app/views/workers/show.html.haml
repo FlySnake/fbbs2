@@ -1,0 +1,22 @@
+- title "Worker info"
+
+%h1= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Title
+      %dd= @worker.title
+      %dt Address
+      %dd= @worker.address
+      %dt Platforms
+      %dd= @worker.target_platforms.map {|p| p.title}.join(", ")
+      %dt Created at
+      %dd= localtime @worker.created_at
+      %dt Updated at
+      %dd= localtime @worker.updated_at
+    
+.row
+  .col-md-12
+    = link_to 'Edit worker', edit_worker_path(@worker), class: "btn btn-primary"
+    = link_to 'Force request worker config', request_config_worker_path(@worker), class: "btn btn-success", method: :post
