@@ -16,6 +16,8 @@ module ApplicationHelper
     case level.to_sym
     when :info    then "alert alert-info"
     when :success then "alert alert-success"
+    when :notice  then "alert alert-success"
+    when :alert   then "alert alert-danger"
     when :error   then "alert alert-danger"
     when :warning then "alert alert-warning"
     end
