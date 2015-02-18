@@ -1,0 +1,32 @@
+- title "User info"
+
+%h1= yield(:title)
+
+.row
+  .col-md-8
+    %dl.dl-horizontal
+      %dt Email
+      %dd= mail_to @user.email
+      %dt Admin
+      %dd= @user.admin
+      %dt Logins count
+      %dd= @user.sign_in_count
+      %dt Current login at
+      %dd= localtime @user.current_sign_in_at
+      %dt Last login at
+      %dd= localtime @user.last_sign_in_at
+      %dt Current login IP
+      %dd= @user.current_sign_in_ip
+      %dt Last login IP
+      %dd= @user.last_sign_in_ip
+      %dt Created at
+      %dd= localtime @user.created_at
+      %dt Updated at
+      %dd= localtime @user.updated_at
+  .col-md-4
+    = image_tag @user.gravatar_url, alt: "gravatar", class: "img-responsive img-rounded"
+    
+.row
+  .col-md-12
+    = link_to 'Edit user', edit_user_path(@user), class: "btn btn-primary"
+      

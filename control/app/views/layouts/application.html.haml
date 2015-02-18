@@ -2,7 +2,7 @@
 %html
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}
-    %title FBBS2 Control Host
+    %title= "Feature Branches Build Server Control Host" + (content_for?(:title) ? " | " + yield(:title) : "") 
     %meta{:content => content_for?(:description) ? yield(:description) : "App_Name", :name => "description"}
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
@@ -11,21 +11,22 @@
   %body
     #main{:role => "main"}
       %nav.navbar.navbar-inverse{:role => "navigation"}
-        .container
+        .container-fluid
+          = image_tag image_path("logo-inverse.svg"), alt: "logo", class: "navbar-brand img-rounded img-responsive"
           = link_to "Home", root_path, class: "navbar-brand"
           .collapse.navbar-collapse
             %ul.nav.navbar-nav
               /%li{:class => active_class_for('devices')}= link_to 'Devices', devices_path
               /%li{:class => active_class_for('media_items')}= link_to 'Media items', media_items_path
               - if current_user and current_user.admin?
-                %li= link_to 'Admin', '#'
+                %li= link_to 'Admin', admin_index_path
             %ul.pull-right.nav.navbar-text
               %li
               - if user_signed_in?
                 Logged in as
                 = succeed "." do
                   %strong= current_user.email
-                  = image_tag current_user.gravatar_url, size: "24x24", alt: "gravatar"
+                  = image_tag current_user.gravatar_url, size: "24x24", alt: "gravatar", class: "img-rounded"
                 = link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link'
                 |
                 = link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'
@@ -41,3 +42,8 @@
               = render 'layouts/messages'
             .col-md-12
               = yield
+            %footer
+            .navbar-fixed-bottom.row
+              .container
+                .col-md-12
+                  <div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>

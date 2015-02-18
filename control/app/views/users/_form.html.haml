@@ -1,0 +1,4 @@
+= bootstrap_form_for(@user) do |f|
+  = f.check_box :admin
+  = f.primary 'Save'
+  = link_to 'Delete this user', @user, :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }

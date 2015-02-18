@@ -1,0 +1,25 @@
+- title "List users"
+  
+%h1= yield(:title)
+
+.row
+  .col-md-12
+    %table.table.table-striped.table-bordered.table-hover.table-responsive
+      %tr
+        %th Avatar
+        %th Email
+        %th Admin
+        %th Last login
+        %th More info
+        
+      - @users.each do |user|
+        %tr
+          %td= image_tag user.gravatar_url, alt: "gravatar", class: "img-responsive img-rounded", size: "32x32"
+          %td= mail_to user.email
+          %td= user.admin?
+          %td= localtime user.last_sign_in_at
+          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), user, :class => "btn btn-default"
+          
+      
+
+

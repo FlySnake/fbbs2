@@ -1,8 +1,13 @@
 Rails.application.routes.draw do
   
   devise_for :users
+  scope "/admin" do
+    resources :users
+  end
   get 'users/profile', as: 'user_root'
-
+  
+  resources :admin, only: [:index]
+  
   root 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
