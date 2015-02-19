@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Branch:
+  = @build_number.branch
+%p
+  %b Commit:
+  = @build_number.commit
+%p
+  %b Number:
+  = @build_number.number
+
+= link_to 'Edit', edit_build_number_path(@build_number)
+\|
+= link_to 'Back', build_numbers_path

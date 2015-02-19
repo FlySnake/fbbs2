@@ -1,0 +1,17 @@
+- title "List enviroments"
+  
+%h1= yield(:title)
+
+.row
+  .col-md-12
+    %table.table.table-striped.table-bordered.table-hover.table-responsive
+      %tr
+        %th Title
+        %th More info
+        
+      - @enviroments.each do |env|
+        %tr
+          %td= env.title
+          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), env, :class => "btn btn-default"
+          
+    = link_to 'Add new enviroment', new_enviroment_path, class: "btn btn-primary"

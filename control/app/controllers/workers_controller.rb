@@ -1,4 +1,5 @@
 class WorkersController < BaseAdminController
+  before_filter :authenticate_user!
   before_filter :set_worker, only: [:show, :edit, :update, :destroy, :request_config]
   
   # GET /workers

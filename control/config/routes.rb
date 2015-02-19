@@ -9,10 +9,12 @@ Rails.application.routes.draw do
     resources :repositories do
       post :fetch_branches, :on => :member
     end
+    resources :enviroments
   end
   get 'users/profile', as: 'user_root'
   
   resources :admin, only: [:index]
+  resources :build_numbers, only: [:index, :update, :show]
   
   root 'home#index'
 

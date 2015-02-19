@@ -1,0 +1,17 @@
+- title "Enviroment info"
+
+%h1= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Title
+      %dd= @enviroment.title
+      %dt Created at
+      %dd= localtime @enviroment.created_at
+      %dt Updated at
+      %dd= localtime @enviroment.updated_at
+    
+.row
+  .col-md-12
+    = link_to 'Edit enviroment', edit_enviroment_path(@enviroment), class: "btn btn-primary"

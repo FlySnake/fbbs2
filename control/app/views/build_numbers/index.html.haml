@@ -1,0 +1,25 @@
+%h1 Listing build_numbers
+
+%table
+  %thead
+    %tr
+      %th Branch
+      %th Commit
+      %th Number
+      %th
+      %th
+      %th
+      
+  %tbody
+    - @build_numbers.each do |build_number|
+      %tr
+        %td= build_number.branch
+        %td= build_number.commit
+        %td= build_number.number
+        %td= link_to 'Show', build_number
+        %td= link_to 'Edit', edit_build_number_path(build_number)
+        %td= link_to 'Destroy', build_number, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Build number', new_build_number_path
