@@ -1,0 +1,8 @@
+= bootstrap_form_for(@repository) do |f|
+  = f.text_field :title
+  = f.text_field :path
+  = f.select :vcs_type, @repository.class.vcs_types.collect { |s| [s[0].humanize, s[0]] }, {}, :id => "select-playlist"
+  = select2js_for_id "select-playlist"
+  = f.primary 'Save'
+  - if not defined?(delete_disabled) or not delete_disabled
+    = link_to 'Delete this repository', @repository, :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }

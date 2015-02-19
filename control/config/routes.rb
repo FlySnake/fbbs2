@@ -4,7 +4,10 @@ Rails.application.routes.draw do
   scope "/admin" do
     resources :users, except: [:new, :create]
     resources :workers do
-      match :request_config, :via => [:post], :on => :member
+      post :request_config,  :on => :member
+    end
+    resources :repositories do
+      post :fetch_branches, :on => :member
     end
   end
   get 'users/profile', as: 'user_root'

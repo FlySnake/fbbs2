@@ -11,7 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150218140842) do
+ActiveRecord::Schema.define(version: 20150219094411) do
+
+  create_table "branches", force: :cascade do |t|
+    t.string   "name",          limit: 512, null: false
+    t.integer  "repository_id"
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "branches", ["repository_id"], name: "index_branches_on_repository_id"
+
+  create_table "repositories", force: :cascade do |t|
+    t.string   "title",      limit: 512,  default: "", null: false
+    t.string   "path",       limit: 4096,              null: false
+    t.integer  "vcs_type",                             null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+  end
 
   create_table "target_platforms", force: :cascade do |t|
     t.string   "title",      limit: 512, null: false

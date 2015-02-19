@@ -49,7 +49,7 @@ class WorkersController < BaseAdminController
     if true
       redirect_to @worker, notice: "Worker config updated."
     else
-      redirect_to @worker, error: "Error updating worker config."
+      redirect_to @worker, flash: {error: "Error updating worker's config"}
     end
   end
   

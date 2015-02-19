@@ -1,0 +1,29 @@
+- title "Repository info"
+
+%h1= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Title
+      %dd= @repository.title
+      %dt Path
+      %dd= @repository.path
+      %dt VCS type
+      %dd= @repository.vcs_type.humanize
+      %dt Created at
+      %dd= localtime @repository.created_at
+      %dt Updated at
+      %dd= localtime @repository.updated_at
+    
+.row
+  .col-md-12
+    = link_to 'Edit repository', edit_repository_path(@repository), class: "btn btn-primary"
+    = link_to 'Force update remote branches', fetch_branches_repository_path(@repository), class: "btn btn-success", method: :post
+
+.row
+  .col-md-12
+    %h3 Remote branches
+    %ul
+      - @repository.branches.each do |b|
+        %li= b.name
