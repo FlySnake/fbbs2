@@ -1,25 +1,22 @@
-%h1 Listing build_numbers
+- title "List build numbers"
+  
+%h1= yield(:title)
 
-%table
-  %thead
-    %tr
-      %th Branch
-      %th Commit
-      %th Number
-      %th
-      %th
-      %th
-      
-  %tbody
-    - @build_numbers.each do |build_number|
+.row
+  .col-md-12
+    %table.table.table-striped.table-bordered.table-hover.table-responsive
       %tr
-        %td= build_number.branch
-        %td= build_number.commit
-        %td= build_number.number
-        %td= link_to 'Show', build_number
-        %td= link_to 'Edit', edit_build_number_path(build_number)
-        %td= link_to 'Destroy', build_number, :method => :delete, :data => { :confirm => 'Are you sure?' }
-
-%br
-
-= link_to 'New Build number', new_build_number_path
+        %th Branch
+        %th Commit
+        %th Number
+        %th Enviroment
+        %th More info
+        
+      - @build_numbers.each do |b|
+        %tr
+          %td= b.branch
+          %td= b.commit
+          %td= b.number
+          %td= link_to b.enviroment.title, enviroment_path(b.enviroment)
+          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), b, :class => "btn btn-default"
+    .text-center= will_paginate(@build_numbers, :renderer => BootstrapPagination::Rails, :previous_label => "&larr;", :next_label => "&rarr;")

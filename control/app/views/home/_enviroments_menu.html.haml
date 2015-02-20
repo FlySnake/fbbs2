@@ -1,0 +1,12 @@
+.row
+  .col-md-12
+    %ul.nav.nav-tabs.nav-justified
+      - @enviroments.each do |e|
+        - if e.title == @enviroment.title
+          %li.active= link_to e.title.humanize, link_to_enviroment(e), {role: "presentation"} 
+        - else
+          %li= link_to e.title.humanize, link_to_enviroment(e), {role: "presentation"}
+        
+      
+
+

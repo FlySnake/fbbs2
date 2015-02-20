@@ -1,15 +1,19 @@
-%p#notice= notice
+- title "Build number info"
 
-%p
-  %b Branch:
-  = @build_number.branch
-%p
-  %b Commit:
-  = @build_number.commit
-%p
-  %b Number:
-  = @build_number.number
+%h1= yield(:title)
 
-= link_to 'Edit', edit_build_number_path(@build_number)
-\|
-= link_to 'Back', build_numbers_path
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Branch
+      %dd= @build_number.branch
+      %dt Commit
+      %dd= @build_number.commit
+      %dt Number
+      %dd= @build_number.number
+      %dt Enviroment
+      %dd= link_to @build_number.enviroment.title, enviroment_path(@build_number.enviroment)
+      %dt Created at
+      %dd= localtime @build_number.created_at
+      %dt Updated at
+      %dd= localtime @build_number.updated_at

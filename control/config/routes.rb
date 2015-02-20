@@ -14,7 +14,11 @@ Rails.application.routes.draw do
   get 'users/profile', as: 'user_root'
   
   resources :admin, only: [:index]
-  resources :build_numbers, only: [:index, :update, :show]
+  resources :build_numbers, only: [:index, :show] do
+    post :generate, :on => :collection
+  end
+  
+  get '/:enviroment_title', to: 'home#enviroments', as: 'home_enviroments'
   
   root 'home#index'
 

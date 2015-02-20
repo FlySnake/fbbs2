@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150219152234) do
+ActiveRecord::Schema.define(version: 20150220115515) do
 
   create_table "branches", force: :cascade do |t|
     t.string   "name",          limit: 512, null: false
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 20150219152234) do
   create_table "build_numbers", force: :cascade do |t|
     t.string   "branch",        limit: 1024, null: false
     t.string   "commit",        limit: 1024, null: false
-    t.string   "number",        limit: 1024, null: false
+    t.integer  "number",                     null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.integer  "enviroment_id"
@@ -35,9 +35,10 @@ ActiveRecord::Schema.define(version: 20150219152234) do
   add_index "build_numbers", ["enviroment_id"], name: "index_build_numbers_on_enviroment_id"
 
   create_table "enviroments", force: :cascade do |t|
-    t.string   "title",      limit: 1024, null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "title",                limit: 1024,             null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.integer  "default_build_number",              default: 0, null: false
   end
 
   add_index "enviroments", ["title"], name: "index_enviroments_on_title"

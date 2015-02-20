@@ -70,6 +70,6 @@ class EnviromentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def enviroment_params
-      params.require(:enviroment).permit(:title)
+      params.require(:enviroment).permit(:title, :default_build_number)
     end
 end

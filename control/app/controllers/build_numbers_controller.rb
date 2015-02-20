@@ -1,10 +1,10 @@
 class BuildNumbersController < ApplicationController
-  before_action :set_build_number, only: [:show, :update]
+  before_action :set_build_number, only: [:show]
 
   # GET /build_numbers
   # GET /build_numbers.json
   def index
-    @build_numbers = BuildNumber.all
+    @build_numbers = BuildNumber.all.paginate(:page => params[:page], :per_page => 50).to_a
   end
 
   # GET /build_numbers/1
@@ -25,6 +25,35 @@ class BuildNumbersController < ApplicationController
       end
     end
   end
+  
+  # POST /build_numbers/generate
+  # POST /build_numbers/generate.json
+  def generate
+    env = Enviroment.find(params[:enviroment_id])
+    existing = BuildNumber.where(:branch => params[:branch], :commit => params[:commit], :enviroment => env).order(:number => :desc)
+    
+    if existing.any? # something found - return existing buildnum
+      build_number = existing.first
+    else
+      existing_for_branch = BuildNumber.where(:branch => params[:branch], :enviroment => env).order(:number => :desc)
+      if existing_for_branch.any?
+        num = existing_for_branch.first.number
+      else
+        num = env.default_build_number
+      end
+      build_number = BuildNumber.new(:branch => params[:branch], :commit => params[:gitcommit], :enviroment => env, :number => num + 1)
+    end
+    
+    respond_to do |format|
+      if not build_number.changed? or build_number.save
+        format.html { redirect_to build_number, notice: 'Build number was successfully updated.' }
+        format.json { render :show, status: :ok, location: build_number }
+      else
+        format.html { render :edit }
+        format.json { render json: build_number.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -32,8 +61,4 @@ class BuildNumbersController < ApplicationController
       @build_number = BuildNumber.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def build_number_params
-      params.require(:build_number).permit(:branch, :commit, :number)
-    end
 end
