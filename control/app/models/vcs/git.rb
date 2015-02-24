@@ -9,19 +9,15 @@ class Vcs::Git < Vcs::Base
   end
   
   def branches
-    remote_branches
+    remotes = Git.ls_remote remote_url
+    remotes['branches'].map {|k,v| k }
   end
-  
-  private
   
   def remote_url
     remote = @git.remotes.find {|r| r.name == @remote_name}
     remote.url unless remote.nil?
   end
   
-  def remote_branches
-    remotes = Git.ls_remote remote_url
-    remotes['branches'].map {|k,v| k }
-  end
+  attr_reader :remote_name
   
 end

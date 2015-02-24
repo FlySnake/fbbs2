@@ -11,6 +11,8 @@
       %dd= @repository.path
       %dt VCS type
       %dd= @repository.vcs_type.humanize
+      %dt Remote URL
+      %dd= "(#{@repository.remote_name}) #{@repository.remote_url}"
       %dt Created at
       %dd= localtime @repository.created_at
       %dt Updated at

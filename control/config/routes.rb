@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       post :fetch_branches, :on => :member
     end
     resources :enviroments
+    resources :base_versions
   end
   get 'users/profile', as: 'user_root'
   

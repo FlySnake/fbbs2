@@ -1,5 +1,4 @@
 class RepositoriesController < BaseAdminController
-  before_filter :authenticate_user!
   before_filter :set_repository, only: [:show, :edit, :update, :destroy, :fetch_branches]
   
   # GET /repositories

@@ -1,16 +1,12 @@
 class Repository < ActiveRecord::Base
   enum vcs_type: [:git]
   has_many :branches
+  has_one :enviroment
   
   def branches(force_fetch=false)
     begin
-      case vcs_type
-      when 'git'
-        vcs = Vcs::Git.new(path)
-      else
-        vcs = Vcs::Base.new(path)
-      end
-  
+      vcs = vcs_by_type vcs_type
+      
       if force_fetch
         fetch_branches vcs
       end
@@ -21,7 +17,27 @@ class Repository < ActiveRecord::Base
     Branch.all
   end
   
+  def remote_url
+    vcs = vcs_by_type vcs_type
+    vcs.remote_url
+  end
+  
+  def remote_name
+    vcs = vcs_by_type vcs_type
+    vcs.remote_name
+  end
+  
   protected
+  
+  def vcs_by_type(type)
+    case type
+    when 'git'
+      vcs = Vcs::Git.new(path)
+    else
+      vcs = Vcs::Base.new(path)
+    end
+    vcs
+  end
   
   def fetch_branches(vcs)
     branches_names = vcs.branches

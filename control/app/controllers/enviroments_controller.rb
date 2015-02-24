@@ -1,4 +1,4 @@
-class EnviromentsController < ApplicationController
+class EnviromentsController < BaseAdminController
   before_filter :authenticate_user!
   before_action :set_enviroment, only: [:show, :edit, :update, :destroy]
 
@@ -25,6 +25,7 @@ class EnviromentsController < ApplicationController
   # POST /enviroments
   # POST /enviroments.json
   def create
+    set_base_versions(params[:base_versions_ids])
     @enviroment = Enviroment.new(enviroment_params)
 
     respond_to do |format|
@@ -41,6 +42,7 @@ class EnviromentsController < ApplicationController
   # PATCH/PUT /enviroments/1
   # PATCH/PUT /enviroments/1.json
   def update
+    set_base_versions(params[:base_versions_ids])
     respond_to do |format|
       if @enviroment.update(enviroment_params)
         format.html { redirect_to @enviroment, notice: 'Enviroment was successfully updated.' }
@@ -66,10 +68,16 @@ class EnviromentsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_enviroment
       @enviroment = Enviroment.find(params[:id])
+      @repositories = Repository.all
+      @base_versions = BaseVersion.order(:name => :asc).all
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def enviroment_params
-      params.require(:enviroment).permit(:title, :default_build_number)
+      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :base_versions_ids)
+    end
+    
+    def set_base_versions(base_versions_ids)
+      @enviroment.base_versions = BaseVersion.where(:id => base_versions_ids)
     end
 end

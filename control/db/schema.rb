@@ -11,7 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150220115515) do
+ActiveRecord::Schema.define(version: 20150224092534) do
+
+  create_table "base_versions", force: :cascade do |t|
+    t.string   "name",       limit: 128, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "base_versions_enviroments", id: false, force: :cascade do |t|
+    t.integer "base_version_id"
+    t.integer "enviroment_id"
+  end
+
+  add_index "base_versions_enviroments", ["base_version_id"], name: "index_base_versions_enviroments_on_base_version_id"
+  add_index "base_versions_enviroments", ["enviroment_id"], name: "index_base_versions_enviroments_on_enviroment_id"
 
   create_table "branches", force: :cascade do |t|
     t.string   "name",          limit: 512, null: false
@@ -35,12 +49,15 @@ ActiveRecord::Schema.define(version: 20150220115515) do
   add_index "build_numbers", ["enviroment_id"], name: "index_build_numbers_on_enviroment_id"
 
   create_table "enviroments", force: :cascade do |t|
-    t.string   "title",                limit: 1024,             null: false
-    t.datetime "created_at",                                    null: false
-    t.datetime "updated_at",                                    null: false
-    t.integer  "default_build_number",              default: 0, null: false
+    t.string   "title",                limit: 1024,              null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.integer  "default_build_number",              default: 0,  null: false
+    t.integer  "repository_id"
+    t.string   "branches_filter",      limit: 2048, default: ""
   end
 
+  add_index "enviroments", ["repository_id"], name: "index_enviroments_on_repository_id"
   add_index "enviroments", ["title"], name: "index_enviroments_on_title"
 
   create_table "repositories", force: :cascade do |t|

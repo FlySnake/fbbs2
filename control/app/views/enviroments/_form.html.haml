@@ -8,6 +8,16 @@
 
   = f.text_field :title
   = f.number_field :default_build_number
+  = f.select :repository_id, @repositories.map{ |p| ["#{p.title} (#{p.vcs_type.humanize} #{p.path})", p.id] }, {}, :id => "select-repository"
+  = select2js_for_id "select-repository"
+  = f.text_field :branches_filter
+  = label_tag "Base versions"
+  %br
+  - @base_versions.each do |b|
+    = check_box_tag "base_versions_ids[]", b.id, @enviroment.base_versions.include?(b)
+    = label_tag "base_version#{b.id}", b.name
+
+  %br
   = f.primary 'Save'
   - if not defined?(delete_disabled) or not delete_disabled
     = link_to 'Delete this enviroment', @enviroment, :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }

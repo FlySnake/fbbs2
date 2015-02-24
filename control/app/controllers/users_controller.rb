@@ -1,5 +1,4 @@
 class UsersController < BaseAdminController
-  before_filter :authenticate_user!
   before_filter :set_user, only: [:show, :edit, :update, :destroy]
   skip_before_filter :check_user_admin, only: [:profile]
   

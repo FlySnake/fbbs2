@@ -7,4 +7,5 @@ class Vcs::Base
   
   def branches
   end
+  
 end

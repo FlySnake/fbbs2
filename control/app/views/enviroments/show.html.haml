@@ -9,6 +9,15 @@
       %dd= @enviroment.title
       %dt Default build number
       %dd= @enviroment.default_build_number
+      %dt Repository
+      - unless @enviroment.repository.nil?
+        %dd= link_to @enviroment.repository.title, @enviroment.repository
+      - else
+        %dd none
+      %dt Branches filter
+      %dd= @enviroment.branches_filter
+      %dt Base versions
+      %dd= @enviroment.base_versions.map{|b| b.name}.join(", ")
       %dt Created at
       %dd= localtime @enviroment.created_at
       %dt Updated at

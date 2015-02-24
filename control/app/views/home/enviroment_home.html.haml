@@ -1,3 +1,11 @@
 - title "#{@enviroment.title.humanize} build enviroment"
-= render partial: 'enviroments_menu'
+
+.row
+  .col-md-12
+    = render partial: 'enviroments_menu'
+    
 %h3= yield(:title)
+
+.row
+  .col-md-12
+    = render partial: 'build_selector'

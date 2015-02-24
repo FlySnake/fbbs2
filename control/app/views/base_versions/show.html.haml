@@ -1,0 +1,19 @@
+- title "Base version info"
+
+%h1= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Name
+      %dd= @base_version.name
+      %dt Used in enviroments
+      %dd= @base_version.enviroments.map{|b| b.title}.join(", ")
+      %dt Created at
+      %dd= localtime @base_version.created_at
+      %dt Updated at
+      %dd= localtime @base_version.updated_at
+    
+.row
+  .col-md-12
+    = link_to 'Edit base version', edit_base_version_path(@base_version), class: "btn btn-primary"
