@@ -41,11 +41,12 @@ class WorkersController < BaseAdminController
   # DELETE /workers/1
   def destroy
     @worker.destroy
-    redirect_to workers_url, notice: "Worker #{@worker.email} was successfully deleted."
+    redirect_to workers_url, notice: "Worker #{@worker.title} was successfully deleted."
   end
   
   # POST /workers/1/request_config
   def request_config
+    # TODO implement this. also remember to implement target_platfroms caching
     if true
       redirect_to @worker, notice: "Worker config updated."
     else

@@ -25,7 +25,6 @@ class EnviromentsController < BaseAdminController
   # POST /enviroments
   # POST /enviroments.json
   def create
-    set_base_versions(params[:base_versions_ids])
     @enviroment = Enviroment.new(enviroment_params)
 
     respond_to do |format|
@@ -42,7 +41,6 @@ class EnviromentsController < BaseAdminController
   # PATCH/PUT /enviroments/1
   # PATCH/PUT /enviroments/1.json
   def update
-    set_base_versions(params[:base_versions_ids])
     respond_to do |format|
       if @enviroment.update(enviroment_params)
         format.html { redirect_to @enviroment, notice: 'Enviroment was successfully updated.' }
@@ -74,10 +72,7 @@ class EnviromentsController < BaseAdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def enviroment_params
-      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :base_versions_ids)
+      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :base_version_ids => [])
     end
-    
-    def set_base_versions(base_versions_ids)
-      @enviroment.base_versions = BaseVersion.where(:id => base_versions_ids)
-    end
+   
 end

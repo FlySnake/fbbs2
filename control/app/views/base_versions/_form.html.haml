@@ -1,11 +1,4 @@
-= bootstrap_form_for @base_version do |f|
-  - if @base_version.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@base_version.errors.count, "error")} prohibited this base_version from being saved:"
-      %ul
-        - @base_version.errors.full_messages.each do |msg|
-          %li= msg
-
+= bootstrap_form_for @base_version, layout: :horizontal, label_col: "col-md-2", control_col: "col-md-10" do |f|
   = f.text_field :name
   = f.primary 'Save'
   - if not defined?(delete_disabled) or not delete_disabled

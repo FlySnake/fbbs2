@@ -1,5 +1,6 @@
 class RepositoriesController < BaseAdminController
   before_filter :set_repository, only: [:show, :edit, :update, :destroy, :fetch_branches]
+  skip_before_filter :check_user_admin, only: [:fetch_branches]
   
   # GET /repositories
   def index
@@ -23,7 +24,7 @@ class RepositoriesController < BaseAdminController
   def create
     @repository = Repository.new(repository_params)
     if @repository.save
-      redirect_to @repository, notice: 'User was successfully created.'
+      redirect_to @repository, notice: 'Repository was successfully created.'
     else
       render action: "new"
     end
@@ -41,16 +42,16 @@ class RepositoriesController < BaseAdminController
   # DELETE /repositories/1
   def destroy
     @repository.destroy
-    redirect_to users_url, notice: "User #{@user.email} was successfully deleted."
+    redirect_to repositories_path, notice: "Repository #{@repository.title} was successfully deleted."
   end
   
   # POST /repositories/1/fetch_branches
   def fetch_branches
     @repository.branches true
     if @repository.errors.empty?
-      redirect_to @repository, notice: 'Branches were successfully updated.'
+      redirect_to :back, notice: 'Branches were successfully updated.'
     else
-      redirect_to @repository, flash: {error: "Error fetching remote branches: #{@repository.errors.messages[:branches].join(", ")}."}
+      redirect_to :back, flash: {error: "Error fetching remote branches: #{@repository.errors.messages[:branches].join(", ")}."}
     end
   end
   

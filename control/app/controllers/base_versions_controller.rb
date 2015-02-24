@@ -4,7 +4,7 @@ class BaseVersionsController < BaseAdminController
   # GET /base_versions
   # GET /base_versions.json
   def index
-    @base_versions = BaseVersion.all
+    @base_versions = BaseVersion.includes(:enviroments).all
   end
 
   # GET /base_versions/1

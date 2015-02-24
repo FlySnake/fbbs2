@@ -1,5 +1,4 @@
 class HomeController < ApplicationController
-  before_filter :authenticate_user!
   before_filter :set_enviroment, except: [:index]
   before_filter :set_enviroments
   
@@ -19,11 +18,14 @@ class HomeController < ApplicationController
   private
   
   def set_enviroment
-    @enviroment = Enviroment.find_by(:title => params[:enviroment_title])
+    @enviroment = Enviroment.includes(:repository).find_by(:title => params[:enviroment_title])
     if @enviroment.nil?
       raise "Unknown build enviroment '#{params[:enviroment_title]}'. Available: #{Enviroment.all.to_a.map{|e| e.title}.join(', ')}"
       # TODO something meaningful like redirect to an error page
     end
+    @users = User.order(:email => :asc).all
+    @target_platforms = TargetPlatform.all
+    @branches = Branch.all_filtered(@enviroment.branches_filter)
   end
   
   def set_enviroments

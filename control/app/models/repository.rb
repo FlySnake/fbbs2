@@ -1,7 +1,11 @@
 class Repository < ActiveRecord::Base
   enum vcs_type: [:git]
-  has_many :branches
+  has_many :branches, :dependent => :destroy
   has_one :enviroment
+  
+  validates :title, length: {in: 1..100}
+  validates :path, length: {in: 1..4000}
+  validates :vcs_type, inclusion: {in: Repository.vcs_types.keys}
   
   def branches(force_fetch=false)
     begin

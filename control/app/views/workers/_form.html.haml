@@ -1,11 +1,4 @@
-= bootstrap_form_for(@worker) do |f|
-  - if @worker.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@worker.errors.count, "error")} prohibited this worker from being saved:"
-      %ul
-        - @worker.errors.full_messages.each do |msg|
-          %li= msg
-            
+= bootstrap_form_for(@worker, layout: :horizontal, label_col: "col-md-2", control_col: "col-md-10") do |f|
   = f.text_field :title
   = f.text_field :address
   = f.primary 'Save'

@@ -14,7 +14,7 @@
         %dd= link_to @enviroment.repository.title, @enviroment.repository
       - else
         %dd none
-      %dt Branches filter
+      %dt Branches filter regex
       %dd= @enviroment.branches_filter
       %dt Base versions
       %dd= @enviroment.base_versions.map{|b| b.name}.join(", ")

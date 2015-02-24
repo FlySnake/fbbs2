@@ -4,7 +4,7 @@ class BuildNumbersController < ApplicationController
   # GET /build_numbers
   # GET /build_numbers.json
   def index
-    @build_numbers = BuildNumber.all.paginate(:page => params[:page], :per_page => 50).to_a
+    @build_numbers = BuildNumber.includes(:enviroment).all.paginate(:page => params[:page], :per_page => 50).to_a
   end
 
   # GET /build_numbers/1
