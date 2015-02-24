@@ -1,0 +1,27 @@
+- title "Build job info"
+
+%h1= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Status
+      %dd= @build_job.status.humanize
+      %dt Branch
+      %dd= @build_job.branch.name
+      %dt Base version
+      %dd= link_to @build_job.base_version.name, @build_job.base_version
+      %dt Build enviroment
+      %dd= link_to @build_job.enviroment.title, @build_job.enviroment
+      %dt Target platform
+      %dd= @build_job.target_platform.title
+      %dt Started by
+      %dd= link_to @build_job.started_by_user.email, @build_job.started_by_user
+      %dt Notify
+      %dd= link_to @build_job.notify_user.email, @build_job.notify_user
+      %dt Comment
+      %dd= @build_job.comment
+      %dt Created at
+      %dd= localtime @build_job.created_at
+      %dt Updated at
+      %dd= localtime @build_job.updated_at

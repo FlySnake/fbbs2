@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224092534) do
+ActiveRecord::Schema.define(version: 20150224154823) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -35,6 +35,26 @@ ActiveRecord::Schema.define(version: 20150224092534) do
   end
 
   add_index "branches", ["repository_id"], name: "index_branches_on_repository_id"
+
+  create_table "build_jobs", force: :cascade do |t|
+    t.integer  "branch_id",                       null: false
+    t.integer  "base_version_id",                 null: false
+    t.integer  "enviroment_id",                   null: false
+    t.integer  "target_platform_id",              null: false
+    t.integer  "notify_user_id",                  null: false
+    t.integer  "started_by_user_id",              null: false
+    t.string   "comment",            default: "", null: false
+    t.integer  "status",                          null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "build_jobs", ["base_version_id"], name: "index_build_jobs_on_base_version_id"
+  add_index "build_jobs", ["branch_id"], name: "index_build_jobs_on_branch_id"
+  add_index "build_jobs", ["enviroment_id"], name: "index_build_jobs_on_enviroment_id"
+  add_index "build_jobs", ["notify_user_id"], name: "index_build_jobs_on_notify_user_id"
+  add_index "build_jobs", ["started_by_user_id"], name: "index_build_jobs_on_started_by_user_id"
+  add_index "build_jobs", ["target_platform_id"], name: "index_build_jobs_on_target_platform_id"
 
   create_table "build_numbers", force: :cascade do |t|
     t.string   "branch",        limit: 1024, null: false
@@ -70,12 +90,17 @@ ActiveRecord::Schema.define(version: 20150224092534) do
 
   create_table "target_platforms", force: :cascade do |t|
     t.string   "title",      limit: 512, null: false
-    t.integer  "worker_id"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
-  add_index "target_platforms", ["worker_id"], name: "index_target_platforms_on_worker_id"
+  create_table "target_platforms_workers", id: false, force: :cascade do |t|
+    t.integer "target_platform_id"
+    t.integer "worker_id"
+  end
+
+  add_index "target_platforms_workers", ["target_platform_id"], name: "index_target_platforms_workers_on_target_platform_id"
+  add_index "target_platforms_workers", ["worker_id"], name: "index_target_platforms_workers_on_worker_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false

@@ -1,0 +1,33 @@
+%h1 Listing build_jobs
+
+%table
+  %thead
+    %tr
+      %th Banch
+      %th Base version
+      %th Target platform
+      %th Notify user
+      %th Started by user
+      %th Comment
+      %th Status
+      %th
+      %th
+      %th
+      
+  %tbody
+    - @build_jobs.each do |build_job|
+      %tr
+        %td= build_job.banch
+        %td= build_job.base_version
+        %td= build_job.target_platform
+        %td= build_job.notify_user
+        %td= build_job.started_by_user
+        %td= build_job.comment
+        %td= build_job.status
+        %td= link_to 'Show', build_job
+        %td= link_to 'Edit', edit_build_job_path(build_job)
+        %td= link_to 'Destroy', build_job, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Build job', new_build_job_path

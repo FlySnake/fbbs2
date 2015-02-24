@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :build_numbers, only: [:index, :show] do
     post :generate, :on => :collection
   end
+  resources :build_jobs
   
   get '/:enviroment_title', to: 'home#enviroments', as: 'home_enviroments'
   

@@ -1,0 +1,31 @@
+= form_for @build_job do |f|
+  - if @build_job.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@build_job.errors.count, "error")} prohibited this build_job from being saved:"
+      %ul
+        - @build_job.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :banch
+    = f.text_field :banch
+  .field
+    = f.label :base_version
+    = f.text_field :base_version
+  .field
+    = f.label :target_platform
+    = f.text_field :target_platform
+  .field
+    = f.label :notify_user
+    = f.text_field :notify_user
+  .field
+    = f.label :started_by_user
+    = f.text_field :started_by_user
+  .field
+    = f.label :comment
+    = f.text_field :comment
+  .field
+    = f.label :status
+    = f.number_field :status
+  .actions
+    = f.submit 'Save'
