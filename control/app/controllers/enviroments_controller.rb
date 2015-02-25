@@ -1,6 +1,7 @@
 class EnviromentsController < BaseAdminController
-  before_filter :authenticate_user!
-  before_action :set_enviroment, only: [:show, :edit, :update, :destroy]
+  before_filter :set_enviroment, only: [:show, :edit, :update, :destroy]
+  before_filter :set_repositories, only: [:new, :edit]
+  before_filter :set_base_versions, only: [:new, :edit]
 
   # GET /enviroments
   # GET /enviroments.json
@@ -66,7 +67,13 @@ class EnviromentsController < BaseAdminController
     # Use callbacks to share common setup or constraints between actions.
     def set_enviroment
       @enviroment = Enviroment.find(params[:id])
+    end
+    
+    def set_repositories
       @repositories = Repository.all
+    end
+    
+    def set_base_versions
       @base_versions = BaseVersion.order(:name => :asc).all
     end
 

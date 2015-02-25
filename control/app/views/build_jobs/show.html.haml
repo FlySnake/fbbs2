@@ -7,6 +7,8 @@
     %dl.dl-horizontal
       %dt Status
       %dd= @build_job.status.humanize
+      %dt Result
+      %dd= @build_job.result.humanize
       %dt Branch
       %dd= @build_job.branch.name
       %dt Base version

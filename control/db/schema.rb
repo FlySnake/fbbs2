@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224154823) do
+ActiveRecord::Schema.define(version: 20150225140355) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20150224154823) do
     t.integer  "status",                          null: false
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
+    t.integer  "result",             default: 0,  null: false
   end
 
   add_index "build_jobs", ["base_version_id"], name: "index_build_jobs_on_base_version_id"

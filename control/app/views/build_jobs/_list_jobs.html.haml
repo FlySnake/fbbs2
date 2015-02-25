@@ -1,0 +1,13 @@
+%table.table.table-striped.table-bordered.table-hover.table-responsive
+  %tr
+    %th Branch
+    %th Base version
+    %th Platform
+    %th More info
+    
+  - @build_jobs.each do |b|
+    %tr{:class => build_job_tr_class(b) }
+      %td= b.branch.name
+      %td= b.base_version.name
+      %td= b.target_platform.title
+      %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), build_job_path(b, :enviroment_title => @enviroment.title), :class => "btn btn-default"

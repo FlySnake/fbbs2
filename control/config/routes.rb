@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   scope "/admin" do
     resources :users, except: [:new, :create]
     resources :workers do
-      post :request_config,  :on => :member
+      post :request_config, :on => :member
     end
     resources :repositories do
       post :fetch_branches, :on => :member
@@ -18,9 +18,15 @@ Rails.application.routes.draw do
   resources :build_numbers, only: [:index, :show] do
     post :generate, :on => :collection
   end
-  resources :build_jobs
   
-  get '/:enviroment_title', to: 'home#enviroments', as: 'home_enviroments'
+  scope '/:enviroment_title' do
+    resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
+      delete :stop, :on => :member
+    end
+  end
+  
+  get '/:enviroment_title', to: 'build_jobs#enviroments', as: 'home_enviroments'
+  #post '/:enviroment_title/start', to: 'home#start', as: 'start_build'
   
   root 'home#index'
 

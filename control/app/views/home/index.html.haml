@@ -1,1 +1,14 @@
-= render partial: 'enviroments_menu'
+- title "Home page"
+  
+%h1.page-header= yield(:title)
+
+.row
+  .col-md-3
+    %h3 Build enviroments
+  .col-md-6
+    .list-group
+    - @enviroments.each do |e|
+      .list-group-item
+        %span.glyphicon.glyphicon-road
+          %span= link_to e.title.humanize, home_enviroments_path(:enviroment_title => e.title)
+  
