@@ -1,15 +1,26 @@
 - title "Admin area"
   
-%h1= yield(:title)
+%h1.page-header= yield(:title)
 
 .row
-  .col-md-12
-    %ul
-      %li= link_to "Users accounts", users_path
-      %li= link_to "Workers", workers_path
-      %li= link_to "Repositories", repositories_path
-      %li= link_to "Enviroments", enviroments_path
-      %li= link_to "Build numbers", build_numbers_path
-      %li= link_to "Base versions", base_versions_path
-
+  .col-md-6
+    .list-group
+      .list-group-item
+        %span.glyphicon.glyphicon-user
+          %span= link_to "Users accounts", users_path
+      .list-group-item
+        %span.glyphicon.glyphicon-cog
+          %span= link_to "Workers", workers_path
+      .list-group-item
+        %span.glyphicon.glyphicon-hdd
+          %span= link_to "Repositories", repositories_path
+      .list-group-item
+        %span.glyphicon.glyphicon-road
+          %span= link_to "Enviroments", enviroments_path
+      .list-group-item
+        %span.glyphicon.glyphicon-random
+          %span= link_to "Build numbers", build_numbers_path
+      .list-group-item
+        %span.glyphicon.glyphicon-bullhorn
+          %span= link_to "Base versions", base_versions_path
 

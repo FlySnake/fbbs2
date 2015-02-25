@@ -1,4 +1,4 @@
-= bootstrap_form_tag url: "/#", method: :post, layout: :horizontal, label_col: "col-md-2", control_col: "col-md-10" do |f|
+= bootstrap_form_tag url: "/#", method: :post, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10" do |f|
   .row
     .col-md-11
       = f.select :branch, options_from_collection_for_select(@branches, :id, :name), {}, :id => "select-branch"

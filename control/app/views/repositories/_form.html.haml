@@ -1,4 +1,4 @@
-= bootstrap_form_for(@repository, layout: :horizontal, label_col: "col-md-2", control_col: "col-md-10") do |f|
+= bootstrap_form_for(@repository, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
   = f.text_field :title
   = f.text_field :path
   = f.select :vcs_type, @repository.class.vcs_types.collect { |s| [s[0].humanize, s[0]] }, {}, :id => "select-playlist"

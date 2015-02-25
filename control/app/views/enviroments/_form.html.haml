@@ -1,4 +1,4 @@
-= bootstrap_form_for(@enviroment, layout: :horizontal, label_col: "col-md-2", control_col: "col-md-10") do |f|
+= bootstrap_form_for(@enviroment, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
   = f.text_field :title
   = f.number_field :default_build_number
   = f.select :repository_id, @repositories.map{ |p| ["#{p.title} (#{p.vcs_type.humanize} #{p.path})", p.id] }, {}, :id => "select-repository"
