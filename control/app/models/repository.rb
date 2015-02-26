@@ -3,7 +3,7 @@ class Repository < ActiveRecord::Base
   has_many :branches, :dependent => :destroy
   has_one :enviroment
   
-  validates :title, length: {in: 1..100}
+  validates :title, length: {in: 1..100}, uniqueness: true
   validates :path, length: {in: 1..4000}
   validates :vcs_type, inclusion: {in: Repository.vcs_types.keys}
   
