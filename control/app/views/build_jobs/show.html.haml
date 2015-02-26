@@ -23,6 +23,16 @@
       %dd= link_to @build_job.notify_user.email, @build_job.notify_user
       %dt Comment
       %dd= @build_job.comment
+      %dt Started at
+      %dd= localtime @build_job.started_at
+      %dt Finished at
+      %dd= localtime @build_job.finished_at
+      - unless @build_job.build_log.nil?
+        %dt Log
+        %dd= link_to "full", @build_job.build_log
+      - unless @build_job.worker.nil?
+        %dt Worker
+        %dd= link_to @build_job.worker.title, @build_job.worker
       %dt Created at
       %dd= localtime @build_job.created_at
       %dt Updated at

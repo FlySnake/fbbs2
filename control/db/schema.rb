@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150225140355) do
+ActiveRecord::Schema.define(version: 20150226102525) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -36,6 +36,23 @@ ActiveRecord::Schema.define(version: 20150225140355) do
 
   add_index "branches", ["repository_id"], name: "index_branches_on_repository_id"
 
+  create_table "build_artefacts", force: :cascade do |t|
+    t.string   "file"
+    t.integer  "build_job_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "build_artefacts", ["build_job_id"], name: "index_build_artefacts_on_build_job_id"
+
+  create_table "build_job_queues", force: :cascade do |t|
+    t.integer  "build_job_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "build_job_queues", ["build_job_id"], name: "index_build_job_queues_on_build_job_id"
+
   create_table "build_jobs", force: :cascade do |t|
     t.integer  "branch_id",                       null: false
     t.integer  "base_version_id",                 null: false
@@ -48,14 +65,30 @@ ActiveRecord::Schema.define(version: 20150225140355) do
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
     t.integer  "result",             default: 0,  null: false
+    t.integer  "commit_id"
+    t.integer  "build_log_id"
+    t.integer  "worker_id"
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.integer  "full_version_id"
   end
 
   add_index "build_jobs", ["base_version_id"], name: "index_build_jobs_on_base_version_id"
   add_index "build_jobs", ["branch_id"], name: "index_build_jobs_on_branch_id"
+  add_index "build_jobs", ["build_log_id"], name: "index_build_jobs_on_build_log_id"
+  add_index "build_jobs", ["commit_id"], name: "index_build_jobs_on_commit_id"
   add_index "build_jobs", ["enviroment_id"], name: "index_build_jobs_on_enviroment_id"
+  add_index "build_jobs", ["full_version_id"], name: "index_build_jobs_on_full_version_id"
   add_index "build_jobs", ["notify_user_id"], name: "index_build_jobs_on_notify_user_id"
   add_index "build_jobs", ["started_by_user_id"], name: "index_build_jobs_on_started_by_user_id"
   add_index "build_jobs", ["target_platform_id"], name: "index_build_jobs_on_target_platform_id"
+  add_index "build_jobs", ["worker_id"], name: "index_build_jobs_on_worker_id"
+
+  create_table "build_logs", force: :cascade do |t|
+    t.text     "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "build_numbers", force: :cascade do |t|
     t.string   "branch",        limit: 1024, null: false
@@ -69,6 +102,17 @@ ActiveRecord::Schema.define(version: 20150225140355) do
   add_index "build_numbers", ["branch"], name: "index_build_numbers_on_branch"
   add_index "build_numbers", ["enviroment_id"], name: "index_build_numbers_on_enviroment_id"
 
+  create_table "commits", force: :cascade do |t|
+    t.string   "identifier",              null: false
+    t.datetime "datetime",                null: false
+    t.string   "message",    default: "", null: false
+    t.string   "author",     default: "", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "commits", ["identifier"], name: "index_commits_on_identifier"
+
   create_table "enviroments", force: :cascade do |t|
     t.string   "title",                limit: 1024,              null: false
     t.datetime "created_at",                                     null: false
@@ -80,6 +124,16 @@ ActiveRecord::Schema.define(version: 20150225140355) do
 
   add_index "enviroments", ["repository_id"], name: "index_enviroments_on_repository_id"
   add_index "enviroments", ["title"], name: "index_enviroments_on_title"
+
+  create_table "full_versions", force: :cascade do |t|
+    t.integer  "base_version_id"
+    t.integer  "build_number_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "full_versions", ["base_version_id"], name: "index_full_versions_on_base_version_id"
+  add_index "full_versions", ["build_number_id"], name: "index_full_versions_on_build_number_id"
 
   create_table "repositories", force: :cascade do |t|
     t.string   "title",      limit: 512,  default: "", null: false
@@ -123,10 +177,11 @@ ActiveRecord::Schema.define(version: 20150225140355) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
   create_table "workers", force: :cascade do |t|
-    t.string   "title",      null: false
-    t.string   "address",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "title",                  null: false
+    t.string   "address",                null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "status",     default: 0, null: false
   end
 
 end

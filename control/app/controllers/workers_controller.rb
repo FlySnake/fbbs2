@@ -46,8 +46,7 @@ class WorkersController < BaseAdminController
   
   # POST /workers/1/request_config
   def request_config
-    # TODO implement this. also remember to implement target_platfroms caching
-    if true
+    if @worker.request_config!
       redirect_to @worker, notice: "Worker config updated."
     else
       redirect_to @worker, flash: {error: "Error updating worker's config"}

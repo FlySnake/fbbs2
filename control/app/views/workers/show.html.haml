@@ -11,6 +11,8 @@
       %dd= @worker.address
       %dt Platforms
       %dd= @worker.target_platforms.map {|p| p.title}.join(", ")
+      %dt Current status
+      %dd= @worker.status.humanize
       %dt Created at
       %dd= localtime @worker.created_at
       %dt Updated at
