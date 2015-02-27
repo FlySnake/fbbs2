@@ -16,22 +16,64 @@ class BuildJob < ActiveRecord::Base
   enum result: [:unknown, :success, :failure]
   
   after_create :enqueue_job
+  after_save :call_scheduler
   
   def start!(worker)
-    worker.start!
-    update_attributes(:started_at => Time.now, :worker => worker, :status => :busy)
+    worker.start! :target_platform => self.target_platform, :enviroment_id => self.enviroment.id
+    update_attributes(:started_at => Time.now, :worker => worker, :status => BuildJob.statuses[:busy])
   end
   
   def stop!
     self.worker.stop!
     update_attributes(:finished_at => Time.now, :status => :ready)
   end
- 
+  
+  def self.on_worker_status_changed(worker, attr_name)
+    build_jobs = where(:worker => worker, :status => BuildJob.statuses[:busy])
+    if build_jobs.size > 1
+      Rails.logger.error("More than 1 active job for worker '#{worker.title}': #{build_jobs.map{|b| b.id}.to_s}")
+    end
+    build_jobs.each do |build_job| # should be only one, but just in case...
+      if worker.status == :ready
+        build_job.status = BuildJob.statuses[:ready]
+      end
+    
+
+      if worker.result == :success
+        build_job.result = BuildJob.results[:success]
+      elsif worker.result == :failure
+        build_job.result = BuildJob.results[:failure]
+      else
+        build_job.result = BuildJob.results[:unknown]
+      end
+   
+      if worker.artefacts.any?
+        #TODO download them and attach downloaded files
+        build_job.build_artefacts = worker.artefacts.map {|a| BuildArtefact.new(:file => a)}
+      end
+    
+      #TODO
+      Commit.new
+   
+      build_job.build_log = BuildLog.new(:text => worker.build_log)
+      
+      if attr_name == :run_duration
+        build_job.touch
+      end
+      
+      build_job.save
+    end
+
+  end
  
   private
    
   def enqueue_job
     BuildJobQueue.enqueue self #TODO validation if there any workers for such platform
+  end
+  
+  def call_scheduler
+    BuildJobQueue.scheduler
   end
   
 end

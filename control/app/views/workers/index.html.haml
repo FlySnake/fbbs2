@@ -20,7 +20,7 @@
             %ul
               - worker.target_platforms.each do |platform|
                 %li= platform.title
-          %td= worker.status.humanize
+          %td= worker.status
           %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), worker, :class => "btn btn-default"
           
     = link_to 'Add new worker', new_worker_path, class: "btn btn-primary"

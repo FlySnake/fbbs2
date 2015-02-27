@@ -6,33 +6,30 @@ else
   scheduler = Rufus::Scheduler.new
   
   scheduler.in '3s' do
-    start_theads
+    Thread.new do
+      loop do
+        begin
+          WorkersPool::Pool.instance.poll_all
+          sleep 4
+        rescue => err
+          Rails.logger.error("Unhandled exception in 'WorkersPool::Pool.instance.poll_all': #{err.to_s}")
+        end
+      end
+    end
   end
  
-  #scheduler.every '5s' do
-  #  Worker.poll_all
-  #end
-  
-  #scheduler.every '1s' do
-  #  BuildJobQueue.check!
-  #end
-  
-
-  
-end
-
-def start_theads
-  Thread.new do
-    loop do
-      BuildJobQueue.check!
-      sleep 1
-    end
+  scheduler.every '30s' do
+    WorkersPool::Timeout.new.check!
   end
   
-  Thread.new do
-    loop do
-      Worker.poll_all
-      sleep 5
-    end
-  end
+  #scheduler.every '2s' do
+  #  without_sql_logging do
+  #    begin
+  #      BuildJobQueue.scheduler
+  #    rescue => err
+  #      Rails.logger.error("Unhandled exception in 'BuildJobQueue.scheduler': #{err.to_s}")
+  #    end
+  #  end
+  #end
+ 
 end
