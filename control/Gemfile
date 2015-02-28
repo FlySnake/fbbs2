@@ -61,5 +61,10 @@ group :development, :test do
   gem 'pry-rails'
   gem 'bullet'
   gem 'rspec-rails', '~> 3.0'
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'faker'
+  gem 'launchy'
 end
 
