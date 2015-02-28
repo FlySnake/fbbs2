@@ -13,6 +13,10 @@ class WorkersPool::Pool
     @workers.select {|w| w.status == :ready}
   end
   
+  def find(worker)
+    @workers.find {|w| w.id == worker.id}
+  end
+  
   def load_workers
     Rails.logger.debug("Loading all workers")
     @semaphore.synchronize {
