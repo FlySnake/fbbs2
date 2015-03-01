@@ -24,11 +24,11 @@ RSpec.describe BaseVersionsController, type: :controller do
   # BaseVersion. As you add validations to BaseVersion, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {name: "hello"}
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {name: ""}
   }
 
   # This should return the minimal set of values that should be in the session
