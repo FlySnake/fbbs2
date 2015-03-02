@@ -4,7 +4,8 @@ class FullVersion < ActiveRecord::Base
   has_many :build_jobs
   
   def assemble
-    #TODO return string constructed from BaseVersion and BuildNumber
+    #TODO return string constructed from BaseVersion and BuildNumber and other (i.e. release number)
+    "#{base_version.name.to_s}.#{build_number.number.to_s}"
   end
     
 end

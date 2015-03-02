@@ -8,9 +8,13 @@ class BuildJob < ActiveRecord::Base
   belongs_to :commit
   belongs_to :build_log
   belongs_to :worker
-  belongs_to :full_verision
+  belongs_to :full_version
   has_many :build_artefacts
   has_one :build_job_queue
+  
+  validates :branch, presence: true
+  validates :enviroment, presence: true
+  validates :target_platform, presence: true
   
   enum status: [:fresh, :busy, :ready]
   enum result: [:unknown, :success, :failure]

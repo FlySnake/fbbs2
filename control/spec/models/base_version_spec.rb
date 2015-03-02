@@ -6,7 +6,7 @@ RSpec.describe BaseVersion, type: :model do
   end
 
   it 'is valid with name' do
-    base_version = build(:base_version, :name => "3.0")
+    base_version = build(:base_version, :name => Faker::Lorem.characters(2))
     expect(base_version).to be_valid
   end
   
@@ -16,12 +16,12 @@ RSpec.describe BaseVersion, type: :model do
   end
   
   it 'is invalid with to short name' do
-    base_version = build(:base_version, :name => "")
+    base_version = build(:base_version, :name => Faker::Lorem.characters(0))
     expect(base_version).to be_invalid
   end
   
   it 'is invalid with to long name' do
-    base_version = build(:base_version, :name => "3.01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789")
+    base_version = build(:base_version, :name => Faker::Lorem.characters(102))
     expect(base_version).to be_invalid
   end
   

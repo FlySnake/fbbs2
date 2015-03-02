@@ -21,14 +21,23 @@ RSpec.describe Branch, type: :model do
     end
       
     context 'with real regex' do
-      it 'filters branches with regex' do
+      it 'filters branches with regex #1' do
         @branches_names.each do |name|
           create(:branch, :name => name)
         end
         expect(Branch.all_filtered(/(release|master)/).to_a.map {|b| b.name}).to match_array ["master", "release_36", 
           "release_37", "release_38_tests", "master1", "masterhjgd", "124master", "master_tesing"]
       end
+      
+      it 'filters branches with regex #2' do
+        @branches_names.each do |name|
+          create(:branch, :name => name)
+        end
+        expect(Branch.all_filtered(/^(release_|master$)/).to_a.map {|b| b.name}).to match_array ["master", "release_36", 
+          "release_37", "release_38_tests"]
+      end      
     end
+    
   end
   
 end
