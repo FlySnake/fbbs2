@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150227082049) do
+ActiveRecord::Schema.define(version: 20150302123830) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -129,12 +129,20 @@ ActiveRecord::Schema.define(version: 20150227082049) do
   create_table "full_versions", force: :cascade do |t|
     t.integer  "base_version_id"
     t.integer  "build_number_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "release_version_id"
   end
 
   add_index "full_versions", ["base_version_id"], name: "index_full_versions_on_base_version_id"
   add_index "full_versions", ["build_number_id"], name: "index_full_versions_on_build_number_id"
+  add_index "full_versions", ["release_version_id"], name: "index_full_versions_on_release_version_id"
+
+  create_table "release_versions", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "repositories", force: :cascade do |t|
     t.string   "title",      limit: 512,  default: "", null: false

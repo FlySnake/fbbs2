@@ -22,4 +22,8 @@ RSpec.describe BuildJobQueue, type: :model do
     
   end
   
+  describe "schedule jobs" do
+    # TODO implement scheduling test
+  end
+  
 end
