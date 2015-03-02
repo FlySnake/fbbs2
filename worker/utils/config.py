@@ -50,3 +50,7 @@ class Config(object, metaclass=singleton.Singleton):
     @property
     def custom_script(self):
         return self.__cfg["build"]["custom_script"]
+    
+    @property
+    def platforms(self):
+        return self.__cfg["build"]["platforms"]

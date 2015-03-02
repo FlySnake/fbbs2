@@ -13,4 +13,8 @@ communication:
     
 build:
     custom_script: /home/flysnake/Documents/Projects/AptanaStudio3Workspace/fbbs2/worker/custom_script_example.py
+    platforms:
+      - android-arm-qt4
+      - android-arm-qt5
+      - android-x86-qt5
     
