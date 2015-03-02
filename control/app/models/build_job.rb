@@ -32,17 +32,23 @@ class BuildJob < ActiveRecord::Base
     update_attributes(:finished_at => Time.now, :status => :ready)
   end
   
-  def self.on_worker_status_changed(worker, attr_name)
+  def self.on_worker_status_changed(worker, attr_name, new_value, old_value)
     build_jobs = where(:worker => worker, :status => BuildJob.statuses[:busy])
     if build_jobs.size > 1
       Rails.logger.error("More than 1 active job for worker '#{worker.title}': #{build_jobs.map{|b| b.id}.to_s}")
     end
     build_jobs.each do |build_job| # should be only one, but just in case...
+      
+      if attr_name == :status
+        if old_value == :busy and new_value == :ready
+          # worker completed
+        end
+      end
+      
       if worker.status == :ready
         build_job.status = BuildJob.statuses[:ready]
       end
     
-
       if worker.result == :success
         build_job.result = BuildJob.results[:success]
       elsif worker.result == :failure
@@ -57,9 +63,9 @@ class BuildJob < ActiveRecord::Base
       end
     
       #TODO
-      Commit.new
+      #Commit.new
    
-      build_job.build_log = BuildLog.new(:text => worker.build_log)
+      #build_job.build_log = BuildLog.new(:text => worker.build_log)
       
       if attr_name == :run_duration
         build_job.touch

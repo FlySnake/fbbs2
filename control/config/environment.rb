@@ -10,9 +10,10 @@ class Class
          self.instance_variable_get("@#{attr_name}")
       end
       define_method("#{attr_name}=") do |argument|
-        if argument != self.instance_variable_get("@#{attr_name}")
+        old_value = self.instance_variable_get("@#{attr_name}")
+        if argument != old_value
           self.instance_variable_set("@#{attr_name}", argument)
-          self.instance_exec(attr_name, argument, &block)
+          self.instance_exec(attr_name, argument, old_value, &block)
         end
       end   
     end

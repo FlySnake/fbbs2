@@ -11,27 +11,27 @@ class Worker < ActiveRecord::Base
   after_destroy :reload_pool
   before_create :request_config_on_create
   
-  attr_accessor_with_onchange_callback :status, :result, :artefacts, :commit_info, :build_log, :enviroment_id, :run_duration do |attr_name, value|
-    status_changed attr_name.to_sym
+  attr_accessor_with_onchange_callback :status, :result, :artefacts, :full_version, :commit_info, :build_log, :run_duration do |attr_name, value, old_value|
+    BuildJob.on_worker_status_changed self, attr_name.to_sym, value, old_value
+    puts "#{attr_name} changed from #{old_value} to #{value}"
   end
   
   def poll
     Rails.logger.debug("Polling worker '#{self.title}@#{self.address}'")
     
     begin
-      status_msg = get_status
-      if status_msg.nil?
-        self.status = :offline
-      else
-        self.status = status_msg['busy'] ? :busy : :ready
-        self.result = status_msg['error'] ? :failure : :success
-        #self.artefacts = 
-      end
-    
+      msg = get_status
+      self.status = msg['busy'] ? :busy : :ready
+      self.result = msg['error'] ? :failure : :success
+      self.run_duration = msg['run_duration']
+      self.full_version = msg['params']['full_version']
+      self.artefacts = msg['params']['artefacts_names']
+      
     rescue => err
       Rails.logger.error("Error fetching worker status: #{err.to_s}")
+      self.status = :offline
     end
-    
+      save
   end
   
   def start!(params)
@@ -74,10 +74,6 @@ class Worker < ActiveRecord::Base
   
   def reload_pool
     WorkersPool::Pool.instance.load_workers
-  end
-  
-  def status_changed(attr_name)
-    BuildJob.on_worker_status_changed self, attr_name
   end
   
   def full_base_address
