@@ -23,9 +23,13 @@ class WorkersController < BaseAdminController
   def create
     @worker = Worker.new(worker_params)
     if @worker.save
-      redirect_to @worker, notice: "Worker #{@worker.title} was successfully created."
+      if @worker.errors.messages[:worker_config].empty?
+        redirect_to @worker, notice: "Worker #{@worker.title} was successfully created with platforms #{@worker.target_platforms.join(', ')}"
+      else
+        redirect_to @worker, flash: { warning: "Worker #{@worker.title} was successfully created, but its config could not be retrieved: #{@worker.errors.messages[:worker_config].join(', ')}"}
+      end
     else
-      render action: "new"
+      render action: "new", flash: {error: "Error updating worker's config: #{@worker.errors.messages[:worker_config].join(', ')}"}
     end
   end
 
@@ -49,7 +53,7 @@ class WorkersController < BaseAdminController
     if @worker.request_config!
       redirect_to @worker, notice: "Worker config updated."
     else
-      redirect_to @worker, flash: {error: "Error updating worker's config"}
+      redirect_to @worker, flash: {error: "Error updating worker's config: #{@worker.errors.messages[:worker_config].join(', ')}"}
     end
   end
   
