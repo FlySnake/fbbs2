@@ -23,10 +23,10 @@ Rails.application.routes.draw do
     resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
       delete :stop, :on => :member
     end
+    resources :build_logs, only: [:show]
   end
   
   get '/:enviroment_title', to: 'build_jobs#enviroments', as: 'home_enviroments'
-  #post '/:enviroment_title/start', to: 'home#start', as: 'start_build'
   
   root 'home#index'
 

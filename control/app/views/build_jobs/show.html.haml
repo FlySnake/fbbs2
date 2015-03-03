@@ -13,6 +13,9 @@
       %dd= @build_job.branch.name
       %dt Base version
       %dd= link_to @build_job.base_version.name, @build_job.base_version
+      - unless @build_job.full_version.nil?
+        %dt Full version
+        %dd= @build_job.full_version.title
       %dt Build enviroment
       %dd= link_to @build_job.enviroment.title, @build_job.enviroment
       %dt Target platform
@@ -25,11 +28,12 @@
       %dd= @build_job.comment
       %dt Started at
       %dd= localtime @build_job.started_at
-      %dt Finished at
-      %dd= localtime @build_job.finished_at
+      - unless @build_job.finished_at.nil?
+        %dt Finished at
+        %dd= localtime @build_job.finished_at
       - unless @build_job.build_log.nil?
         %dt Log
-        %dd= link_to "full", @build_job.build_log
+        %dd= link_to "full", build_log_path(id: @build_job.build_log.id)
       - unless @build_job.worker.nil?
         %dt Worker
         %dd= link_to @build_job.worker.title, @build_job.worker

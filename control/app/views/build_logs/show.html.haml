@@ -1,0 +1,18 @@
+- title "Build log"
+
+%h1.page-header= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Enviroment
+      %dd= @build_log.build_job.enviroment.title
+      %dt Datetime
+      %dd= localtime(@build_log.updated_at)
+      %dt Platform
+      %dd= @build_log.build_job.target_platform.title
+      %dt Built on
+      %dd= @build_log.build_job.worker.title + "@" + @build_log.build_job.worker.address
+
+%pre= @build_log.text
+

@@ -37,7 +37,7 @@ class BuildJob < ActiveRecord::Base
   
   def self.on_worker_status_changed(worker, attr_name, new_value, old_value)
     if attr_name == :status and new_value == :ready and (old_value == :offline or old_value.nil?)
-      # when one of the workers goes online we have to call scheduler, otherwise it's possible that it will
+      # when one of the workers goes online we have to call scheduler
       BuildJobQueue.scheduler
     end
     
@@ -45,7 +45,42 @@ class BuildJob < ActiveRecord::Base
     Rails.logger.error("More than 1 active job for worker '#{worker.title}': #{build_jobs.map{|b| b.id}.to_s}") if build_jobs.size > 1
     
     build_jobs.each do |build_job| # should be only one, but just in case...
-      update_build_job_status(build_job, worker, attr_name, new_value, old_value)
+      if attr_name == :status and old_value == :busy and new_value == :ready
+        # worker completed
+        if worker.result == :success
+          build_job.result = BuildJob.results[:success]
+        elsif worker.result == :failure
+          build_job.result = BuildJob.results[:failure]
+        else
+          build_job.result = BuildJob.results[:unknown]
+        end
+        Rails.logger.debug "Worker '#{worker.title}' completed the job with result: #{build_job.result.to_s}"
+        
+        build_job.build_log = BuildLog.new(:text => worker.build_log)
+        build_job.status = BuildJob.statuses[:ready]
+        build_job.finished_at = Time.now
+        #TODO download artefacts and attach downloaded files
+      end
+      
+      if attr_name == :commit_info
+        build_job.commit = Commit.find_or_create_by(:identifier => new_value['commit'], :datetime => Time.parse(new_value['datetime']), :message => new_value['text'], :author => new_value['author'])
+      end
+      
+      if attr_name == :full_version
+        build_job.full_version = FullVersion.find_or_create_by(:title => new_value)
+      end
+   
+      if not worker.artefacts.nil? and worker.artefacts.any?
+        if build_job.build_artefacts.empty?
+          build_job.build_artefacts = worker.artefacts.map {|a| BuildArtefact.find_or_create_by(:file => a)}
+        end
+      end
+   
+      if attr_name == :run_duration
+        build_job.touch
+      end
+      
+      build_job.save
     end
   end
  
@@ -57,42 +92,6 @@ class BuildJob < ActiveRecord::Base
   
   def call_scheduler
     BuildJobQueue.scheduler
-  end
-  
-  def self.update_build_job_status(build_job, worker, attr_name, new_value, old_value)
-    if attr_name == :status and old_value == :busy and new_value == :ready
-      # worker completed
-      if worker.result == :success
-        build_job.result = BuildJob.results[:success]
-      elsif worker.result == :failure
-        build_job.result = BuildJob.results[:failure]
-      else
-        build_job.result = BuildJob.results[:unknown]
-      end
-      Rails.logger.debug "Worker '#{worker.title}' completed the job with result: #{build_job.result.to_s}"
-      
-      build_job.build_log = BuildLog.new(:text => worker.build_log)
-      build_job.status = BuildJob.statuses[:ready]
-      #TODO download artefacts and attach downloaded files
-    end
-    
-    if attr_name == :commit_info
-      self.commit = Commit.find_or_create_by(:identifier => new_value['commit'], :datetime => Time.parse(new_value['datetime']), :message => new_value['text'], :author => new_value['author'])
-    end
-    
-    if attr_name == :full_version
-      self.full_version = FullVersion.find_or_create_by(:title => new_value)
-    end
- 
-    if not worker.artefacts.nil? and worker.artefacts.any?
-      build_job.build_artefacts = worker.artefacts.map {|a| BuildArtefact.find_or_create_by(:file => a)}
-    end
- 
-    if attr_name == :run_duration
-      build_job.touch
-    end
-    
-    build_job.save
   end
   
 end
