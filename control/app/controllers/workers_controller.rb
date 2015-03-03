@@ -3,7 +3,7 @@ class WorkersController < BaseAdminController
   
   # GET /workers
   def index
-    @workers = Worker.includes(:target_platforms).all
+    @workers = WorkersPool::Pool.instance.all
   end
 
   # GET /workers/1
@@ -60,7 +60,7 @@ class WorkersController < BaseAdminController
   private
   
   def set_worker
-    @worker = Worker.includes(:target_platforms).find(params[:id])
+    @worker = WorkersPool::Pool.instance.find(params[:id])
   end
   
   # Never trust parameters from the scary internet, only allow the white list through.

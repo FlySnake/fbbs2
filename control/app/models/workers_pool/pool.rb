@@ -9,12 +9,21 @@ class WorkersPool::Pool
     load_workers
   end
   
-  def ready_workers
+  def all
+    @workers
+  end
+  
+  def ready
     @workers.select {|w| w.status == :ready}
   end
   
   def find(worker)
-    @workers.find {|w| w.id == worker.id}
+    if worker.kind_of? Worker
+      @workers.find {|w| w.id == worker.id}
+    else
+      worker = worker.to_i
+      @workers.find {|w| w.id == worker}
+    end
   end
   
   def load_workers

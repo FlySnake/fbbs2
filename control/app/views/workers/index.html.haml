@@ -13,7 +13,7 @@
         %th More info
         
       - @workers.each do |worker|
-        %tr
+        %tr{:class => tr_class_by_status(worker.status) }
           %td= worker.title
           %td= worker.address
           %td

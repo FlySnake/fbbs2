@@ -12,7 +12,7 @@ class BuildJobQueue < ActiveRecord::Base
   def self.scheduler
     begin
       fresh_jobs = BuildJob.includes(:target_platform).joins(:build_job_queue).fresh
-      available_workers = WorkersPool::Pool.instance.ready_workers
+      available_workers = WorkersPool::Pool.instance.ready
   
       fresh_jobs.each do |build_job|
         available_workers.each do |worker|

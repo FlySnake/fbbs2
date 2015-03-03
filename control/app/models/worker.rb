@@ -12,8 +12,8 @@ class Worker < ActiveRecord::Base
   before_create :request_config_on_create
   
   attr_accessor_with_onchange_callback :status, :result, :artefacts, :full_version, :commit_info, :build_log, :run_duration do |attr_name, value, old_value|
+    logger.debug "#{attr_name} changed from #{old_value} to #{value}"
     BuildJob.on_worker_status_changed self, attr_name.to_sym, value, old_value
-    puts "#{attr_name} changed from #{old_value} to #{value}"
   end
   
   def poll
@@ -31,7 +31,6 @@ class Worker < ActiveRecord::Base
       Rails.logger.error("Error fetching worker status: #{err.to_s}")
       self.status = :offline
     end
-      save
   end
   
   def start!(params)
@@ -73,6 +72,7 @@ class Worker < ActiveRecord::Base
   end
   
   def reload_pool
+    puts "reload pool"
     WorkersPool::Pool.instance.load_workers
   end
   
