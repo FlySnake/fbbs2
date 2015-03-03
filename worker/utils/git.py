@@ -39,19 +39,19 @@ class Git:
         (r,o,e) = self.__exec("git rev-list {s}..{d}".format(s=src, d=dst))
         
     def last_commit_abbrev(self):
-        (r,o,e) = self.__exec("git --no-pager log --pretty=format:'%h' --abbrev-commit -n1")
+        (r,o,e) = self.__exec("git --no-pager log --pretty=format:%h --abbrev-commit -n1")
         return o
     
     def last_commit_time(self):
-        (r,o,e) = self.__exec("git --no-pager log --pretty=format:'%ci' --abbrev-commit -n1")
+        (r,o,e) = self.__exec("git --no-pager log --pretty=format:%ci --abbrev-commit -n1")
         return o
     
     def last_commit_text(self):
-        (r,o,e) = self.__exec("git --no-pager log --pretty=format:'%s' --abbrev-commit -n1")
+        (r,o,e) = self.__exec("git --no-pager log --pretty=format:%s --abbrev-commit -n1")
         return o
     
     def last_commit_author(self):
-        (r,o,e) = self.__exec("git --no-pager log --pretty=format:'%an' --abbrev-commit -n1")
+        (r,o,e) = self.__exec("git --no-pager log --pretty=format:%an --abbrev-commit -n1")
         return o
         
     def reset_local_changes(self):

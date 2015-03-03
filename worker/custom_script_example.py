@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-QT4_PATH = "/home/builder/android/qt/4.8.3/"
+QT4_PATH = "/home/o.antonyan/android/qt/4.8.3/"
 QT5_PATH = "/home/builder/android/qt/5.4.1/"
 BUILDNUM_SRV = "http://localhost:12345/development/buildnum"
 BUILD_CMD_PATTERN = "./build-android.sh -v {full_version} -f {artefact_name} -d {artefacts_path} -q {qt_path}"
@@ -49,7 +49,7 @@ class Version(object):
         
 def get_build_cmd(**kwargs):
     full_version = kwargs["full_version"]
-    artefact_name = kwargs["artefact_name"]
+    artefact_name = kwargs["artefacts_names"][0].replace(".apk", "")
     artefacts_path = kwargs["artefacts_path"]
     platform = kwargs["platform"]
     return BUILD_CMD_PATTERN.format(full_version=full_version,
@@ -70,7 +70,7 @@ def get_artefacts_names(**kwargs):
     return [basename + ".apk", basename + ".zip"]
 
 def get_version(**kwargs):
-    commercial_version = kwargs["commercial_version"]
+    commercial_version = kwargs["base_version"]
     repository_path = kwargs["repository_path"]
     branch = kwargs["branch"]
     commit = kwargs["commit"]

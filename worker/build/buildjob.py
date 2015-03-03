@@ -126,13 +126,13 @@ class BuildJob(Thread):
             self.__append_to_log("build successfull")
             
         except BuildTerminateException as e:
+            self.__terminated = True
             log.warning(str(e))
             self.__append_to_log(str(e))
-            self.__terminated = True
         except Exception as e:
+            self.__error = True
             log.exception("build error")
             self.__append_to_log("build error: " + str(e) + "\n" + format_exc(), False)
-            self.__error = True
         finally:
             self.__end_time = time()
     

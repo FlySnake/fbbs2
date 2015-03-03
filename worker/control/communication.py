@@ -53,11 +53,7 @@ def build_check():
 @request_logging
 def build_start():
     try:
-        params = {}
-        d = request.query.decode().dict
-        for k in d:
-            params[k] = d[k][0] if d[k] else None
-        return buildctl.BuildCtl().start(**params)
+        return buildctl.BuildCtl().start(**request.json)
     except:
         log.exception("error starting build")
         raise

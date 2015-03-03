@@ -35,7 +35,12 @@ class WorkersPool::Pool
   
   def poll_all
     @workers.each do |w|
-      w.poll
+      begin
+        w.poll
+      rescue => err
+        Rails.logger.error "Error polling worker '#{w.title}@#{w.address}': #{err.to_s}"
+        puts err.backtrace
+      end
     end
   end
   
