@@ -32,7 +32,7 @@ class BuildJob < ActiveRecord::Base
   
   def stop!
     self.worker.stop!
-    update_attributes(:finished_at => Time.now, :status => :ready)
+    update_attributes(:finished_at => Time.now, :status => :ready, :result => BuildJob.results[:failure])
   end
   
   def self.on_worker_status_changed(worker, attr_name, new_value, old_value)

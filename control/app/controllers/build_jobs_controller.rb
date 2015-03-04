@@ -1,6 +1,6 @@
 class BuildJobsController < ApplicationController
   before_filter :set_build_job, only: [:show, :update, :destroy]
-  before_filter :set_enviroment
+  before_filter :set_enviroment, except: [:show]
   before_filter :create_build_job, only: [:new, :enviroments]
   before_filter :set_enviroments
   before_filter :set_build_jobs, only: [:index, :enviroments]
@@ -16,6 +16,7 @@ class BuildJobsController < ApplicationController
   # GET /build_jobs/1
   # GET /build_jobs/1.json
   def show
+    set_enviroment true
   end
 
   # GET /build_jobs/new
@@ -79,8 +80,12 @@ class BuildJobsController < ApplicationController
       params.require(:build_job).permit(:branch, :base_version, :target_platform, :notify_user, :started_by_user, :comment, :status)
     end
     
-    def set_enviroment
-      @enviroment = Enviroment.includes(:repository).find_by(:title => params[:enviroment_title])
+    def set_enviroment(skip_eager_repository_load=false)
+      if skip_eager_repository_load
+        @enviroment = Enviroment.find_by(:title => params[:enviroment_title])
+      else
+        @enviroment = Enviroment.includes(:repository).find_by(:title => params[:enviroment_title])
+      end
       if @enviroment.nil?
         raise "Unknown build enviroment '#{params[:enviroment_title]}'. Available: #{Enviroment.all.to_a.map{|e| e.title}.join(', ')}"
         # TODO something meaningful like redirect to an error page
@@ -99,7 +104,8 @@ class BuildJobsController < ApplicationController
     end
     
     def set_build_jobs
-      @build_jobs = BuildJob.includes(:branch, :base_version, :target_platform).where(:enviroment => @enviroment).order(:updated_at => :desc).all
+      @build_jobs = BuildJob.includes(:branch, :commit, :full_version, :target_platform, :build_artefacts).
+          where(:enviroment => @enviroment).order(:created_at => :desc).paginate(:page => params[:page], :per_page => 10)
     end
     
 end

@@ -22,7 +22,7 @@
       - if @build_job.build_artefacts.any?
         %dt Download
         - @build_job.build_artefacts.each do |a|
-          %dd= link_to a.filename, build_artefact_path(:enviroment_title => @enviroment.title, :filename => a.filename)
+          %dd= link_to a.filename, artefact_link(@enviroment, a)
       %dt Build enviroment
       %dd= link_to @build_job.enviroment.title, @build_job.enviroment
       %dt Target platform
