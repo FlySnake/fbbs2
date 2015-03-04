@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :commit do
-    identifier { Faker::Lorem.paragraph(100000) }
+    identifier { Faker::Bitcoin.address }
     datetime { Time.now }
     message { Faker::Lorem.sentence }
     author { Faker::Name.name }

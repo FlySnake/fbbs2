@@ -16,6 +16,9 @@
       - unless @build_job.full_version.nil?
         %dt Full version
         %dd= @build_job.full_version.title
+      - unless @build_job.commit.nil?
+        %dt VCS revision
+        %dd= @build_job.commit.humanize
       %dt Build enviroment
       %dd= link_to @build_job.enviroment.title, @build_job.enviroment
       %dt Target platform
