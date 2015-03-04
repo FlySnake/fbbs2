@@ -104,8 +104,18 @@ class BuildJobsController < ApplicationController
     end
     
     def set_build_jobs
-      @build_jobs = BuildJob.includes(:branch, :commit, :full_version, :target_platform, :build_artefacts).
-          where(:enviroment => @enviroment).order(:created_at => :desc).paginate(:page => params[:page], :per_page => 10)
+      # TODO optimize query
+      @build_jobs_ready = BuildJob.
+          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts).
+          where(:enviroment => @enviroment, :status => BuildJob.statuses[:ready]).
+          order(:created_at => :desc).
+          paginate(:page => params[:page], :per_page => 10)
+      @build_jobs_busy = BuildJob.
+          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts).
+          where(:enviroment => @enviroment, :status => [BuildJob.statuses[:busy], BuildJob.statuses[:fresh]]).
+          order(:created_at => :desc).
+          paginate(:page => params[:page], :per_page => 10)
     end
+    
     
 end
