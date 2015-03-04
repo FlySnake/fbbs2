@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150302143330) do
+ActiveRecord::Schema.define(version: 20150304084822) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20150302143330) do
     t.integer  "build_job_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.string   "filename"
   end
 
   add_index "build_artefacts", ["build_job_id"], name: "index_build_artefacts_on_build_job_id"

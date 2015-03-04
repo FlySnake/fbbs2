@@ -59,7 +59,17 @@ class BuildJob < ActiveRecord::Base
         build_job.build_log = BuildLog.new(:text => worker.build_log)
         build_job.status = BuildJob.statuses[:ready]
         build_job.finished_at = Time.now
-        #TODO download artefacts and attach downloaded files
+        
+        build_job.build_artefacts.each do |artefact|
+          file = File.open("#{Dir.tmpdir}/#{artefact.filename}", 'wb')
+          file.write(worker.get_artefact(artefact.filename))
+          file.flush
+          artefact.file = file
+          artefact.save
+          file.close
+          File.delete(file.path)
+        end
+
       end
       
       if attr_name == :commit_info
@@ -70,13 +80,12 @@ class BuildJob < ActiveRecord::Base
         build_job.full_version = FullVersion.find_or_create_by(:title => new_value)
       end
    
-      if not worker.artefacts.nil? and worker.artefacts.any?
-        if build_job.build_artefacts.empty?
-          build_job.build_artefacts = worker.artefacts.map {|a| BuildArtefact.find_or_create_by(:file => a)}
-        end
+      if attr_name == :artefacts
+        build_job.build_artefacts = worker.artefacts.map {|a| BuildArtefact.find_or_create_by(:filename => a)}
       end
    
       if attr_name == :run_duration
+        # just update the updated_at column to prevent killing by timeout
         build_job.touch
       end
       

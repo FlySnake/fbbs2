@@ -76,6 +76,18 @@ class Worker < ActiveRecord::Base
     end
   end
   
+  def get_artefact(name)
+    Rails.logger.debug("Downloading artefact '#{name}'")
+    data = nil
+    begin
+      data = download_artefact name
+      delete_artefact name
+    rescue => err
+      Rails.logger.error("Error downloading artefact '#{name}': #{err.to_s}")
+    end
+    data
+  end
+  
   private 
   
   def request_config_on_create
@@ -111,10 +123,18 @@ class Worker < ActiveRecord::Base
     data.content
   end
   
+  def download_artefact(name)
+    data = JSONClient.new.get "#{full_base_address}/download/#{name}"
+    data.content
+  end
+  
+  def delete_artefact(name)
+    data = JSONClient.new.delete "#{full_base_address}/download/#{name}"
+    data.content
+  end
+  
   def start_params(branch, platform, enviroment_id, base_version)
     {'branch' => branch, 'platform' => platform, 'enviroment_id' => enviroment_id, 'base_version' => base_version}
   end
 
-  
-  
 end

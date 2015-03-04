@@ -1,0 +1,8 @@
+- title "Build artefact"
+
+%h1.page-header= yield(:title)
+
+- if @artefact.nil? or artefact.file.nil?
+  %h1 404 Oops! No such file
+- else
+  %p= link_to artefact.file.identifier, artefact.file.url

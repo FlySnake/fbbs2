@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       delete :stop, :on => :member
     end
     resources :build_logs, only: [:show]
+    resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false
   end
   
   get '/:enviroment_title', to: 'build_jobs#enviroments', as: 'home_enviroments'
