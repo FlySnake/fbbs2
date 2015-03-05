@@ -42,4 +42,10 @@ RSpec.describe Repository, type: :model do
     expect(build(:repository, :title => "hello world")).to be_invalid
   end
   
+  it "creates full weblink to commit" do
+    repo = build(:repository)
+    commit = Faker::Internet.password
+    expect(repo.full_weblink_to_commit(commit)).to eq "#{repo.weblink_to_commit.sub(':commit', commit)}"
+  end
+  
 end

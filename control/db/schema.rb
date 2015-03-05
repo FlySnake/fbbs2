@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150305134535) do
+ActiveRecord::Schema.define(version: 20150305150603) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20150305134535) do
     t.datetime "updated_at",                null: false
   end
 
+  add_index "branches", ["name"], name: "index_branches_on_name"
   add_index "branches", ["repository_id"], name: "index_branches_on_repository_id"
 
   create_table "build_artefacts", force: :cascade do |t|
@@ -134,11 +135,12 @@ ActiveRecord::Schema.define(version: 20150305134535) do
   end
 
   create_table "repositories", force: :cascade do |t|
-    t.string   "title",      limit: 512,  default: "", null: false
-    t.string   "path",       limit: 4096,              null: false
-    t.integer  "vcs_type",                             null: false
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.string   "title",             limit: 512,  default: "", null: false
+    t.string   "path",              limit: 4096,              null: false
+    t.integer  "vcs_type",                                    null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.string   "weblink_to_commit", limit: 4096
   end
 
   create_table "target_platforms", force: :cascade do |t|
@@ -175,10 +177,10 @@ ActiveRecord::Schema.define(version: 20150305134535) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
   create_table "workers", force: :cascade do |t|
-    t.string   "title",      null: false
-    t.string   "address",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "title",      limit: 512, null: false
+    t.string   "address",    limit: 512, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
 end

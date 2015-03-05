@@ -13,6 +13,8 @@
       %dd= @repository.vcs_type.humanize
       %dt Remote URL
       %dd= "(#{@repository.remote_name}) #{@repository.remote_url}"
+      %dt Weblink to commit
+      %dd= @repository.weblink_to_commit
       %dt Created at
       %dd= localtime @repository.created_at
       %dt Updated at

@@ -6,6 +6,7 @@ class Repository < ActiveRecord::Base
   validates :title, length: {in: 1..100}, uniqueness: true
   validates :path, length: {in: 1..4000}
   validates :vcs_type, inclusion: {in: Repository.vcs_types.keys}
+  #TODO validated weblink_to_commit for :commit
   
   def branches(force_fetch=false)
     begin
@@ -29,6 +30,14 @@ class Repository < ActiveRecord::Base
   def remote_name
     vcs = vcs_by_type vcs_type
     vcs.remote_name
+  end
+  
+  def full_weblink_to_commit(commit)
+    unless self.weblink_to_commit.nil?
+      self.weblink_to_commit.sub(":commit", commit)
+    else
+      nil
+    end
   end
   
   protected

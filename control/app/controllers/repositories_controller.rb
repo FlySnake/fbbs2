@@ -63,6 +63,6 @@ class RepositoriesController < BaseAdminController
   
   # Never trust parameters from the scary internet, only allow the white list through.
   def repository_params
-    params.require(:repository).permit(:title, :path, :vcs_type)
+    params.require(:repository).permit(:title, :path, :vcs_type, :weblink_to_commit)
   end
 end
