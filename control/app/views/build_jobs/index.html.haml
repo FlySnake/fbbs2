@@ -4,7 +4,7 @@
 
 .row
   .col-md-12
-    = render partial: 'list_jobs'
+    = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_ready, enviroment: @enviroment}
           
     = link_to 'Start a new build job', new_build_job_path, class: "btn btn-primary"
 

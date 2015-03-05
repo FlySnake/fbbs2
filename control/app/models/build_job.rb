@@ -17,10 +17,11 @@ class BuildJob < ActiveRecord::Base
   validates :target_platform, presence: true
   
   enum status: [:fresh, :busy, :ready]
-  enum result: [:unknown, :success, :failure]
+  enum result: [:unknown, :success, :failure, :terminated]
   
   after_create :enqueue_job
   after_save :call_scheduler
+  before_destroy :stop!
   
   def start!(worker)
     worker.start!(:target_platform_name => self.target_platform.title, 
@@ -31,7 +32,14 @@ class BuildJob < ActiveRecord::Base
   end
   
   def stop!
-    self.worker.stop!
+    BuildJobQueue.dequeue self
+    if self.status == 'busy'
+      self.worker.stop!
+    end
+  end
+  
+  def kill_by_timeout
+    stop!
     update_attributes(:finished_at => Time.now, :status => :ready, :result => BuildJob.results[:failure])
   end
   
@@ -42,65 +50,100 @@ class BuildJob < ActiveRecord::Base
     end
     
     build_jobs = where(:worker => worker, :status => BuildJob.statuses[:busy])
-    Rails.logger.error("More than 1 active job for worker '#{worker.title}': #{build_jobs.map{|b| b.id}.to_s}") if build_jobs.size > 1
+    Rails.logger.warn("More than 1 active job for worker '#{worker.title}': #{build_jobs.map{|b| b.id}.to_s}") if build_jobs.size > 1
     
     build_jobs.each do |build_job| # should be only one, but just in case...
-      if attr_name == :status and old_value == :busy and new_value == :ready
-        # worker completed
-        if worker.result == :success
-          build_job.result = BuildJob.results[:success]
-        elsif worker.result == :failure
-          build_job.result = BuildJob.results[:failure]
-        else
-          build_job.result = BuildJob.results[:unknown]
+      #puts "$$$$ #{attr_name}: #{old_value} -> #{new_value}"
+      begin
+        if attr_name == :status and old_value == :busy and new_value == :ready
+          # worker completed
+          build_job.finalize_result worker
+          Rails.logger.debug "Worker '#{worker.title}' completed the job with result: #{build_job.result.to_s}"
+          build_job.finalize_build_log worker
+          build_job.finalize_status
+          build_job.finalize_time
+          build_job.download_artefacts
+  
         end
-        Rails.logger.debug "Worker '#{worker.title}' completed the job with result: #{build_job.result.to_s}"
         
-        build_job.build_log = BuildLog.new(:text => worker.build_log)
-        build_job.status = BuildJob.statuses[:ready]
-        build_job.finished_at = Time.now
-        
-        build_job.build_artefacts.each do |artefact|
-          file = File.open("#{Dir.tmpdir}/#{artefact.filename}", 'wb')
-          file.write(worker.get_artefact(artefact.filename))
-          file.flush
-          artefact.file = file
-          artefact.save
-          file.close
-          File.delete(file.path)
+        if attr_name == :commit_info and not new_value.empty? and not new_value.nil?
+            build_job.commit = Commit.find_or_create_by(:identifier => new_value['commit'], 
+                                                        :datetime => Time.parse(new_value['datetime']), 
+                                                        :message => new_value['text'], 
+                                                        :author => new_value['author'])
         end
-
+        
+        if attr_name == :full_version and not new_value.nil?
+          build_job.full_version = FullVersion.find_or_create_by(:title => new_value)
+        end
+     
+        if attr_name == :artefacts and not new_value.nil?
+          build_job.build_artefacts = new_value.map {|a| BuildArtefact.find_or_create_by(:filename => a)}
+        end
+     
+        if attr_name == :run_duration
+          # just update the updated_at column to prevent killing by timeout
+          build_job.touch
+        end
+      rescue => err
+        Rails.logger.error("Error updating build job status: #{err.to_s}")
+      ensure
+        build_job.save
       end
-      
-      if attr_name == :commit_info
-        build_job.commit = Commit.find_or_create_by(:identifier => new_value['commit'], :datetime => Time.parse(new_value['datetime']), :message => new_value['text'], :author => new_value['author'])
-      end
-      
-      if attr_name == :full_version
-        build_job.full_version = FullVersion.find_or_create_by(:title => new_value)
-      end
-   
-      if attr_name == :artefacts
-        build_job.build_artefacts = worker.artefacts.map {|a| BuildArtefact.find_or_create_by(:filename => a)}
-      end
-   
-      if attr_name == :run_duration
-        # just update the updated_at column to prevent killing by timeout
-        build_job.touch
-      end
-      
-      build_job.save
     end
+  end
+  
+  def download_artefacts
+    self.build_artefacts.each do |artefact|
+      file = File.open("#{Dir.tmpdir}/#{artefact.filename}", 'wb')
+      begin
+        data = worker.get_artefact(artefact.filename)
+        raise "nil data returned by worker" if data.nil?
+        file.write()
+        file.flush
+        artefact.file = file
+        artefact.save
+      rescue => err
+        Rails.logger.error("Error downloading artefact '#{artefact.filename}': #{err.to_s}")
+      ensure
+        file.close
+        File.delete(file.path)
+      end
+    end
+  end
+  
+  def finalize_result(worker)
+    if worker.result == :success
+      self.result = BuildJob.results[:success]
+    elsif worker.result == :failure
+      self.result = BuildJob.results[:failure]
+    elsif worker.result == :terminated
+      self.result = BuildJob.results[:terminated]
+    else
+      self.result = BuildJob.results[:unknown]
+    end
+  end
+  
+  def finalize_build_log(worker)
+    self.build_log = BuildLog.new(:text => worker.build_log)
+  end
+  
+  def finalize_status
+    self.status = BuildJob.statuses[:ready]
+  end
+  
+  def finalize_time
+    self.finished_at = Time.now
   end
  
   private
    
-  def enqueue_job
-    BuildJobQueue.enqueue self #TODO validation if there any workers for such platform
-  end
-  
-  def call_scheduler
-    BuildJobQueue.scheduler
-  end
+    def enqueue_job
+      BuildJobQueue.enqueue self #TODO validation if there any workers for such platform
+    end
+    
+    def call_scheduler
+      BuildJobQueue.scheduler
+    end
   
 end

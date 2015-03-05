@@ -1,5 +1,5 @@
 class BuildJobsController < ApplicationController
-  before_filter :set_build_job, only: [:show, :update, :destroy]
+  before_filter :set_build_job, only: [:show, :update, :destroy, :stop]
   before_filter :set_enviroment, except: [:show]
   before_filter :create_build_job, only: [:new, :enviroments]
   before_filter :set_enviroments
@@ -60,13 +60,22 @@ class BuildJobsController < ApplicationController
   def destroy
     @build_job.destroy
     respond_to do |format|
-      format.html { redirect_to build_jobs_url, notice: 'Build job was successfully destroyed.' }
+      format.html { redirect_to home_enviroments_path, notice: 'Build job was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
   
   # DELETE /build_jobs/1/stop
   def stop
+    respond_to do |format|
+      if @build_job.stop!
+        format.html { redirect_to home_enviroments_path, notice: 'Build job was successfully stopped.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to :back, flash: {error: 'Error stopping build job.'} }
+        format.json { render json: @build_job.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   private

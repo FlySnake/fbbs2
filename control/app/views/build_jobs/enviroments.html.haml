@@ -10,10 +10,11 @@
   .col-md-12
     = render partial: 'form'
 
-.row
-  .col-md-12
-    %h3 Active jobs
-    = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_busy, enviroment: @enviroment}  
+- if @build_jobs_busy.any?
+  .row
+    .col-md-12
+      %h3 Active jobs
+      = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_busy, enviroment: @enviroment}  
     
 .row
   .col-md-12

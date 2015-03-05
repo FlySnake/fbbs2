@@ -35,6 +35,7 @@ module BuildJobsHelper
     end
    
     start_time = build_job.started_at
+    return "" if start_time.nil? 
     diff = TimeDifference.between(start_time, end_time).in_general
     result = ""
     if diff[:days] != 0

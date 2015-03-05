@@ -21,19 +21,9 @@ class Worker < ActiveRecord::Base
     
     begin
       msg = get_status
-      self.result = msg['error'] ? :failure : :success
-      #msg['terminated']
-      self.run_duration = msg['run_duration']
-      self.commit_info = msg['last_commit_info']
-      self.full_version = msg['params']['full_version']
-      self.artefacts = msg['params']['artefacts_names']
-      self.build_log = msg['build_log']
-      
-      # must be last 
-      self.status = msg['busy'] ? :busy : :ready
-      
+      update_status msg
     rescue => err
-      Rails.logger.error("Error fetching worker status: #{err.to_s}")
+      Rails.logger.error("Error updating worker status: #{err.to_s}")
       self.status = :offline
     end
   end
@@ -41,8 +31,8 @@ class Worker < ActiveRecord::Base
   def start!(params)
     Rails.logger.info("Starting worker '#{self.title}@#{self.address}'")
     begin
-      resp = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version]))
-      self.status = :busy
+      msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version]))
+      update_status msg
     rescue => err
       Rails.logger.error("Error starting worker: #{err.to_s}")
       self.status = :offline
@@ -52,10 +42,13 @@ class Worker < ActiveRecord::Base
   def stop!
     Rails.logger.info("Stopping worker '#{self.title}@#{self.address}'")
     begin
-      resp = stop_build
+      msg = stop_build
+      update_status msg
+      true
     rescue => err
       Rails.logger.error("Error stopping worker: #{err.to_s}")
       self.status = :offline
+      false
     end
   end
   
@@ -77,64 +70,94 @@ class Worker < ActiveRecord::Base
   end
   
   def get_artefact(name)
-    Rails.logger.debug("Downloading artefact '#{name}'")
-    data = nil
+    Rails.logger.info("Downloading artefact '#{name}'")
     begin
       data = download_artefact name
       delete_artefact name
+      data
     rescue => err
       Rails.logger.error("Error downloading artefact '#{name}': #{err.to_s}")
+      nil
     end
-    data
   end
   
   private 
   
-  def request_config_on_create
-    request_config!
-    true # always ok because we don't care in create callback
-  end
-  
-  def reload_pool
-    WorkersPool::Pool.instance.load_workers
-  end
-  
-  def full_base_address
-    self.address.start_with?("http") ? self.address : "http://#{self.address}"
-  end
-  
-  def get_status
-    data = JSONClient.new.get "#{full_base_address}/build"
-    data.content
-  end
-  
-  def get_config
-    data = JSONClient.new.get "#{full_base_address}"
-    data.content
-  end
-  
-  def start_build params
-    data = JSONClient.new.put "#{full_base_address}/build", :body => params
-    data.content
-  end
-  
-  def stop_build
-    data = JSONClient.new.delete "#{full_base_address}/build"
-    data.content
-  end
-  
-  def download_artefact(name)
-    data = JSONClient.new.get "#{full_base_address}/download/#{name}"
-    data.content
-  end
-  
-  def delete_artefact(name)
-    data = JSONClient.new.delete "#{full_base_address}/download/#{name}"
-    data.content
-  end
-  
-  def start_params(branch, platform, enviroment_id, base_version)
-    {'branch' => branch, 'platform' => platform, 'enviroment_id' => enviroment_id, 'base_version' => base_version}
-  end
+    def request_config_on_create
+      request_config!
+      true # always ok because we don't care in create callback
+    end
+    
+    def reload_pool
+      WorkersPool::Pool.instance.load_workers
+    end
+    
+    def full_base_address
+      self.address.start_with?("http") ? self.address : "http://#{self.address}"
+    end
+    
+    def get_status
+      data = JSONClient.new.get "#{full_base_address}/build"
+      raise_on_error(data)
+      data.content
+    end
+    
+    def get_config
+      data = JSONClient.new.get "#{full_base_address}"
+      raise_on_error(data)
+      data.content
+    end
+    
+    def start_build params
+      data = JSONClient.new.put "#{full_base_address}/build", :body => params
+      raise_on_error(data)
+      data.content
+    end
+    
+    def stop_build
+      data = JSONClient.new.delete "#{full_base_address}/build"
+      raise_on_error(data)
+      data.content
+    end
+    
+    def download_artefact(name)
+      data = JSONClient.new.get "#{full_base_address}/download/#{name}"
+      raise_on_error(data)
+      data.content
+    end
+    
+    def delete_artefact(name)
+      data = JSONClient.new.delete "#{full_base_address}/download/#{name}"
+      raise_on_error(data)
+      data.content
+    end
+    
+    def start_params(branch, platform, enviroment_id, base_version)
+      {'branch' => branch, 'platform' => platform, 'enviroment_id' => enviroment_id, 'base_version' => base_version}
+    end
+    
+    def raise_on_error(data)
+      raise "http status #{data.status.to_s}" if data.status != 200
+    end
+    
+    def update_status(msg)
+      if msg['error']
+        self.result = :failure
+      else
+        if msg['terminated']
+          self.result = :terminated
+        else
+          self.result = :success
+        end
+      end
+      self.run_duration = msg['run_duration']
+      self.commit_info = msg['last_commit_info']
+      self.full_version = msg['params']['full_version']
+      self.artefacts = msg['params']['artefacts_names']
+      self.build_log = msg['build_log']
+      
+      # must be last 
+      self.status = msg['busy'] ? :busy : :ready
+    end
 
 end

@@ -4,7 +4,7 @@ class WorkersPool::Timeout
     count = build_jobs.size
     if count > 0
       build_jobs.each do |j|
-        j.stop!
+        j.kill_by_timeout
         #worker = WorkersPool::Pool.instance.find(j.worker)
         #unless worker.nil?
         #  worker.stop!
