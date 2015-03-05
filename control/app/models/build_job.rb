@@ -100,7 +100,7 @@ class BuildJob < ActiveRecord::Base
       begin
         data = worker.get_artefact(artefact.filename)
         raise "nil data returned by worker" if data.nil?
-        file.write()
+        file.write(data)
         file.flush
         artefact.file = file
         artefact.save

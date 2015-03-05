@@ -70,13 +70,13 @@ class Worker < ActiveRecord::Base
   end
   
   def get_artefact(name)
-    Rails.logger.info("Downloading artefact '#{name}'")
+    Rails.logger.info("Downloading artefact '#{name}' in worker '#{self.title}'")
     begin
       data = download_artefact name
       delete_artefact name
       data
     rescue => err
-      Rails.logger.error("Error downloading artefact '#{name}': #{err.to_s}")
+      Rails.logger.error("Error downloading artefact '#{name}' in worker '#{self.title}': #{err.to_s}")
       nil
     end
   end
