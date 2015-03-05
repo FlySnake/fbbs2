@@ -42,7 +42,8 @@ class BuildJobsController < ApplicationController
                               :started_by_user => started_by_user,
                               :enviroment => @enviroment,
                               :status => BuildJob.statuses[:fresh],
-                              :result => BuildJob.results[:unknown])
+                              :result => BuildJob.results[:unknown],
+                              :generate_build_numbers_url => generate_build_numbers_url + ".json")
 
     respond_to do |format|
       if @build_job.save
@@ -121,7 +122,7 @@ class BuildJobsController < ApplicationController
           paginate(:page => params[:page], :per_page => 10)
       @build_jobs_busy = BuildJob.
           includes(:branch, :commit, :full_version, :target_platform, :build_artefacts).
-          where(:enviroment => @enviroment, :status => [BuildJob.statuses[:busy], BuildJob.statuses[:fresh]]).
+          where(:status => [BuildJob.statuses[:busy], BuildJob.statuses[:fresh]]).
           order(:created_at => :desc).
           paginate(:page => params[:page], :per_page => 10)
     end

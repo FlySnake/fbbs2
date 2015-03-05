@@ -27,7 +27,8 @@ class BuildJob < ActiveRecord::Base
     worker.start!(:target_platform_name => self.target_platform.title, 
                   :enviroment_id => self.enviroment.id, 
                   :branch_name => self.branch.name, 
-                  :base_version => self.base_version.name)
+                  :base_version => self.base_version.name,
+                  :buildnum_service => self.generate_build_numbers_url)
     update_attributes(:started_at => Time.now, :worker => worker, :status => BuildJob.statuses[:busy])
   end
   

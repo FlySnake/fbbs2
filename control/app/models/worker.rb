@@ -31,7 +31,7 @@ class Worker < ActiveRecord::Base
   def start!(params)
     Rails.logger.info("Starting worker '#{self.title}@#{self.address}'")
     begin
-      msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version]))
+      msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version], params[:buildnum_service]))
       update_status msg
     rescue => err
       Rails.logger.error("Error starting worker: #{err.to_s}")
@@ -132,8 +132,8 @@ class Worker < ActiveRecord::Base
       data.content
     end
     
-    def start_params(branch, platform, enviroment_id, base_version)
-      {'branch' => branch, 'platform' => platform, 'enviroment_id' => enviroment_id, 'base_version' => base_version}
+    def start_params(branch, platform, enviroment_id, base_version, buildnum_service)
+      {'branch' => branch, 'platform' => platform, 'enviroment_id' => enviroment_id, 'base_version' => base_version, 'buildnum_service' => buildnum_service}
     end
     
     def raise_on_error(data)

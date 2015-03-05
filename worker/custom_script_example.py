@@ -3,13 +3,13 @@
 
 QT4_PATH = "/home/o.antonyan/android/qt/4.8.3/"
 QT5_PATH = "/home/builder/android/qt/5.4.1/"
-BUILDNUM_SRV = "http://localhost:12345/development/buildnum"
 BUILD_CMD_PATTERN = "./build-android.sh -v {full_version} -f {artefact_name} -d {artefacts_path} -q {qt_path}"
 ARTEFACT_NAME_PATTERN = "STMobile-android-{full_version}-{branch}-{date}-{commit}-{platform}"
 
-from requests import get
+from requests import post
 from time import localtime, strftime
 from os import path
+from json import dumps, loads
 
 log = None
 
@@ -24,7 +24,7 @@ class Version(object):
     
     def fetch_all(self, **kwargs):
         self.release = self.__fetch_release(kwargs["repository_path"])
-        self.buildnum = self.__fetch_buildnum(kwargs["branch"], kwargs["commit"])
+        self.buildnum = self.__fetch_buildnum(kwargs["service_url"], kwargs["enviroment_id"], kwargs["branch"], kwargs["commit"])
         
     def __fetch_release(self, repository_path):
         try:
@@ -35,13 +35,15 @@ class Version(object):
                 log.exception("error getting release number, 0 will be used")
             return "0"
         
-    def __fetch_buildnum(self, branch, commit):
+    def __fetch_buildnum(self, service_url, enviroment_id, branch, commit):
         try:
-            uri = BUILDNUM_SRV + "?branch={v}&commit={c}".format(v=branch, c=commit)
-            r = get(uri, timeout=8)
+            payload = {'enviroment_id': enviroment_id, 'branch': branch, 'vcscommit': commit}
+            headers = {'Content-Type': 'application/json'}
+            r = post(service_url, data=dumps(payload), headers=headers, timeout=5)
             if r.status_code != 200:
-                raise RuntimeError("get request error to '{uri}': {s}".format(uri=uri, s=r.status_code))
-            return str(int(r.text.strip()))
+                raise RuntimeError("post request error to '{uri}': {s}".format(uri=uri, s=r.status_code))
+            js = loads(r.text)
+            return str(js['number'])
         except:
             if log:
                 log.exception("error getting build number, 0 will be used")
@@ -74,6 +76,8 @@ def get_version(**kwargs):
     repository_path = kwargs["repository_path"]
     branch = kwargs["branch"]
     commit = kwargs["commit"]
+    service_url = kwargs["buildnum_service"]
+    enviroment_id = kwargs["enviroment_id"]
     v = Version(commercial_version)
-    v.fetch_all(repository_path=repository_path, branch=branch, commit=commit)
+    v.fetch_all(service_url=service_url, enviroment_id=enviroment_id, repository_path=repository_path, branch=branch, commit=commit)
     return str(v)

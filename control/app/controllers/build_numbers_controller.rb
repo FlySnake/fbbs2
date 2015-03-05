@@ -1,5 +1,7 @@
 class BuildNumbersController < ApplicationController
   before_action :set_build_number, only: [:show]
+  skip_before_filter :verify_authenticity_token, only: [:generate]
+  skip_before_filter :authenticate_user!, only: [:generate]
 
   # GET /build_numbers
   # GET /build_numbers.json
@@ -30,10 +32,10 @@ class BuildNumbersController < ApplicationController
   # POST /build_numbers/generate.json
   def generate
     env = Enviroment.find(params[:enviroment_id])
-    existing = BuildNumber.where(:branch => params[:branch], :commit => params[:commit], :enviroment => env).order(:number => :desc)
+    existing = BuildNumber.where(:branch => params[:branch], :commit => params[:vcscommit], :enviroment => env).order(:number => :desc)
     
     if existing.any? # something found - return existing buildnum
-      build_number = existing.first
+      @build_number = existing.first
     else
       existing_for_branch = BuildNumber.where(:branch => params[:branch], :enviroment => env).order(:number => :desc)
       if existing_for_branch.any?
@@ -41,16 +43,16 @@ class BuildNumbersController < ApplicationController
       else
         num = env.default_build_number
       end
-      build_number = BuildNumber.new(:branch => params[:branch], :commit => params[:gitcommit], :enviroment => env, :number => num + 1)
+      @build_number = BuildNumber.new(:branch => params[:branch], :commit => params[:vcscommit], :enviroment => env, :number => num + 1)
     end
     
     respond_to do |format|
-      if not build_number.changed? or build_number.save
+      if not @build_number.changed? or @build_number.save
         format.html { redirect_to build_number, notice: 'Build number was successfully updated.' }
-        format.json { render :show, status: :ok, location: build_number }
+        format.json { render :show, status: :ok, location: @build_number }
       else
         format.html { render :edit }
-        format.json { render json: build_number.errors, status: :unprocessable_entity }
+        format.json { render json: @build_number.errors, status: :unprocessable_entity }
       end
     end
   end

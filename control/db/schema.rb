@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150304084822) do
+ActiveRecord::Schema.define(version: 20150305134535) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -34,7 +34,6 @@ ActiveRecord::Schema.define(version: 20150304084822) do
     t.datetime "updated_at",                null: false
   end
 
-  add_index "branches", ["name"], name: "index_branches_on_name"
   add_index "branches", ["repository_id"], name: "index_branches_on_repository_id"
 
   create_table "build_artefacts", force: :cascade do |t|
@@ -56,23 +55,24 @@ ActiveRecord::Schema.define(version: 20150304084822) do
   add_index "build_job_queues", ["build_job_id"], name: "index_build_job_queues_on_build_job_id"
 
   create_table "build_jobs", force: :cascade do |t|
-    t.integer  "branch_id",                       null: false
-    t.integer  "base_version_id",                 null: false
-    t.integer  "enviroment_id",                   null: false
-    t.integer  "target_platform_id",              null: false
-    t.integer  "notify_user_id",                  null: false
-    t.integer  "started_by_user_id",              null: false
-    t.string   "comment",            default: "", null: false
-    t.integer  "status",                          null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.integer  "result",             default: 0,  null: false
+    t.integer  "branch_id",                               null: false
+    t.integer  "base_version_id",                         null: false
+    t.integer  "enviroment_id",                           null: false
+    t.integer  "target_platform_id",                      null: false
+    t.integer  "notify_user_id",                          null: false
+    t.integer  "started_by_user_id",                      null: false
+    t.string   "comment",                    default: "", null: false
+    t.integer  "status",                                  null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.integer  "result",                     default: 0,  null: false
     t.integer  "commit_id"
     t.integer  "build_log_id"
     t.integer  "worker_id"
     t.datetime "started_at"
     t.datetime "finished_at"
     t.integer  "full_version_id"
+    t.string   "generate_build_numbers_url", default: "", null: false
   end
 
   add_index "build_jobs", ["base_version_id"], name: "index_build_jobs_on_base_version_id"
@@ -175,10 +175,10 @@ ActiveRecord::Schema.define(version: 20150304084822) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
   create_table "workers", force: :cascade do |t|
-    t.string   "title",      limit: 512, null: false
-    t.string   "address",    limit: 512, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "title",      null: false
+    t.string   "address",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
