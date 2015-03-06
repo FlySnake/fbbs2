@@ -1,10 +1,8 @@
-%ul.nav.nav-tabs.nav-justified
+.nav.nav-pills.nav-stacked
   - @enviroments.each do |e|
     - if e.title == @enviroment.title
-      %li.active= link_to e.title.humanize, link_to_enviroment(e), {role: "presentation"} 
+      %li.active= link_to e.title.humanize, path_to_enviroment(e, page), {role: "presentation"} 
     - else
-      %li= link_to e.title.humanize, link_to_enviroment(e), {role: "presentation"}
-        
-      
-
+      %li= link_to e.title.humanize, path_to_enviroment(e, page), {role: "presentation"}
+  
 

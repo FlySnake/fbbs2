@@ -40,7 +40,7 @@
         %dd= localtime @build_job.finished_at
       - unless @build_job.build_log.nil?
         %dt Log
-        %dd= link_to "full", build_log_path(id: @build_job.build_log.id)
+        %dd= link_to "full", enviroment_build_log_path(@enviroment, @build_job.build_log)
       - unless @build_job.worker.nil?
         %dt Worker
         %dd= link_to @build_job.worker.title, @build_job.worker
@@ -50,6 +50,6 @@
       %dd= localtime @build_job.updated_at
       
   - if @build_job.status != 'ready'
-    = link_to 'Stop this job', stop_build_job_path(id: @build_job.id, enviroment_title: @enviroment.title), :method => :delete, :class => "btn btn-danger", :data => { :confirm => 'Are you sure?' }
+    = link_to 'Stop this job', stop_enviroment_build_job_path(enviroment_title: @enviroment.title, id: @build_job.id), :method => :delete, :class => "btn btn-danger", :data => { :confirm => 'Are you sure?' }
   
-  = link_to 'Delete this job', build_job_path(id: @build_job.id, enviroment_title: @enviroment.title), :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }
+  = link_to 'Delete this job', enviroment_build_job_path(enviroment_title: @enviroment.title, id: @build_job.id), :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }

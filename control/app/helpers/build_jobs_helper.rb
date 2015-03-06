@@ -20,7 +20,7 @@ module BuildJobsHelper
   end
   
   def artefact_link(enviroment, artefact)
-    build_artefact_path(:enviroment_title => enviroment.title, :filename => artefact.filename)
+    enviroment_build_artefact_path(:enviroment_title => enviroment.title, :filename => artefact.filename)
   end
   
   def artefact_link_text_short(artefact)

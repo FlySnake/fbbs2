@@ -1,5 +1,6 @@
 %table.table.table-striped.table-bordered.table-hover.table-responsive
   %tr
+    %th Enviroment
     %th Branch
     %th Full version
     %th Platform
@@ -10,8 +11,9 @@
     %th Comment
     %th More info
     
-  - @build_jobs_ready.each do |b|
+  - @build_jobs_active.each do |b|
     %tr{:class => build_job_tr_class(b) }
+      %td= b.enviroment.title
       %td= b.branch.name
       %td= b.full_version.title unless b.full_version.nil? 
       %td= b.target_platform.title
@@ -22,6 +24,5 @@
       %td= localtime(b.started_at) unless b.started_at.nil? 
       %td= calculate_duration(b)
       %td= b.comment
-      %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), enviroment_build_job_path(enviroment_title: @enviroment.title, id: b.id), :class => "btn btn-default"
-  
-.text-center= will_paginate(@build_jobs_ready, :renderer => BootstrapPagination::Rails, :previous_label => "&larr; ", :next_label => " &rarr;")
+      %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), enviroment_build_job_path(id: b.id, :enviroment_title => @enviroment.title), :class => "btn btn-default"
+ 

@@ -1,0 +1,10 @@
+%ul.nav.nav-tabs.nav-justified
+  - if current_page?(action: :enviroments)
+    %li.active= link_to "Jobs", home_enviroments_path(enviroment_title: @enviroment.title), {role: "presentation"}
+  - else
+    %li= link_to "Jobs", home_enviroments_path(enviroment_title: @enviroment.title), {role: "presentation"}
+  
+  - if current_page?(action: :index)
+    %li.active= link_to "All builds", enviroment_build_jobs_path(enviroment_title: @enviroment.title), {role: "presentation"}
+  - else
+    %li= link_to "All builds", enviroment_build_jobs_path(enviroment_title: @enviroment.title), {role: "presentation"}

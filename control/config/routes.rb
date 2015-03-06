@@ -19,14 +19,13 @@ Rails.application.routes.draw do
     post :generate, :on => :collection
   end
   
-  scope '/:enviroment_title' do
+  resources :enviroments, param: :title, path: "/", only: [] do
     resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
       delete :stop, :on => :member
     end
     resources :build_logs, only: [:show]
     resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false
   end
-  
   get '/:enviroment_title', to: 'build_jobs#enviroments', as: 'home_enviroments'
   
   root 'home#index'

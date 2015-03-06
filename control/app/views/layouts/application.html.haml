@@ -16,8 +16,6 @@
           = link_to "Home", root_path, class: "navbar-brand"
           .collapse.navbar-collapse
             %ul.nav.navbar-nav
-              /%li{:class => active_class_for('devices')}= link_to 'Devices', devices_path
-              /%li{:class => active_class_for('media_items')}= link_to 'Media items', media_items_path
               - if current_user and current_user.admin?
                 %li= link_to 'Admin', admin_index_path
             %ul.pull-right.nav.navbar-text

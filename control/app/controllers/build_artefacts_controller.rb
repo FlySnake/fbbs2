@@ -5,11 +5,11 @@ class BuildArtefactsController < ApplicationController
       render :show
     else
       if @artefact.build_job.status == 'busy'
-        redirect_to build_job_path(:id => @artefact.build_job.id, :enviroment_title => params[:enviroment_title]), 
+        redirect_to enviroment_build_job_path(:id => @artefact.build_job.id, :enviroment_title => params[:enviroment_title]), 
                     flash: {warning: "The job is not finished yet."}
       else
         if @artefact.file.nil? or @artefact.file.url.nil?
-          redirect_to build_job_path(:id => @artefact.build_job.id, :enviroment_title => params[:enviroment_title]), 
+          redirect_to enviroment_build_job_path(:id => @artefact.build_job.id, :enviroment_title => params[:enviroment_title]), 
                       flash: {error: "It appears like there is no artefacts for this build job. Maybe it has failed or something like that."}
         else
           redirect_to @artefact.file.url

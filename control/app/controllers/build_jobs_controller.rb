@@ -3,7 +3,8 @@ class BuildJobsController < ApplicationController
   before_filter :set_enviroment
   before_filter :create_build_job, only: [:new, :enviroments]
   before_filter :set_enviroments
-  before_filter :set_build_jobs, only: [:index, :enviroments]
+  before_filter :set_build_jobs_ready, only: [:index, :enviroments]
+  before_filter :set_build_jobs_active, only: [:enviroments]
 
   # GET /build_jobs
   # GET /build_jobs.json
@@ -81,7 +82,7 @@ class BuildJobsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_build_job
-      @build_job = BuildJob.find(params[:id])
+      @build_job = BuildJob.includes(:enviroment).find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -108,18 +109,20 @@ class BuildJobsController < ApplicationController
       @build_job = BuildJob.new(:enviroment => @enviroment)
     end
     
-    def set_build_jobs
-      # TODO optimize query
+    def set_build_jobs_active
+      @build_jobs_active = BuildJob.
+          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
+          where(:status => [BuildJob.statuses[:busy], BuildJob.statuses[:fresh]]).
+          order(:created_at => :desc)
+    end
+          
+    def set_build_jobs_ready
       @build_jobs_ready = BuildJob.
           includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
           where(:enviroment => @enviroment, :status => BuildJob.statuses[:ready]).
           order(:created_at => :desc).
           paginate(:page => params[:page], :per_page => 10)
-      @build_jobs_busy = BuildJob.
-          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
-          where(:status => [BuildJob.statuses[:busy], BuildJob.statuses[:fresh]]).
-          order(:created_at => :desc).
-          paginate(:page => params[:page], :per_page => 10)
+      
     end
     
     
