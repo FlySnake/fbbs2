@@ -27,6 +27,22 @@ class BuildJob < ActiveRecord::Base
     where(:worker => worker, :status => BuildJob.statuses[:busy])
   }
   
+  scope :by_branch, ->(branch) {
+    where(:branch => branch)
+  }
+  
+  scope :by_enviroment, ->(enviroment) {
+    where(:enviroment => enviroment)
+  }
+  
+  filterrific(
+    default_filter_params: { sorted_by: 'created_at_desc' },
+    available_filters: [
+      :by_branch,
+      :by_enviroment
+    ]
+  )
+  
   def start!(worker)
     worker.start!(:target_platform_name => self.target_platform.title, 
                   :enviroment_id => self.enviroment.id, 
