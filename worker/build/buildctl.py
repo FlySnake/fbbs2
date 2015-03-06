@@ -13,6 +13,7 @@ class BuildCtl(object, metaclass=singleton.Singleton):
         self.__job = None
         
     def start(self, **kwargs):
+        log.info("starting build job with params: " + str(kwargs))
         try:
             if not self.__job or not self.__job.is_alive():
                 self.__job = buildjob.BuildJob(**kwargs)
@@ -24,6 +25,7 @@ class BuildCtl(object, metaclass=singleton.Singleton):
             return self.status()
         
     def stop(self):
+        log.info("stopping build job")
         try:
             if self.__job and self.__job.is_alive():
                 self.__job.terminate()

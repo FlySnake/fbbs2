@@ -28,7 +28,7 @@ module BuildJobsHelper
   end
   
   def calculate_duration(build_job)
-    if build_job.status == :busy
+    if build_job.status == 'busy'
       end_time = Time.now
     else
       end_time = build_job.finished_at.nil? ? build_job.updated_at : build_job.finished_at

@@ -60,8 +60,8 @@ class BuildJob < ActiveRecord::Base
     build_jobs.each do |build_job| # should be only one, but just in case...
       #puts "$$$$ #{attr_name}: #{old_value} -> #{new_value}"
       begin
-        if attr_name == :status and old_value == :busy and new_value == :ready
-          # worker completed
+        if attr_name == :status and old_value == :busy and (new_value == :ready or :offline)
+          # worker completed or died
           build_job.finalize_result worker
           Rails.logger.debug "Worker '#{worker.title}' completed the job with result: #{build_job.result.to_s}"
           build_job.finalize_build_log worker

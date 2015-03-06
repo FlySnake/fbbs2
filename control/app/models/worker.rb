@@ -24,7 +24,7 @@ class Worker < ActiveRecord::Base
       update_status msg
     rescue => err
       Rails.logger.error("Error updating worker status: #{err.to_s}")
-      self.status = :offline
+      set_to_failure
     end
   end
   
@@ -36,7 +36,7 @@ class Worker < ActiveRecord::Base
       update_status msg
     rescue => err
       Rails.logger.error("Error starting worker: #{err.to_s}")
-      self.status = :offline
+      set_to_failure
     end
   end
   
@@ -48,7 +48,7 @@ class Worker < ActiveRecord::Base
       true
     rescue => err
       Rails.logger.error("Error stopping worker: #{err.to_s}")
-      self.status = :offline
+      set_to_failure
       false
     end
   end
@@ -83,6 +83,11 @@ class Worker < ActiveRecord::Base
   end
   
   private 
+  
+    def set_to_failure
+      self.result = :failure
+      self.status = :offline
+    end
   
     def request_config_on_create
       request_config!
