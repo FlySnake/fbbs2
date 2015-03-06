@@ -51,4 +51,13 @@ module BuildJobsHelper
     result
   end
   
+  def link_to_commit(build_job)
+    text = ""
+    text = build_job.commit.humanize
+    link = build_job.enviroment.repository.full_weblink_to_commit(build_job.commit.identifier)
+    link_to(text, link, :target => "_blank")
+  rescue
+    text
+  end
+  
 end

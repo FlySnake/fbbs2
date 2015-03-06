@@ -18,7 +18,7 @@
       %td
         - b.build_artefacts.each do |a|
           = link_to artefact_link_text_short(a), artefact_link(enviroment, a)
-      %td= b.commit.humanize unless b.commit.nil? 
+      %td= link_to_commit(b)
       %td= localtime(b.started_at) unless b.started_at.nil? 
       %td= calculate_duration(b)
       %td= b.comment

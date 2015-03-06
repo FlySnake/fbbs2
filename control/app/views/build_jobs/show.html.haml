@@ -18,7 +18,7 @@
         %dd= @build_job.full_version.title
       - unless @build_job.commit.nil?
         %dt VCS revision
-        %dd= @build_job.commit.humanize
+        %dd= link_to_commit(@build_job)
       - if @build_job.build_artefacts.any?
         %dt Download
         - @build_job.build_artefacts.each do |a|
