@@ -30,6 +30,7 @@ class Worker < ActiveRecord::Base
   
   def start!(params)
     Rails.logger.info("Starting worker '#{self.title}@#{self.address}'")
+    self.status = :busy #for sure
     begin
       msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version], params[:buildnum_service]))
       update_status msg

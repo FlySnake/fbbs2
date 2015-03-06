@@ -116,7 +116,7 @@ class BuildJobsController < ApplicationController
           order(:created_at => :desc).
           paginate(:page => params[:page], :per_page => 10)
       @build_jobs_busy = BuildJob.
-          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts).
+          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
           where(:status => [BuildJob.statuses[:busy], BuildJob.statuses[:fresh]]).
           order(:created_at => :desc).
           paginate(:page => params[:page], :per_page => 10)

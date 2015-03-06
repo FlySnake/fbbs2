@@ -23,6 +23,10 @@ class BuildJob < ActiveRecord::Base
   after_save :call_scheduler
   before_destroy :stop!
   
+  scope :busy_with_worker, ->(worker) {
+    where(:worker => worker, :status => BuildJob.statuses[:busy])
+  }
+  
   def start!(worker)
     worker.start!(:target_platform_name => self.target_platform.title, 
                   :enviroment_id => self.enviroment.id, 
@@ -50,7 +54,7 @@ class BuildJob < ActiveRecord::Base
       BuildJobQueue.scheduler
     end
     
-    build_jobs = where(:worker => worker, :status => BuildJob.statuses[:busy])
+    build_jobs = busy_with_worker(worker)
     Rails.logger.warn("More than 1 active job for worker '#{worker.title}': #{build_jobs.map{|b| b.id}.to_s}") if build_jobs.size > 1
     
     build_jobs.each do |build_job| # should be only one, but just in case...
