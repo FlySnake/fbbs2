@@ -12,11 +12,8 @@
 
 - if @build_jobs_busy.any?
   .row
-    .col-md-6
-      %h3 Active jobs 
-    .col-md-6
-      = image_tag image_path("busy_pacman.gif"), alt: "pacman", class: "img-responsive inline-block pull-right"
     .col-md-12
+      %h3= image_tag image_path("busy_pacman.gif"), alt: "pacman", class: "img-responsive inline-block"
       = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_busy, enviroment: @enviroment}
     
 .row

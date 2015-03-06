@@ -14,5 +14,5 @@
       %dt Built on
       %dd= @build_log.build_job.worker.title + "@" + @build_log.build_job.worker.address
 
-%pre= @build_log.text
+%pre= highlight(@build_log.text, "Error")
 
