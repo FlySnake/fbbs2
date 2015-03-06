@@ -36,7 +36,7 @@ class BuildJob < ActiveRecord::Base
   }
   
   filterrific(
-    default_filter_params: { sorted_by: 'created_at_desc' },
+    default_filter_params: { },
     available_filters: [
       :by_branch,
       :by_enviroment
