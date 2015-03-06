@@ -5,13 +5,11 @@ class BuildJobsController < ApplicationController
   before_filter :set_enviroments
   before_filter :set_build_jobs_ready, only: [:index, :enviroments]
   before_filter :set_build_jobs_active, only: [:enviroments]
+  before_filter :check_enviroments
 
   # GET /build_jobs
   # GET /build_jobs.json
   def index
-    unless @enviroments.any?
-      redirect_to enviroments_path, flash: {error: "You have to create at least one build enviroment."}  
-    end
   end
 
   # GET /build_jobs/1
@@ -125,5 +123,10 @@ class BuildJobsController < ApplicationController
       
     end
     
+    def check_enviroments
+      unless @enviroments.any?
+        redirect_to enviroments_path, flash: {error: "You have to create at least one build enviroment."}  
+      end
+    end
     
 end
