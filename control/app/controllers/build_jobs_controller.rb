@@ -41,7 +41,7 @@ class BuildJobsController < ApplicationController
                               :enviroment => @enviroment,
                               :status => BuildJob.statuses[:fresh],
                               :result => BuildJob.results[:unknown],
-                              :generate_build_numbers_url => generate_build_numbers_url + ".json")
+                              :generate_build_numbers_url => generate_build_numbers_url(:json))
 
     respond_to do |format|
       if @build_job.save
