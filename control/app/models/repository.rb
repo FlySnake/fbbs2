@@ -7,6 +7,7 @@ class Repository < ActiveRecord::Base
   validates :path, length: {in: 1..4000}
   validates :vcs_type, inclusion: {in: Repository.vcs_types.keys}
   #TODO validated weblink_to_commit for :commit
+  validate :path_correctness
   
   def branches(force_fetch=false)
     begin
@@ -42,23 +43,30 @@ class Repository < ActiveRecord::Base
   
   protected
   
-  def vcs_by_type(type)
-    case type
-    when 'git'
-      vcs = Vcs::Git.new(path)
-    else
-      vcs = Vcs::Base.new(path)
+    def vcs_by_type(type)
+      case type
+      when 'git'
+        vcs = Vcs::Git.new(path)
+      else
+        vcs = Vcs::Base.new(path)
+      end
+      vcs
     end
-    vcs
-  end
-  
-  def fetch_branches(vcs)
-    branches_names = vcs.branches
-    unless branches_names.nil?
-      Branch.destroy_all(['name not in (?)', branches_names]) # remove deleted in repo branches
-      branches_to_create = branches_names - Branch.all.map {|b| b.name } # make a list of only new branches
-      Branch.create(branches_to_create.map {|b| {name: b, repository: self} }) # insert them at once
+    
+    def fetch_branches(vcs)
+      branches_names = vcs.branches
+      unless branches_names.nil?
+        Branch.destroy_all(['name not in (?)', branches_names]) # remove deleted in repo branches
+        branches_to_create = branches_names - Branch.all.map {|b| b.name } # make a list of only new branches
+        Branch.create(branches_to_create.map {|b| {name: b, repository: self} }) # insert them at once
+      end
     end
-  end
+    
+    def path_correctness
+      vcs = vcs_by_type vcs_type
+      vcs.check_correctness
+    rescue
+      errors.add(:path, "does not exists or not a repository")
+    end
   
 end
