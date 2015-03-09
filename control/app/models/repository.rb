@@ -6,7 +6,7 @@ class Repository < ActiveRecord::Base
   validates :title, length: {in: 1..100}, uniqueness: true
   validates :path, length: {in: 1..4000}
   validates :vcs_type, inclusion: {in: Repository.vcs_types.keys}
-  #TODO validated weblink_to_commit for :commit
+  validates :weblink_to_commit, format: { with: /:commit/, message: "must contain ':commit' for substitution" }, allow_blank: true
   validate :path_correctness
   
   def branches(force_fetch=false)
