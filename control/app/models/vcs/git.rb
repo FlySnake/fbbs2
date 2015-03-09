@@ -21,7 +21,7 @@ class Vcs::Git < Vcs::Base
   attr_reader :remote_name
   
   def check_correctness
-    not remote_url.nil?
+    raise "no remotes in repository" if remote_url.nil?
   end
   
 end

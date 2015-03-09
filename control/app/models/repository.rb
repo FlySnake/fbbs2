@@ -65,8 +65,8 @@ class Repository < ActiveRecord::Base
     def path_correctness
       vcs = vcs_by_type vcs_type
       vcs.check_correctness
-    rescue
-      errors.add(:path, "does not exists or not a repository")
+    rescue => err
+      errors.add(:path, err.to_s)
     end
   
 end
