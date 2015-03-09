@@ -8,4 +8,7 @@ class Vcs::Base
   def branches
   end
   
+  def check_correctness
+  end
+  
 end

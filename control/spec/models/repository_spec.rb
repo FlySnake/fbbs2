@@ -48,4 +48,16 @@ RSpec.describe Repository, type: :model do
     expect(repo.full_weblink_to_commit(commit)).to eq "#{repo.weblink_to_commit.sub(':commit', commit)}"
   end
   
+  it "is invalid with wrong weblink to commit" do
+    expect(build(:repository, :weblink_to_commit => "http://invalid/url")).to be_invalid
+  end
+  
+  it "is valid with correct weblink to commit" do
+    expect(build(:repository, :weblink_to_commit => "http://valid/url/:commit")).to be_valid
+  end
+  
+  it "is valid without weblink to commit" do
+    expect(build(:repository, :weblink_to_commit => nil)).to be_valid
+  end
+  
 end

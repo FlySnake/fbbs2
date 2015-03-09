@@ -2,7 +2,7 @@ require 'git'
 
 class Vcs::Git < Vcs::Base
   def initialize(path, remote_name='origin')
-    raise "repository path #{path} does not exists" unless File.exists? path
+    raise "repository path '#{path}' does not exists" unless File.exists? path
     @git = Git.open(path)
     @remote_name = remote_name
     super(path)
@@ -19,5 +19,9 @@ class Vcs::Git < Vcs::Base
   end
   
   attr_reader :remote_name
+  
+  def check_correctness
+    raise "no remotes in repository" if remote_url.nil?
+  end
   
 end
