@@ -8,4 +8,8 @@ class Enviroment < ActiveRecord::Base
   validates :default_build_number, numericality: { only_integer: true }, presence: true
   validates :repository, :presence => true
   
+  def self.options_for_select
+    order('LOWER(title)').map { |e| [e.name, e.id] }
+  end
+  
 end
