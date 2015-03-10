@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150310103822) do
+ActiveRecord::Schema.define(version: 20150310123734) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -123,10 +123,10 @@ ActiveRecord::Schema.define(version: 20150310103822) do
     t.integer  "default_build_number",              default: 0,  null: false
     t.integer  "repository_id"
     t.string   "branches_filter",      limit: 2048, default: ""
-    t.string   "weblink_to_issue",     limit: 4096
-    t.string   "issue_regex",          limit: 256,  default: "", null: false
+    t.integer  "issue_tracker_id"
   end
 
+  add_index "enviroments", ["issue_tracker_id"], name: "index_enviroments_on_issue_tracker_id"
   add_index "enviroments", ["repository_id"], name: "index_enviroments_on_repository_id"
   add_index "enviroments", ["title"], name: "index_enviroments_on_title"
 
@@ -134,6 +134,14 @@ ActiveRecord::Schema.define(version: 20150310103822) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "title"
+  end
+
+  create_table "issue_trackers", force: :cascade do |t|
+    t.string   "title",      limit: 1024, null: false
+    t.string   "weblink",    limit: 4096, null: false
+    t.string   "regex",      limit: 4096, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "repositories", force: :cascade do |t|

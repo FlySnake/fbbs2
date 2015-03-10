@@ -70,9 +70,9 @@ module BuildJobsHelper
   def link_to_issue(build_job)
     text = ""
     text = build_job.commit.message
-    issue = build_job.commit.extract_issue(build_job.enviroment.issue_regex)
+    issue = build_job.commit.extract_issue(build_job.enviroment.issue_tracker.regex)
     raise if issue.empty? or issue.nil?
-    link = build_job.enviroment.full_weblink_to_issue(issue)
+    link = build_job.enviroment.issue_tracker.full_weblink(issue)
     link_to(text, link, :target => "_blank")
   rescue
     text

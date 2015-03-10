@@ -1,0 +1,27 @@
+- title "List issu trackers"
+  
+%h1.page-header= yield(:title)
+
+.row
+  .col-md-12
+    %table.table.table-striped.table-bordered.table-hover.table-responsive
+      %tr
+        %th Title
+        %th Weblink
+        %th Regexp
+        %th Enviroments
+        %th More info
+        
+      - @issue_trackers.each do |b|
+        %tr
+          %td= b.title
+          %td= b.weblink
+          %td= b.regex
+          %td
+            %ul
+              - b.enviroments.each do |e|
+                %li= link_to e.title, e
+              
+          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), b, :class => "btn btn-default"
+          
+    = link_to 'Add new issue tracker', new_issue_tracker_path, class: "btn btn-primary"

@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
     resources :enviroments
     resources :base_versions
+    resources :issue_trackers
   end
   get 'users/profile', as: 'user_root'
   

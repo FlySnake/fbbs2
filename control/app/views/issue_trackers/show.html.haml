@@ -1,0 +1,23 @@
+- title "Issue tracker info"
+
+%h1.page-header= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Title
+      %dd= @issue_tracker.title
+      %dt Used in enviroments
+      %dd= @issue_tracker.enviroments.map{|b| b.title}.join(", ")
+      %dt Weblink
+      %dd= @issue_tracker.weblink
+      %dt Issue regexp
+      %dd= @issue_tracker.regex
+      %dt Created at
+      %dd= localtime @issue_tracker.created_at
+      %dt Updated at
+      %dd= localtime @issue_tracker.updated_at
+    
+.row
+  .col-md-12
+    = link_to 'Edit issue tracker', edit_issue_tracker_path(@issue_tracker), class: "btn btn-primary"

@@ -1,0 +1,7 @@
+= bootstrap_form_for @issue_tracker, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10" do |f|
+  = f.text_field :title
+  = f.text_field :weblink, placeholder: "Example: https://bitbucket.org/antlabs_dev/fbbs2/issue/:issue"
+  = f.text_field :regex, placeholder: "Example: \d{3,10} to match numbers containing 2-10 digits and insert this number to weblink above"
+  = f.primary 'Save'
+  - if not defined?(delete_disabled) or not delete_disabled
+    = link_to 'Delete this issue tracker', @issue_tracker, :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }

@@ -2,6 +2,7 @@ class EnviromentsController < BaseAdminController
   before_filter :set_enviroment, only: [:show, :edit, :update, :destroy]
   before_filter :set_repositories, only: [:new, :edit]
   before_filter :set_base_versions, only: [:new, :edit]
+  before_filter :set_issue_trackers, only: [:new, :edit]
 
   # GET /enviroments
   # GET /enviroments.json
@@ -76,10 +77,14 @@ class EnviromentsController < BaseAdminController
     def set_base_versions
       @base_versions = BaseVersion.order(:name => :asc).all
     end
+    
+    def set_issue_trackers
+      @issue_trackers = IssueTracker.all
+    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def enviroment_params
-      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :weblink_to_issue, :issue_regex, :base_version_ids => [])
+      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :issue_tracker_id, :base_version_ids => [])
     end
    
 end

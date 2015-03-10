@@ -4,6 +4,6 @@ FactoryGirl.define do
     default_build_number 0
     branches_filter ""
     association :repository
-    weblink_to_issue { Faker::Internet.url + "/:issue" }
+    association :issue_tracker
   end
 end

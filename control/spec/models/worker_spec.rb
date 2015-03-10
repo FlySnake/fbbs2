@@ -18,8 +18,9 @@ RSpec.describe Worker, type: :model do
   end
   
   it "is invalid with duplicate title" do
-    create(:worker, :title => "hello")
-    expect(build(:worker, :title => "hello")).to be_invalid
+    title = Faker::Lorem.word
+    create(:worker, :title => title)
+    expect(build(:worker, :title => title)).to be_invalid
   end
   
   it "is invalid without address" do
@@ -35,8 +36,9 @@ RSpec.describe Worker, type: :model do
   end
   
   it "is invalid with duplicate address" do
-    create(:worker, :address => "http://192.168.1.1:12345")
-    expect(build(:worker, :address => "http://192.168.1.1:12345")).to be_invalid
+    addr = "http://192.168.1.1:12345"
+    create(:worker, :address => addr)
+    expect(build(:worker, :address => addr)).to be_invalid
   end
   
 end
