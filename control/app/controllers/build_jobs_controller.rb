@@ -3,13 +3,27 @@ class BuildJobsController < ApplicationController
   before_filter :set_enviroment
   before_filter :create_build_job, only: [:new, :enviroments]
   before_filter :set_enviroments
-  before_filter :set_build_jobs_ready, only: [:index, :enviroments]
+  before_filter :set_build_jobs_ready, only: [:enviroments]
   before_filter :set_build_jobs_active, only: [:enviroments]
   before_filter :check_enviroments
 
   # GET /build_jobs
   # GET /build_jobs.json
   def index
+    @filterrific = initialize_filterrific(
+      BuildJob,
+      params[:filterrific],
+      select_options: {
+        with_branch_id: Branch.options_for_select(@enviroment.branches_filter),
+        with_base_version_id: BaseVersion.options_for_select,
+        with_target_platform_id: TargetPlatform.options_for_select
+      }
+    ) or return
+    @build_jobs_ready = @filterrific.find.page(params[:page]).per_page(params[:per_page] || 20).
+                                     includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
+                                     where(:enviroment => @enviroment, :status => BuildJob.statuses[:ready]).
+                                     order(:created_at => :desc)
+
     respond_to do |format|
       format.html
       format.js

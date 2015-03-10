@@ -3,4 +3,9 @@ class BaseVersion < ActiveRecord::Base
   has_many :build_jobs
   
   validates :name, length: { in: 1..100 }, uniqueness: true
+  
+  def self.options_for_select
+    order('LOWER(name)').map { |e| [e.name, e.id] }
+  end
+  
 end

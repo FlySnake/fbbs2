@@ -6,4 +6,8 @@ class TargetPlatform < ActiveRecord::Base
     joins(:workers).group("target_platforms.id")
   }
   
+  def self.options_for_select
+    order('LOWER(title)').map { |e| [e.title, e.id] }
+  end
+  
 end

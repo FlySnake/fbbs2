@@ -1,0 +1,4 @@
+- js = escape_javascript(
+- render(partial: 'list_jobs', locals: { build_jobs: @build_jobs_ready, enviroment: @enviroment })
+- )
+$("#filterrific_results").html("#{js}");

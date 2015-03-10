@@ -27,19 +27,24 @@ class BuildJob < ActiveRecord::Base
     where(:worker => worker, :status => BuildJob.statuses[:busy])
   }
   
-  scope :with_branch, ->(branch) {
-    where(:branch => [*branch])
+  scope :with_branch_id, ->(branches_ids) {
+    where(:branch_id => [*branches_ids])
   }
   
-  scope :with_enviroment, ->(enviroment) {
-    where(:enviroment => [*enviroment])
+  scope :with_target_platform_id, ->(target_platforms_ids) {
+    where(:target_platform_id => [*target_platforms_ids])
+  }
+  
+  scope :with_base_version_id, ->(base_versions_ids) {
+    where(:base_version_id => [*base_versions_ids])
   }
   
   filterrific(
     default_filter_params: { },
     available_filters: [
-      :with_branch,
-      :with_enviroment
+      :with_branch_id,
+      :with_base_version_id,
+      :with_target_platform_id
     ]
   )
   

@@ -11,8 +11,33 @@
     = render partial: 'enviroments_menu', locals: {page: :enviroment_build_jobs}
   .col-md-10
     %h3= yield(:title)
+    = form_for_filterrific @filterrific, class: 'form-horizontal' do |f|
+      .row
+        .col-sm-2
+          = f.label 'Branch'
+        .col-sm-10
+          = f.select :with_branch_id, @filterrific.select_options[:with_branch_id], { include_blank: '*' }, :id => "select-branch"
+          = select2js_for_id "select-branch"
+      %br
+      .row
+        .col-sm-2
+          = f.label 'Target platform'
+        .col-sm-10
+          = f.select :with_target_platform_id, @filterrific.select_options[:with_target_platform_id], { include_blank: '*' }, :id => "select-target_platform"
+          = select2js_for_id "select-target_platform"    
+      %br
+      .row
+        .col-sm-2
+          = f.label 'Base version'
+        .col-sm-10
+          = f.select :with_base_version_id, @filterrific.select_options[:with_base_version_id], { include_blank: '*' }, :id => "select-base_version"
+          = select2js_for_id "select-base_version"          
+      .row
+        .col-md-12
+          = link_to 'Reset filters', reset_filterrific_url#, class: "btn btn-default"
+          = render_filterrific_spinner
 
 .row
-  .col-md-12.col-lg-12
+  .col-md-12.col-lg-12    
     = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_ready, enviroment: @enviroment}
 
