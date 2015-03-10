@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   private
   
     def make_first_user_admin
-      if all.count.empty?
+      if User.all.empty?
         self.admin = true
       end
     end
