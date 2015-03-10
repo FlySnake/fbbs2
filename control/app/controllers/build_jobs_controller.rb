@@ -50,6 +50,7 @@ class BuildJobsController < ApplicationController
     target_platform = TargetPlatform.find(params[:build_job][:target_platform])
     notify_user = User.find(params[:build_job][:notify_user])
     started_by_user = current_user
+    comment = params[:build_job][:comment]
     
     @build_job = BuildJob.new(:branch => branch, 
                               :base_version => base_version, 
@@ -59,6 +60,7 @@ class BuildJobsController < ApplicationController
                               :enviroment => @enviroment,
                               :status => BuildJob.statuses[:fresh],
                               :result => BuildJob.results[:unknown],
+                              :comment => comment,
                               :generate_build_numbers_url => generate_build_numbers_url(:json))
 
     respond_to do |format|
