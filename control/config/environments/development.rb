@@ -45,4 +45,10 @@ Rails.application.configure do
     Bullet.enable = true
     Bullet.alert = true
   end
+  
+#config.preload_frameworks = true
+#config.allow_concurrency = true
+#config.cache_classes = true
+#config.eager_load = true
+  
 end

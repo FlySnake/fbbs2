@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+                  get 'sse1' => 'sse_tests#test1' #DELETEME
+                  get 'sse' => 'sse_tests#test' #DELETEME
 
   devise_for :users
   scope "/admin" do
@@ -28,7 +30,7 @@ Rails.application.routes.draw do
     resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false
   end
   get '/:enviroment_title', to: 'build_jobs#enviroments', as: 'home_enviroments'
-  
+
   root 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
