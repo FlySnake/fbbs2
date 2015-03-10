@@ -51,11 +51,25 @@ module BuildJobsHelper
     result
   end
   
+  def revision_text(build_job)
+    text = ""
+    text = link_to_commit(build_job) + " | #{build_job.commit.author} | #{build_job.commit.datetime} | " + link_to_issue(build_job)
+  rescue
+    text
+  end
+  
   def link_to_commit(build_job)
     text = ""
-    text = build_job.commit.humanize
+    text = build_job.commit.identifier
     link = build_job.enviroment.repository.full_weblink_to_commit(build_job.commit.identifier)
     link_to(text, link, :target => "_blank")
+  rescue
+    text
+  end
+  
+  def link_to_issue(build_job)
+    text = ""
+    text = build_job.commit.message
   rescue
     text
   end
