@@ -14,5 +14,5 @@
 
 .row
   .col-md-12.col-lg-12
-    = render partial: 'list_jobs'
+    = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_ready, enviroment: @enviroment}
 

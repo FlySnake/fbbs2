@@ -11,7 +11,7 @@
     %th Comment
     %th More info
     
-  - @build_jobs_active.each do |b|
+  - build_jobs.each do |b|
     %tr{:class => build_job_tr_class(b) }
       %td= b.enviroment.title
       %td= b.branch.name
@@ -19,10 +19,10 @@
       %td= b.target_platform.title
       %td
         - b.build_artefacts.each do |a|
-          = link_to artefact_link_text_short(a), artefact_link(@enviroment, a)
+          = link_to artefact_link_text_short(a), artefact_link(enviroment, a)
       %td= link_to_commit(b)
       %td= localtime(b.started_at) unless b.started_at.nil? 
       %td= calculate_duration(b)
       %td= b.comment
-      %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), enviroment_build_job_path(id: b.id, :enviroment_title => @enviroment.title), :class => "btn btn-default"
+      %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), enviroment_build_job_path(id: b.id, :enviroment_title => enviroment.title), :class => "btn btn-default"
  
