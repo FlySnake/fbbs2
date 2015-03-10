@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150305150603) do
+ActiveRecord::Schema.define(version: 20150310103822) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -123,6 +123,8 @@ ActiveRecord::Schema.define(version: 20150305150603) do
     t.integer  "default_build_number",              default: 0,  null: false
     t.integer  "repository_id"
     t.string   "branches_filter",      limit: 2048, default: ""
+    t.string   "weblink_to_issue",     limit: 4096
+    t.string   "issue_regex",          limit: 256,  default: "", null: false
   end
 
   add_index "enviroments", ["repository_id"], name: "index_enviroments_on_repository_id"

@@ -8,4 +8,14 @@ class Enviroment < ActiveRecord::Base
   validates :default_build_number, numericality: { only_integer: true }, presence: true
   validates :repository, :presence => true
   
+  validates :weblink_to_issue, format: { with: /:issue/, message: "must contain ':issue' for substitution" }, allow_blank: true
+  
+  def full_weblink_to_issue(issue)
+    unless self.weblink_to_issue.nil?
+      self.weblink_to_issue.sub(":issue", issue)
+    else
+      nil
+    end
+  end
+  
 end

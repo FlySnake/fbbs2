@@ -79,7 +79,7 @@ class EnviromentsController < BaseAdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def enviroment_params
-      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :base_version_ids => [])
+      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :weblink_to_issue, :issue_regex, :base_version_ids => [])
     end
    
 end

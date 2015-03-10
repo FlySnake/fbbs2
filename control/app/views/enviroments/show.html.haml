@@ -16,6 +16,11 @@
         %dd none
       %dt Branches filter regex
       %dd= @enviroment.branches_filter
+      - unless @enviroment.weblink_to_issue.nil?
+        %dt Weblink to issue
+        %dd= @enviroment.weblink_to_issue
+        %dt Issue regex to search in commit message
+        %dd= @enviroment.issue_regex
       %dt Base versions
       %dd= @enviroment.base_versions.map{|b| b.name}.join(", ")
       %dt Created at

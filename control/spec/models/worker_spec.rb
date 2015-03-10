@@ -35,8 +35,8 @@ RSpec.describe Worker, type: :model do
   end
   
   it "is invalid with duplicate address" do
-    create(:worker, :address => "192.168.1.1:12345")
-    expect(build(:worker, :address => "192.168.1.1:12345")).to be_invalid
+    create(:worker, :address => "http://192.168.1.1:12345")
+    expect(build(:worker, :address => "http://192.168.1.1:12345")).to be_invalid
   end
   
 end

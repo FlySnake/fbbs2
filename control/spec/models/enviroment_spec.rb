@@ -34,4 +34,10 @@ RSpec.describe Enviroment, type: :model do
     expect(build(:enviroment, :title => "hello world")).to be_invalid
   end
   
+  it "creates full weblink to issue" do
+    link = "http://example.com/issues/:issue"
+    e = build(:enviroment, :weblink_to_issue => link)
+    expect(e.full_weblink_to_issue("1234567")).to eq link.sub(":issue", "1234567")
+  end
+  
 end
