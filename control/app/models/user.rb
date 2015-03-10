@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   include Gravtastic
   gravtastic
   
-  before_save :make_first_user_admin
+  before_create :make_first_user_admin
   
   private
   
