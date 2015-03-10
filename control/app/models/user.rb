@@ -7,5 +7,14 @@ class User < ActiveRecord::Base
   include Gravtastic
   gravtastic
   
+  before_save :make_first_user_admin
+  
+  private
+  
+    def make_first_user_admin
+      if all.count.empty?
+        self.admin = true
+      end
+    end
   
 end
