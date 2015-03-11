@@ -1,6 +1,9 @@
 require 'jsonclient'
+require 'model_helpers'
 
 class Worker < ActiveRecord::Base
+  include ModelHelpers
+  
   has_and_belongs_to_many :target_platforms
   has_many :build_jobs
   
