@@ -11,7 +11,7 @@ class BuildJobsController < ApplicationController
   before_filter :set_build_jobs_active, only: [:enviroments]
   before_filter :check_enviroments, except: [:live_updates]
   before_filter :set_variables_for_js, except: [:live_updates]
-skip_before_filter :authenticate_user!, only: [:live_updates]
+
   # GET /build_jobs
   # GET /build_jobs.json
   def index
@@ -49,7 +49,7 @@ skip_before_filter :authenticate_user!, only: [:live_updates]
   
   def live_updates
     response.headers['Content-Type'] = 'text/event-stream'
-    sse = SSE.new(response.stream, retry: 300, event: "update_build_jobs")
+    sse = SSE.new(response.stream, retry: 5000, event: "update_build_jobs")
     BuildJob.on_change do |build_job|
       sse.write({ build_job_id:       build_job.id, 
                   duration:           calculate_duration(build_job),
