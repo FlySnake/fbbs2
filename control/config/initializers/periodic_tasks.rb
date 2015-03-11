@@ -9,7 +9,7 @@ else
     Thread.new do
       loop do
         begin
-          #WorkersPool::Pool.instance.poll_all
+          WorkersPool::Pool.instance.poll_all
           sleep 4
         rescue => err
           Rails.logger.error("Unhandled exception in 'WorkersPool::Pool.instance.poll_all': #{err.to_s}")
@@ -19,7 +19,7 @@ else
   end
  
   scheduler.every '30s' do
-    #WorkersPool::Timeout.new.check!
+    WorkersPool::Timeout.new.check!
   end
   
   #scheduler.every '2s' do

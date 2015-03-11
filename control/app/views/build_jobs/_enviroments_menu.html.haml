@@ -4,5 +4,7 @@
       %li.active= link_to e.title.humanize, path_to_enviroment(e, page), {role: "presentation"} 
     - else
       %li= link_to e.title.humanize, path_to_enviroment(e, page), {role: "presentation"}
+      
+= include_gon
   
 

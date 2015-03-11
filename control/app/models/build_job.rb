@@ -1,4 +1,8 @@
+require 'model_helpers'
+
 class BuildJob < ActiveRecord::Base
+  include ModelHelpers
+  
   belongs_to :branch
   belongs_to :base_version
   belongs_to :target_platform
@@ -21,7 +25,24 @@ class BuildJob < ActiveRecord::Base
   
   after_create :enqueue_job
   after_save :call_scheduler
+  after_save :notify
   before_destroy :stop!
+  
+  @@notification_queue = Queue.new
+  class << self
+    def on_change
+      loop do
+        yield @@notification_queue.pop
+      end
+    end
+  end
+  
+  def notify
+    if @@notification_queue.size > 10 # TODO refactor
+      @@notification_queue.clear
+    end
+    @@notification_queue << self
+  end
   
   scope :busy_with_worker, ->(worker) {
     where(:worker => worker, :status => BuildJob.statuses[:busy])
@@ -171,5 +192,5 @@ class BuildJob < ActiveRecord::Base
     def call_scheduler
       BuildJobQueue.scheduler
     end
-  
+    
 end

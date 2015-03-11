@@ -14,10 +14,11 @@
 - if @build_jobs_active.any?
   .row
     .col-md-12
-      %h3= image_tag image_path("busy_pacman.gif"), alt: "pacman", class: "img-responsive inline-block"
-      = render partial: 'active_jobs', locals: {build_jobs: @build_jobs_active, enviroment: @enviroment}
+      #active_jobs_partial
+        = render partial: 'active_jobs', locals: {build_jobs: @build_jobs_active, enviroment: @enviroment}
     
 .row
   .col-md-12
     %h3 Latest jobs
-    = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_ready, enviroment: @enviroment}
+    #last_jobs_partial
+      = render partial: 'list_jobs', locals: {build_jobs: @build_jobs_ready, enviroment: @enviroment}

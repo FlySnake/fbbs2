@@ -12,13 +12,11 @@
       %th More info
       
     - build_jobs.each do |b|
-      %tr{:class => build_job_tr_class(b) }
+      %tr{:class => build_job_tr_class(b), :id => "build_job_id_" + b.id.to_s }
         %td= b.branch.name
         %td= b.full_version.title unless b.full_version.nil? 
         %td= b.target_platform.title
-        %td
-          - b.build_artefacts.each do |a|
-            = link_to artefact_link_text_short(a), artefact_link(enviroment, a)
+        %td= artefacts_links(b)
         %td= revision_text(b)
         %td= localtime(b.started_at) unless b.started_at.nil? 
         %td= calculate_duration(b)

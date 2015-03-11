@@ -27,6 +27,21 @@ module BuildJobsHelper
     File.extname(artefact.filename).delete('.')
   end
   
+  def artefacts_links(build_job)
+    html = ""
+    if build_job.build_artefacts.empty?
+      build_job.reload
+    end
+    build_job.build_artefacts.each do |a|
+      html << link_to(artefact_link_text_short(a), artefact_link(build_job.enviroment, a))
+      html << " "
+    end
+    html.html_safe
+  rescue => err
+    html = err.to_s
+    html
+  end
+  
   def calculate_duration(build_job)
     if build_job.status == 'busy'
       end_time = Time.now

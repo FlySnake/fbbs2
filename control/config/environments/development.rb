@@ -41,14 +41,11 @@ Rails.application.configure do
   
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   
-  config.after_initialize do
-    Bullet.enable = true
-    Bullet.alert = true
-  end
+  #config.after_initialize do
+  #  Bullet.enable = true
+  #  Bullet.alert = true
+  #end
   
-#config.preload_frameworks = true
-#config.allow_concurrency = true
-#config.cache_classes = true
-#config.eager_load = true
+  config.allow_concurrency = true
   
 end

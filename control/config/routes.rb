@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-                  get 'sse1' => 'sse_tests#test1' #DELETEME
-                  get 'sse' => 'sse_tests#test' #DELETEME
 
   devise_for :users
   scope "/admin" do
@@ -25,6 +23,7 @@ Rails.application.routes.draw do
   resources :enviroments, param: :title, path: "/", only: [] do
     resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
       delete :stop, :on => :member
+      get :live_updates, :on => :collection
     end
     resources :build_logs, only: [:show]
     resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false

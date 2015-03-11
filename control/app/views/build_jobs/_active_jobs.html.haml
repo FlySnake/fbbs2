@@ -1,3 +1,4 @@
+%h3= image_tag image_path("busy_pacman.gif"), alt: "pacman", class: "img-responsive inline-block"
 %table.table.table-striped.table-bordered.table-hover.table-responsive
   %tr
     %th Enviroment
@@ -10,19 +11,18 @@
     %th Duration
     %th Comment
     %th More info
+    %th{:style => "display:none;"}
     
   - build_jobs.each do |b|
-    %tr{:class => build_job_tr_class(b) }
+    %tr{:class => build_job_tr_class(b), :id => "build_job_id_" + b.id.to_s }
       %td= b.enviroment.title
       %td= b.branch.name
-      %td= b.full_version.title unless b.full_version.nil? 
+      %td{:id => "full_version_for_" + b.id.to_s}= b.full_version.title unless b.full_version.nil? 
       %td= b.target_platform.title
-      %td
-        - b.build_artefacts.each do |a|
-          = link_to artefact_link_text_short(a), artefact_link(enviroment, a)
-      %td= revision_text(b)
+      %td{:id => "artefacts_for_" + b.id.to_s}= artefacts_links(b)
+      %td{:id => "revision_for_" + b.id.to_s}= revision_text(b)
       %td= localtime(b.started_at) unless b.started_at.nil? 
-      %td= calculate_duration(b)
+      %td{:id => "duration_for_" + b.id.to_s}= calculate_duration(b)
       %td= b.comment
       %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), enviroment_build_job_path(id: b.id, :enviroment_title => enviroment.title), :class => "btn btn-default"
- 
+      %td{:id => "status_for_" + b.id.to_s, :style => "display:none;"}= b.status.to_s
