@@ -6,15 +6,18 @@ class LiveUpdatesController < ApplicationController
   def build_jobs
     response.headers['Content-Type'] = 'text/event-stream'
     sse = SSE.new(response.stream, retry: 30000, event: "update_build_jobs")
+    build_jobs_queue = Queue.new
     Timeout::timeout(3600) do # kick the client after 1 hour
-      loop do
-        sse.write(params_for_build_job(BuildJob.pop_notification))
+      BuildJob.on_change(build_jobs_queue) do
+        build_job = build_jobs_queue.pop
+        sse.write(params_for_build_job(build_job))
       end
     end
   rescue ClientDisconnected, Timeout::Error => err
     Rails.logger.warn err.to_s
   ensure
     sse.close
+    BuildJob.on_change_cleanup(build_jobs_queue)
   end
   
   private

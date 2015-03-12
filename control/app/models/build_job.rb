@@ -28,17 +28,20 @@ class BuildJob < ActiveRecord::Base
   after_save :notify
   before_destroy :stop!
   
-  @@notification_queue = Queue.new
-  
-  def self.pop_notification
-    @@notification_queue.pop
+  @@notify_queues = []
+  class << self
+    def on_change(queue)
+      @@notify_queues << queue
+      loop do
+       @@notify_queues.each do
+         yield
+       end
+      end
+    end
   end
   
-  def notify
-    if @@notification_queue.size > 10 # TODO refactor
-      @@notification_queue.clear
-    end
-    @@notification_queue << self
+  def self.on_change_cleanup(queue)
+    @@notify_queues.delete(queue)
   end
   
   scope :busy_with_worker, ->(worker) {
@@ -188,6 +191,12 @@ class BuildJob < ActiveRecord::Base
     
     def call_scheduler
       BuildJobQueue.scheduler
+    end
+    
+    def notify
+      @@notify_queues.each do |q|
+        q.push self
+      end
     end
     
 end
