@@ -21,8 +21,7 @@
         %dd= link_to_commit(@build_job)
       - if @build_job.build_artefacts.any?
         %dt Download
-        - @build_job.build_artefacts.each do |a|
-          %dd= link_to a.filename, artefact_link(@enviroment, a)
+        %dd= artefacts_links(@build_job, true)
       %dt Build enviroment
       %dd= link_to @build_job.enviroment.title, @build_job.enviroment
       %dt Target platform

@@ -29,12 +29,9 @@ class BuildJob < ActiveRecord::Base
   before_destroy :stop!
   
   @@notification_queue = Queue.new
-  class << self
-    def on_change
-      loop do
-        yield @@notification_queue.pop
-      end
-    end
+  
+  def self.pop_notification
+    @@notification_queue.pop
   end
   
   def notify

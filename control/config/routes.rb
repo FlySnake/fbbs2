@@ -23,10 +23,12 @@ Rails.application.routes.draw do
   resources :enviroments, param: :title, path: "/", only: [] do
     resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
       delete :stop, :on => :member
-      get :live_updates, :on => :collection
     end
     resources :build_logs, only: [:show]
     resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false
+    resources :live_updates, only: [] do
+      get :build_jobs, :on => :collection
+    end
   end
   get '/:enviroment_title', to: 'build_jobs#enviroments', as: 'home_enviroments'
 

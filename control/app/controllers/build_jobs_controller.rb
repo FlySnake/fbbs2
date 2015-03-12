@@ -1,16 +1,12 @@
 class BuildJobsController < ApplicationController
-  include ActionController::Live
-  include BuildJobsHelper
-  include ActionView::Helpers::UrlHelper
-  
   before_filter :set_build_job, only: [:show, :update, :destroy, :stop]
   before_filter :set_enviroment
   before_filter :create_build_job, only: [:new, :enviroments]
   before_filter :set_enviroments
   before_filter :set_build_jobs_ready, only: [:enviroments]
   before_filter :set_build_jobs_active, only: [:enviroments]
-  before_filter :check_enviroments, except: [:live_updates]
-  before_filter :set_variables_for_js, except: [:live_updates]
+  before_filter :check_enviroments
+  before_filter :set_variables_for_js, only: [:enviroments]
 
   # GET /build_jobs
   # GET /build_jobs.json
@@ -45,24 +41,6 @@ class BuildJobsController < ApplicationController
   end
   
   def enviroments
-  end
-  
-  def live_updates
-    response.headers['Content-Type'] = 'text/event-stream'
-    sse = SSE.new(response.stream, retry: 5000, event: "update_build_jobs")
-    BuildJob.on_change do |build_job|
-      sse.write({ build_job_id:       build_job.id, 
-                  duration:           calculate_duration(build_job),
-                  full_version:       (build_job.full_version.nil? ? "" : build_job.full_version.title),
-                  artefacts:          artefacts_links(build_job),
-                  revision:           revision_text(build_job),
-                  status:             build_job.status
-                })
-    end
-  rescue ClientDisconnected => err
-    Rails.logger.warn err.to_s
-  ensure
-    sse.close
   end
 
   # POST /build_jobs
@@ -167,7 +145,7 @@ class BuildJobsController < ApplicationController
     end
     
     def set_variables_for_js
-      gon.live_updates_path = live_updates_enviroment_build_jobs_path(@enviroment.title)
+      gon.build_jobs_live_updates_path = build_jobs_enviroment_live_updates_path(@enviroment.title)
     end
     
     def check_enviroments
