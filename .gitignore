@@ -24,3 +24,4 @@ control/log/*
 !control/log/.keep
 control/tmp
 control/public/downloads
+control/config/database.yml

@@ -1,6 +1,7 @@
 class HomeController < ApplicationController
   before_filter :set_enviroments
   before_filter :set_home_page_contents
+  skip_before_filter :authenticate_user!
   
   def index
   end

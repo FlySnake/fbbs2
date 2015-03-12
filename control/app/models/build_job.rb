@@ -82,6 +82,9 @@ class BuildJob < ActiveRecord::Base
     BuildJobQueue.dequeue self
     if self.status == 'busy'
       self.worker.stop!
+    elsif self.status == 'fresh'
+      self.status = BuildJob.statuses[:ready]
+      save
     end
   end
   
