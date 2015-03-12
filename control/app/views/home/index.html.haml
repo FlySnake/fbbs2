@@ -12,3 +12,16 @@
         %span.glyphicon.glyphicon-road
           %span= link_to e.title.humanize, home_enviroments_path(:enviroment_title => e.title)
   
+.row
+  .col-md-3
+    %h3 Links
+  .col-md-6
+    .list-group
+    - @home_page_contents.each do |c|
+      .list-group-item
+        - if c.link.nil? or c.link.empty?
+          %span.glyphicon.glyphicon-file
+            %span= c.title
+        - else
+          %span.glyphicon.glyphicon-link
+            %span= link_to(c.title, c.link, :target => "_blank")

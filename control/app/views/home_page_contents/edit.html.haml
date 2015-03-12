@@ -1,0 +1,7 @@
+- title "Editing home page content #{@home_page_content.title}"
+
+%h1.page-header= yield(:title)
+
+.row
+  .col-md-12
+    = render partial: 'form'

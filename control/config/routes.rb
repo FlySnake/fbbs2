@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resources :enviroments
     resources :base_versions
     resources :issue_trackers
+    resources :home_page_contents, except: [:show]
   end
   get 'users/profile', as: 'user_root'
   
