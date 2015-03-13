@@ -14,7 +14,7 @@ class CreateBuildJobs < ActiveRecord::Migration
     end
     add_foreign_key :build_jobs, :branches
     add_foreign_key :build_jobs, :base_versions
-    add_foreign_key :build_jobs, :enviroment
+    add_foreign_key :build_jobs, :enviroments
     add_foreign_key :build_jobs, :target_platforms
     add_foreign_key :build_jobs, :notify_user_id
     add_foreign_key :build_jobs, :notify_user_id
