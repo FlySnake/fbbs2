@@ -12,7 +12,7 @@ class CreateBuildJobs < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    add_foreign_key :build_jobs, :banches
+    add_foreign_key :build_jobs, :branches
     add_foreign_key :build_jobs, :base_versions
     add_foreign_key :build_jobs, :enviroment
     add_foreign_key :build_jobs, :target_platforms
