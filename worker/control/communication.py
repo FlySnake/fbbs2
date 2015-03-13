@@ -25,6 +25,7 @@ def index():
 @request_logging
 def download(name):
     try:
+        log.info("downloading artefact '{f}'".format(f=name))
         return static_file(name, config.Config().artefacts_path)
     except:
         log.exception("error uploading file '{f}'".format(f=name))
@@ -35,6 +36,7 @@ def download(name):
 def download_delete(name):
     try:
         filepath = path.join(config.Config().artefacts_path, name)
+        log.info("deleting artefact '{f}'".format(f=filepath))
         remove(filepath)
     except:
         log.exception("error removing file '{f}'".format(f=filepath))
