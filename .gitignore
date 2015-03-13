@@ -23,5 +23,6 @@ control/db/*.sqlite3-journal
 control/log/*
 !control/log/.keep
 control/tmp
-control/public/*
+control/public/downloads
 control/config/database.yml
+control/secret_key
