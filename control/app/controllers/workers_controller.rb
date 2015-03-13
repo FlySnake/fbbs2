@@ -23,7 +23,7 @@ class WorkersController < BaseAdminController
   def create
     @worker = Worker.new(worker_params)
     if @worker.save
-      if @worker.errors.messages.nil? or @worker.errors.messages[:worker_config].empty?
+      if @worker.errors.messages[:worker_config].nil? or @worker.errors.messages[:worker_config].empty?
         redirect_to @worker, notice: "Worker #{@worker.title} was successfully created with platforms #{@worker.target_platforms.join(', ')}"
       else
         redirect_to @worker, flash: { warning: "Worker #{@worker.title} was successfully created, but its config could not be retrieved: #{@worker.errors.messages[:worker_config].join(', ')}"}
