@@ -30,25 +30,6 @@ if [ $MODE = "production" ] ; then
     fi
 fi
 
-# check if puma process is running
-puma_is_running() {
-  if [ -S $PUMA_SOCKET ] ; then
-    if [ -e $PUMA_PID_FILE ] ; then
-      if cat $PUMA_PID_FILE | xargs pgrep -P > /dev/null ; then
-        return 0
-      else
-        echo "No puma process found"
-      fi
-    else
-      echo "No puma pid file found"
-    fi
-  else
-    echo "No puma socket found"
-  fi
-
-  return 1
-}
-
 puma_start() {
     echo "Starting puma..."
     rm -f $PUMA_SOCKET
@@ -80,23 +61,8 @@ case "$1" in
     ;;
 
   restart)
-    if puma_is_running ; then
-      echo "Hot-restarting puma..."
-      kill -s SIGUSR2 `cat $PUMA_PID_FILE`
-
-      echo "Doublechecking the process restart..."
-      sleep 5
-      if puma_is_running ; then
-        echo "done"
-        exit 0
-      else
-        echo "Puma restart failed :/"
-      fi
-    fi
-
-    echo "Trying cold reboot"
     puma_stop
-    sleep 2
+    sleep 3
     puma_start
     ;;
 
