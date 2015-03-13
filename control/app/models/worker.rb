@@ -12,7 +12,7 @@ class Worker < ActiveRecord::Base
   
   after_save :reload_pool
   after_destroy :reload_pool
-  before_create :request_config_on_create
+  after_create :request_config_on_create
   
   attr_accessor_with_onchange_callback :status, :result, :artefacts, :full_version, :commit_info, :build_log, :run_duration do |attr_name, value, old_value|
     #Rails.logger.debug "#{attr_name} changed from #{old_value.to_s} to #{value.to_s} in worker with id:#{self.id.to_s}"
