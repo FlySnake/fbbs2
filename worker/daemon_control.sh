@@ -1,15 +1,4 @@
 #!/bin/bash
-#
-### BEGIN INIT INFO
-# Provides: fbbs2_worker
-# Required-Start: networking
-# Should-Start:
-# Required-Stop:
-# Should-Stop:
-# Default-Start: 2 3 4 5
-# Default-Stop:   0 1 6
-# Description: Feature Branches Build Server - Worker daemon
-### END INIT INFO
 
 INSTAL_DIR=$(dirname $(readlink -f $0))
 if [ -n "$2" ]; then
