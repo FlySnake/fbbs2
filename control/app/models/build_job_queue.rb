@@ -20,6 +20,7 @@ class BuildJobQueue < ActiveRecord::Base
             build_job.start! worker
             dequeue build_job
             available_workers.delete worker
+            break
           end
         end
       end
