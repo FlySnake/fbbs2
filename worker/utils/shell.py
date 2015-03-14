@@ -4,15 +4,22 @@
 from subprocess import Popen, PIPE, STDOUT
 from os import getcwd, path
 from threading import Thread
+from sys import platform
 
 def make_cli(cli):
     return filter(lambda x : True if len(x) > 0 else False, cli.split(" "))
 
 def make_process(popen_cli, cwd):
-    return Popen(popen_cli, stdout=PIPE, stderr=PIPE, cwd=cwd)
+    if platform == "win32":
+        return Popen(popen_cli, stdout=PIPE, stderr=PIPE, cwd=cwd, shell=True)
+    else:
+        return Popen(popen_cli, stdout=PIPE, stderr=PIPE, cwd=cwd)
 
 def make_process_merged_stdout_stderr(popen_cli, cwd):
-    return Popen(popen_cli, stdout=PIPE, stderr=STDOUT, cwd=cwd)
+    if platform == "win32":
+        return Popen(popen_cli, stdout=PIPE, stderr=STDOUT, cwd=cwd, shell=True)
+    else:
+        return Popen(popen_cli, stdout=PIPE, stderr=STDOUT, cwd=cwd)
 
 def exec_process(process):
     out, err = process.communicate()
