@@ -6,20 +6,19 @@ from os import getcwd, path
 from threading import Thread
 from sys import platform
 
+def __is_shell_popen():
+    if platform == "win32":
+        return True
+    return False
+
 def make_cli(cli):
     return filter(lambda x : True if len(x) > 0 else False, cli.split(" "))
 
 def make_process(popen_cli, cwd):
-    if platform == "win32":
-        return Popen(popen_cli, stdout=PIPE, stderr=PIPE, cwd=cwd, shell=True)
-    else:
-        return Popen(popen_cli, stdout=PIPE, stderr=PIPE, cwd=cwd)
+    return Popen(popen_cli, stdout=PIPE, stderr=PIPE, cwd=cwd, shell=__is_shell_popen())
 
 def make_process_merged_stdout_stderr(popen_cli, cwd):
-    if platform == "win32":
-        return Popen(popen_cli, stdout=PIPE, stderr=STDOUT, cwd=cwd, shell=True)
-    else:
-        return Popen(popen_cli, stdout=PIPE, stderr=STDOUT, cwd=cwd)
+    return Popen(popen_cli, stdout=PIPE, stderr=STDOUT, cwd=cwd, shell=__is_shell_popen())
 
 def exec_process(process):
     out, err = process.communicate()
