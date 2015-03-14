@@ -19,6 +19,10 @@ class Worker < ActiveRecord::Base
     BuildJob.on_worker_status_changed self, attr_name.to_sym, value, old_value
   end
   
+  def address=(val)
+      write_attribute(:address, val.nil? ? nil : val.chomp('/'))
+  end
+  
   def poll
     Rails.logger.debug("Polling worker '#{self.title}@#{self.address}'")
     

@@ -24,12 +24,12 @@ class WorkersController < BaseAdminController
     @worker = Worker.new(worker_params)
     if @worker.save
       if @worker.errors.messages[:worker_config].nil? or @worker.errors.messages[:worker_config].empty?
-        redirect_to @worker, notice: "Worker #{@worker.title} was successfully created with platforms #{@worker.target_platforms.join(', ')}"
+        redirect_to @worker, notice: "Worker #{@worker.title} was successfully created with platforms #{@worker.target_platforms.map{|p| p.title}.join(', ')}"
       else
         redirect_to @worker, flash: { warning: "Worker #{@worker.title} was successfully created, but its config could not be retrieved: #{@worker.errors.messages[:worker_config].join(', ')}"}
       end
     else
-      render action: "new", flash: {error: "Error updating worker's config: #{@worker.errors.messages[:worker_config].join(', ')}"}
+      render action: "new", flash: {error: "Error updating worker's config: #{@worker.errors.messages[:worker_config].nil? ? "" : @worker.errors.messages[:worker_config].join(', ')}"}
     end
   end
 

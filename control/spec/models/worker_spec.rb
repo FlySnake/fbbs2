@@ -41,4 +41,10 @@ RSpec.describe Worker, type: :model do
     expect(build(:worker, :address => addr)).to be_invalid
   end
   
+  it "corrects address with slash at the end" do
+    addr = "http://example.com:40100/"
+    w = create(:worker, :address => addr)
+    expect(w.address).to eq "http://example.com:40100"
+  end
+  
 end
