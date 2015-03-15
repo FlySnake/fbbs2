@@ -110,37 +110,37 @@ class Worker < ActiveRecord::Base
     end
     
     def get_status
-      data = JSONClient.new.get "#{full_base_address}/build"
+      data = create_json_client.get "#{full_base_address}/build"
       raise_on_error(data)
       data.content
     end
     
     def get_config
-      data = JSONClient.new.get "#{full_base_address}"
+      data = create_json_client.get "#{full_base_address}"
       raise_on_error(data)
       data.content
     end
     
     def start_build params
-      data = JSONClient.new.put "#{full_base_address}/build", :body => params
+      data = create_json_client.put "#{full_base_address}/build", :body => params
       raise_on_error(data)
       data.content
     end
     
     def stop_build
-      data = JSONClient.new.delete "#{full_base_address}/build"
+      data = create_json_client.delete "#{full_base_address}/build"
       raise_on_error(data)
       data.content
     end
     
     def download_artefact(name)
-      data = JSONClient.new.get "#{full_base_address}/download/#{name}"
+      data = create_json_client.get "#{full_base_address}/download/#{name}"
       raise_on_error(data)
       data.content
     end
     
     def delete_artefact(name)
-      data = JSONClient.new.delete "#{full_base_address}/download/#{name}"
+      data = create_json_client.delete "#{full_base_address}/download/#{name}"
       raise_on_error(data)
       data.content
     end
@@ -151,6 +151,14 @@ class Worker < ActiveRecord::Base
     
     def raise_on_error(data)
       raise "http status #{data.status.to_s}" if data.status != 200
+    end
+    
+    def create_json_client
+      client = JSONClient.new
+      client.receive_timeout = 15
+      client.connect_timeout = 5
+      client.send_timeout = 5
+      client
     end
     
     def update_status(msg)
