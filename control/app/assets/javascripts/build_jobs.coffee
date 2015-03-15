@@ -6,11 +6,13 @@ connect = ->
   console.log "Trying to start SSE..."
   if(gon? && gon.build_jobs_live_updates_path?)
     path = gon.build_jobs_live_updates_path
-    console.log "SSE started on " + path
+    console.log "SSE path " + path
     source = new EventSource(path)
     $('.stop-sse-onclick').click -> # close existing connection when user clicks specific items - menu
        console.log "Stopping SSE"
        source.close()
+    source.onerror = ->
+      console.log "Error occured while listening SSE"
     source.addEventListener "update_build_jobs", (event) ->
       json = JSON.parse(event.data)
       console.log json
