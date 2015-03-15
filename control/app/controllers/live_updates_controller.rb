@@ -4,8 +4,9 @@ class LiveUpdatesController < ApplicationController
   include BuildJobsHelper
   
   def build_jobs
+    Rails.logger.info "Starting SSE for new client"
     response.headers['Content-Type'] = 'text/event-stream'
-    sse = SSE.new(response.stream, retry: 30000, event: "update_build_jobs")
+    sse = SSE.new(response.stream, retry: 3000, event: "update_build_jobs")
     build_jobs_queue = Queue.new
     Timeout::timeout(3600) do # kick the client after 1 hour
       BuildJob.on_change(build_jobs_queue) do
@@ -18,6 +19,7 @@ class LiveUpdatesController < ApplicationController
   ensure
     sse.close
     BuildJob.on_change_cleanup(build_jobs_queue)
+    Rails.logger.info "Closed SSE stream"
   end
   
   private
