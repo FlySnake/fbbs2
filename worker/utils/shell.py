@@ -49,10 +49,15 @@ class AsyncExecutor(Thread):
     def kill(self):
         if not self.__process:
             return None
-        script_path = path.join(path.dirname(path.realpath(__file__)), "kill_all_children.sh")
-        (r,o,e) = execute(script_path + " " + str(self.__process.pid))
-        execute("kill -TERM {pid}".format(pid=self.__process.pid))
-        return [str(self.__process.pid)] + o.strip().split(" ")
+        if platform == "win32":
+            script_path = path.join(path.dirname(path.realpath(__file__)), "kill_all_children.bat")
+            (r,o,e) = execute(script_path + " " + str(self.__process.pid))
+            return [str(self.__process.pid)] + o.strip().split(" ")
+        else:
+            script_path = path.join(path.dirname(path.realpath(__file__)), "kill_all_children.sh")
+            (r,o,e) = execute(script_path + " " + str(self.__process.pid))
+            execute("kill -TERM {pid}".format(pid=self.__process.pid))
+            return [str(self.__process.pid)] + o.strip().split(" ")
     
     def get_result(self):
         return self.__result
