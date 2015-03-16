@@ -1,4 +1,4 @@
-%ul.nav.nav-tabs.nav-justified.stop-sse-onclick
+%ul.nav.nav-tabs.nav-justified
   - if current_page?(action: :enviroments)
     %li.active= link_to "Jobs", home_enviroments_path(enviroment_title: @enviroment.title), {role: "presentation"}
   - else

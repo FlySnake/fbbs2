@@ -2,16 +2,24 @@ class LiveUpdatesController < ApplicationController
   include ActionController::Live
   include ActionView::Helpers::UrlHelper
   include BuildJobsHelper
+  include ModelHelpers
   
   def build_jobs
     Rails.logger.info "Starting SSE for new client"
     response.headers['Content-Type'] = 'text/event-stream'
     sse = SSE.new(response.stream, retry: 3000, event: "update_build_jobs")
-    build_jobs_queue = Queue.new
-    Timeout::timeout(3600) do # kick the client after 1 hour
+    build_jobs_queue = QueueWithTimeout.new
+    Timeout::timeout(14400) do # kick the client after 4 hours
       BuildJob.on_change(build_jobs_queue) do
-        build_job = build_jobs_queue.pop
-        sse.write(params_for_build_job(build_job))
+        begin
+          build_job = build_jobs_queue.pop_with_timeout(30) # every 30 seconds send keep live packets to determine disconnects
+          sse.write(params_for_build_job(build_job))
+        rescue ThreadError # pop timeout - send keep alive
+          sse.write params_for_keep_alive
+          retry
+        rescue => err
+          raise err
+        end
       end
     end
   rescue ClientDisconnected, Timeout::Error => err
@@ -23,6 +31,10 @@ class LiveUpdatesController < ApplicationController
   end
   
   private
+  
+    def params_for_keep_alive
+      "keep_alive"
+    end
     
     def params_for_build_job(build_job)
       { build_job_id:       build_job.id, 

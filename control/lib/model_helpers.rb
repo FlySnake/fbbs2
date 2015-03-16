@@ -30,11 +30,15 @@ module ModelHelpers
       @recieved = ConditionVariable.new
     end
    
-    def <<(x)
+    def push(x)
       @mutex.synchronize do
         @queue << x
         @recieved.signal
       end
+    end
+    
+    def <<(x)
+      push x
     end
    
     def pop(non_block = false)

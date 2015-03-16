@@ -1,4 +1,4 @@
-.nav.nav-pills.nav-stacked.stop-sse-onclick
+.nav.nav-pills.nav-stacked
   - @enviroments.each do |e|
     - if e.title == @enviroment.title
       %li.active= link_to e.title.humanize, path_to_enviroment(e, page), {role: "presentation"} 
