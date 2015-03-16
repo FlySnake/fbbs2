@@ -1,1 +1,3 @@
-C:\Python34\python.exe "C:\Program Files\fbbs2\worker\main.py" -c C:\Users\BuildMan\fbbs2\worker\config.yml -t
+cd C:\Users\BuildMan\fbbs2\worker\
+start C:\Python34\python.exe "C:\Program Files\fbbs2\worker\main.py" -c C:\Users\BuildMan\fbbs2\worker\config.yml -t
+pause
