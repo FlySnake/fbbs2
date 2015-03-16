@@ -41,6 +41,9 @@ class BuildNumbersController < ApplicationController
       existing_for_branch = BuildNumber.where(:branch => params[:branch], :enviroment => env).order(:number => :desc)
       if existing_for_branch.any?
         num = existing_for_branch.first.number
+        if env.default_build_number > num
+          num = env.default_build_number
+        end
       else
         num = env.default_build_number
       end
