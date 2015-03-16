@@ -1,3 +1,5 @@
+require 'model_helpers'
+
 class LiveUpdatesController < ApplicationController
   include ActionController::Live
   include ActionView::Helpers::UrlHelper

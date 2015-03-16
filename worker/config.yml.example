@@ -1,9 +1,9 @@
 logging:
-    file: /home/flysnake/Desktop/worker.log
+    file: /home/o.antonyan/Desktop/worker.log
     level: debug
 
 repository:
-    path: /home/flysnake/Documents/mt3/playground
+    path: /home/o.antonyan/Documents/mt3/playground
     
 artefact:
     path: /home/o.antonyan/Desktop/
@@ -12,9 +12,9 @@ communication:
     bind_to: 0.0.0.0:5001
     
 build:
-    custom_script: /home/flysnake/Documents/Projects/AptanaStudio3Workspace/fbbs2/worker/custom_script_example.py
+    custom_script: /home/o.antonyan/Documents/AptanaStudio3Workspace/fbbs2/worker/custom_script_example.py
     platforms:
-      - android-arm-qt4
-      - android-arm-qt5
-      - android-x86-qt5
+      - android-qt4-arm
+      - android-qt5-arm
+      - android-qt5-x86
     
