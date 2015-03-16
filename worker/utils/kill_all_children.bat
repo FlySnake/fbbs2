@@ -1,1 +1,1 @@
-taskkill /pid %1 /t
+taskkill /pid %1 /t /f
