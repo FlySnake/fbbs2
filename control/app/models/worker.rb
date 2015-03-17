@@ -155,7 +155,7 @@ class Worker < ActiveRecord::Base
     
     def create_json_client
       client = JSONClient.new
-      client.receive_timeout = 15
+      client.receive_timeout = 20
       client.connect_timeout = 5
       client.send_timeout = 5
       client

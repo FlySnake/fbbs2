@@ -1,6 +1,6 @@
 class WorkersPool::Timeout
   def check!
-    build_jobs = BuildJob.where("status = ? AND updated_at <= ?", BuildJob.statuses[:busy], Time.now - 1.minute)
+    build_jobs = BuildJob.where("status = ? AND updated_at <= ?", BuildJob.statuses[:busy], Time.now - 3.minutes)
     count = build_jobs.size
     if count > 0
       build_jobs.each do |j|
