@@ -31,9 +31,12 @@ class BuildJob < ActiveRecord::Base
   before_destroy :stop!
   
   @@notify_queues = []
+  @@notify_queues_mutex = Mutex.new
   class << self
     def on_change(queue)
-      @@notify_queues << queue
+      @@notify_queues_mutex.synchronize do
+        @@notify_queues << queue
+      end
       loop do
        @@notify_queues.each do
          yield
@@ -43,7 +46,9 @@ class BuildJob < ActiveRecord::Base
   end
   
   def self.on_change_cleanup(queue)
-    @@notify_queues.delete(queue)
+    @@notify_queues_mutex.synchronize do
+      @@notify_queues.delete(queue)
+    end
   end
   
   scope :busy_with_worker, ->(worker) {
