@@ -16,7 +16,7 @@
       = select2js_for_id "select-target_platform"
   .row
     .col-md-11
-      = f.select :notify_user, options_from_collection_for_select(@users, :id, :email), {}, :id => "select-user"
+      = f.select :notify_user, options_from_collection_for_select(@users, :id, :email), {include_blank: 'None'}, :id => "select-user"
       = select2js_for_id "select-user"
   .row
     .col-md-11

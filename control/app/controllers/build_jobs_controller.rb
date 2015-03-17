@@ -46,22 +46,15 @@ class BuildJobsController < ApplicationController
   # POST /build_jobs
   # POST /build_jobs.json
   def create
-    branch = Branch.find(params[:build_job][:branch])
-    base_version = BaseVersion.find(params[:build_job][:base_version])
-    target_platform = TargetPlatform.find(params[:build_job][:target_platform])
-    notify_user = User.find(params[:build_job][:notify_user])
-    started_by_user = current_user
-    comment = params[:build_job][:comment]
-    
-    @build_job = BuildJob.new(:branch => branch, 
-                              :base_version => base_version, 
-                              :target_platform => target_platform, 
-                              :notify_user => notify_user,
-                              :started_by_user => started_by_user,
+    @build_job = BuildJob.new(:branch_id => params[:build_job][:branch], 
+                              :base_version_id => params[:build_job][:base_version], 
+                              :target_platform_id => params[:build_job][:target_platform], 
+                              :notify_user_id => params[:build_job][:notify_user],
+                              :started_by_user => current_user,
                               :enviroment => @enviroment,
                               :status => BuildJob.statuses[:fresh],
                               :result => BuildJob.results[:unknown],
-                              :comment => comment,
+                              :comment => params[:build_job][:comment],
                               :generate_build_numbers_url => generate_build_numbers_url(:json))
 
     respond_to do |format|

@@ -28,8 +28,9 @@
       %dd= @build_job.target_platform.title
       %dt Started by
       %dd= link_to @build_job.started_by_user.email, @build_job.started_by_user
-      %dt Notify
-      %dd= link_to @build_job.notify_user.email, @build_job.notify_user
+      - unless @build_job.notify_user.nil?
+        %dt Notify
+        %dd= link_to @build_job.notify_user.email, @build_job.notify_user
       %dt Comment
       %dd= @build_job.comment
       %dt Started at

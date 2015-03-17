@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150314132712) do
+ActiveRecord::Schema.define(version: 20150317035242) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 20150314132712) do
     t.integer  "base_version_id",                         null: false
     t.integer  "enviroment_id",                           null: false
     t.integer  "target_platform_id",                      null: false
-    t.integer  "notify_user_id",                          null: false
+    t.integer  "notify_user_id"
     t.integer  "started_by_user_id",                      null: false
     t.string   "comment",                    default: "", null: false
     t.integer  "status",                                  null: false
