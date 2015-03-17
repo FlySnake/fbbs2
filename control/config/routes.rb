@@ -2,7 +2,9 @@ Rails.application.routes.draw do
 
   devise_for :users
   scope "/admin" do
-    resources :users, except: [:new, :create]
+    resources :users, except: [:new, :create] do
+      patch :approve, :on => :member
+    end
     resources :workers do
       post :request_config, :on => :member
     end

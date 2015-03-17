@@ -7,8 +7,10 @@
     %dl.dl-horizontal
       %dt Email
       %dd= mail_to @user.email
+      %dt Approved
+      %dd= approved_text(@user)
       %dt Admin
-      %dd= @user.admin
+      %dd= admin_text(@user)
       %dt Logins count
       %dd= @user.sign_in_count
       %dt Current login at

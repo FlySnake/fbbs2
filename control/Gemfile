@@ -70,6 +70,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'faker'
   gem 'launchy'
+  gem 'mailcatcher'
 end
 
 group :production do

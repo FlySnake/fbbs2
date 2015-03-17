@@ -1,5 +1,5 @@
 class UsersController < BaseAdminController
-  before_filter :set_user, only: [:show, :edit, :update, :destroy]
+  before_filter :set_user, only: [:show, :edit, :update, :destroy, :approve]
   skip_before_filter :check_user_admin, only: [:profile]
   
   # GET /users/profile
@@ -34,6 +34,19 @@ class UsersController < BaseAdminController
   #    render action: "new"
   #  end
   #end
+  
+  def approve
+    if @user.approved
+      redirect_to @user, notice: 'User is already approved.'
+      return
+    end 
+    @user.approved = true
+    if @user.save
+      redirect_to @user, notice: 'User was successfully approved.'
+    else
+      render action: "edit", flash: {error: 'Error approving user.'}
+    end
+  end
 
   # PUT /users/1
   def update
@@ -63,7 +76,7 @@ class UsersController < BaseAdminController
   
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:admin)
+    params.require(:user).permit(:admin, :approved)
   end
   
 end

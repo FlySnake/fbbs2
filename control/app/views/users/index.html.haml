@@ -8,6 +8,7 @@
       %tr
         %th Avatar
         %th Email
+        %th Approved
         %th Admin
         %th Last login
         %th More info
@@ -16,7 +17,8 @@
         %tr
           %td= image_tag user.gravatar_url, alt: "gravatar", class: "img-responsive img-rounded", size: "32x32"
           %td= mail_to user.email
-          %td= user.admin?
+          %td= approved_text(user)
+          %td= admin_text(user)
           %td= localtime user.last_sign_in_at
           %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), user, :class => "btn btn-default"
           
