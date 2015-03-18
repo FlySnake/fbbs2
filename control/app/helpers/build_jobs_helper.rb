@@ -71,7 +71,7 @@ module BuildJobsHelper
     text = ""
     text = link_to_commit(build_job) + " | " + 
            build_job.commit.author + " | " + 
-           build_job.commit.datetime + " | " + 
+           build_job.commit.datetime.localtime + " | " + 
            comment_with_link_to_issue(build_job).html_safe
   rescue
   ensure
