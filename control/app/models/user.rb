@@ -36,7 +36,6 @@ class User < ActiveRecord::Base
       unless Rails.env.test?
         User.admins.each do |admin|
           SendAdminEmailNewUserWaitingForApprovalJob.set(wait: 5.seconds).perform_later(self, admin)
-          #AdminMailer.new_user_waiting_for_approval(self, admin).deliver_later
         end
       end
     end

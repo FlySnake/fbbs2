@@ -39,7 +39,8 @@ module BuildJobsHelper
     html.html_safe
   rescue => err
     html = err.to_s
-    html
+  ensure
+    sanitize html, tags: ['a']
   end
   
   def calculate_duration(build_job)
@@ -63,23 +64,23 @@ module BuildJobsHelper
       result << " #{diff[:minutes]}" + "m"
     end
     result << " #{diff[:seconds]}" + "s"
-    result
+    sanitize result
   end
   
   def revision_text(build_job)
     text = ""
-    text = link_to_commit(build_job) + " | #{build_job.commit.author} | #{build_job.commit.datetime} | " + link_to_issue(build_job)
+    text = link_to_commit(build_job) + " | " + 
+           build_job.commit.author + " | " + 
+           build_job.commit.datetime + " | " + 
+           comment_with_link_to_issue(build_job).html_safe
   rescue
-    text
+  ensure
+    sanitize text, tags: ['a']
   end
   
   private
   
     def artefact_url(enviroment, artefact)
-      # 'arguments passed to url_for can't be handled. Please require routes or provide your own implementation helper'
-      # drives me crazy! in order to use link_to in model's callback I have to include ActionView::Helpers::UrlHelper, 
-      # but withi this I get the error 
-      #"/#{enviroment.title}/build_artefacts/#{artefact.filename}"
       enviroment_build_artefact_url(:enviroment_title => enviroment.title, :filename => artefact.filename)
     end
     
@@ -96,13 +97,14 @@ module BuildJobsHelper
       text
     end
     
-    def link_to_issue(build_job)
+    def comment_with_link_to_issue(build_job)
       text = ""
       text = build_job.commit.message
       issue = build_job.commit.extract_issue(build_job.enviroment.issue_tracker.regex)
       raise if issue.empty? or issue.nil?
       link = build_job.enviroment.issue_tracker.full_weblink(issue)
-      link_to(text, link, :target => "_blank")
+      issue_link = link_to(issue, link, :target => "_blank")
+      text.sub issue, issue_link
     rescue
       text
     end

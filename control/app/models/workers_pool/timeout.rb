@@ -5,11 +5,6 @@ class WorkersPool::Timeout
     if count > 0
       build_jobs.each do |j|
         j.kill_by_timeout
-        #worker = WorkersPool::Pool.instance.find(j.worker)
-        #unless worker.nil?
-        #  worker.stop!
-        #end
-        #j.update_attributes(:status => BuildJob.statuses[:ready], :result => BuildJob.results[:failure])
       end
       Rails.logger.info("#{count.to_s} jobs killed by timeout")
     end
