@@ -43,7 +43,10 @@ class BuildCtl(object, metaclass=singleton.Singleton):
                 "build_log": self.__build_log,
                 "params": self.__params
                 }
-        log.debug("status: \n" + str(st))
+        st_log = st
+        if len(st_log['build_log']) > 0:
+            st_log['build_log'] = "** truncated **"
+        log.debug("status: \n" + str(st_log))
         return st
     
     @property        
