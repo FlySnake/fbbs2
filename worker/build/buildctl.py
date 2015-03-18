@@ -40,13 +40,10 @@ class BuildCtl(object, metaclass=singleton.Singleton):
                 "terminated": self.__terminated,
                 "run_duration": self.__run_duration,
                 "last_commit_info": self.__last_commit_info,
-                "build_log": self.__build_log,
                 "params": self.__params
                 }
-        st_log = st
-        if len(st_log['build_log']) > 100:
-            st_log['build_log'] = "** truncated **"
-        log.debug("status: \n" + str(st_log))
+        log.debug("status (without build log): \n" + str(st))
+        st["build_log"] = self.__build_log
         return st
     
     @property        
@@ -71,7 +68,7 @@ class BuildCtl(object, metaclass=singleton.Singleton):
     
     @property
     def __build_log(self):
-        return self.__job.build_log() if self.__job else ""
+        return self.__job.build_log() if self.__job else "dfgdfdg"
     
     @property
     def __params(self):
