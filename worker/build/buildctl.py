@@ -68,7 +68,7 @@ class BuildCtl(object, metaclass=singleton.Singleton):
     
     @property
     def __build_log(self):
-        return self.__job.build_log() if self.__job else "dfgdfdg"
+        return self.__job.build_log() if self.__job else ""
     
     @property
     def __params(self):
