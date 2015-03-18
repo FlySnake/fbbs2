@@ -103,7 +103,7 @@ module BuildJobsHelper
       issue = build_job.commit.extract_issue(build_job.enviroment.issue_tracker.regex)
       raise if issue.empty? or issue.nil?
       link = build_job.enviroment.issue_tracker.full_weblink(issue)
-      issue_link = link_to(issue, link, :target => "_blank")
+      issue_link = content_tag :mark, link_to(issue, link, :target => "_blank")
       text.sub issue, issue_link
     rescue
       text
