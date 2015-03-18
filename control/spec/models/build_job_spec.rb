@@ -38,7 +38,7 @@ RSpec.describe BuildJob, type: :model do
   end
   
   it "is invalid with too long comment" do
-    expect(build(:build_job, :comment => Faker::Lorem.characters(21))).to be_invalid
+    expect(build(:build_job, :comment => Faker::Lorem.characters(1024))).to be_invalid
   end
   
 end

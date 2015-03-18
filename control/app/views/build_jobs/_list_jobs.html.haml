@@ -20,7 +20,7 @@
         %td= revision_text(b)
         %td= localtime(b.started_at) unless b.started_at.nil? 
         %td= calculate_duration(b)
-        %td= b.comment
+        %td= truncate b.comment, :length => 25, :separator => ' '
         %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), enviroment_build_job_path(enviroment_title: enviroment.title, id: b.id), :class => "btn btn-default"
     
   .text-center= will_paginate(build_jobs, :renderer => BootstrapPagination::Rails, :previous_label => "&larr; ", :next_label => " &rarr;")

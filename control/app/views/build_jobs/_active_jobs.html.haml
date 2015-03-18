@@ -23,6 +23,6 @@
       %td{:id => "revision_for_" + b.id.to_s}= revision_text(b)
       %td= localtime(b.started_at) unless b.started_at.nil? 
       %td{:id => "duration_for_" + b.id.to_s}= calculate_duration(b)
-      %td= b.comment
+      %td= truncate b.comment, :length => 25, :separator => ' '
       %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), enviroment_build_job_path(id: b.id, :enviroment_title => enviroment.title), :class => "btn btn-default"
       %td{:id => "status_for_" + b.id.to_s, :style => "display:none;"}= b.status.to_s
