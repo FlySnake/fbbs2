@@ -1,8 +1,8 @@
 class EnviromentsController < BaseAdminController
   before_filter :set_enviroment, only: [:show, :edit, :update, :destroy]
-  before_filter :set_repositories, only: [:new, :edit]
-  before_filter :set_base_versions, only: [:new, :edit]
-  before_filter :set_issue_trackers, only: [:new, :edit]
+  before_filter :set_repositories, only: [:new, :edit, :create]
+  before_filter :set_base_versions, only: [:new, :edit, :create]
+  before_filter :set_issue_trackers, only: [:new, :edit, :create]
 
   # GET /enviroments
   # GET /enviroments.json

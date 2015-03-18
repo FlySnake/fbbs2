@@ -20,7 +20,7 @@ class BuildJob < ActiveRecord::Base
   validates :enviroment, presence: true
   validates :target_platform, presence: true
   validates :base_version, presence: true
-  validates :comment, length: {in: 0..20}
+  validates :comment, length: {in: 0..35}
   
   enum status: [:fresh, :busy, :ready]
   enum result: [:unknown, :success, :failure, :terminated]

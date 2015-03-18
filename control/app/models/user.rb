@@ -33,8 +33,10 @@ class User < ActiveRecord::Base
     end
     
     def send_admin_mail
-      User.admins.each do |admin|
-        AdminMailer.new_user_waiting_for_approval(self, admin).deliver
+      unless Rails.env.test?
+        User.admins.each do |admin|
+          AdminMailer.new_user_waiting_for_approval(self, admin).deliver_later
+        end
       end
     end
   
