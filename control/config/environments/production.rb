@@ -78,4 +78,6 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
   
   config.allow_concurrency = true
+  config.active_job.queue_adapter = :delayed_job
+  
 end

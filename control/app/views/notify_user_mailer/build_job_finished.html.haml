@@ -1,0 +1,29 @@
+%h1= result_text_humanize(@build_job)
+
+%dl
+  %dt 
+    %b Branch
+  %dd= @build_job.branch.name
+  %dt
+    %b Platform
+  %dd= @build_job.target_platform.title
+  %dt
+    %b Revision
+  %dd= revision_text(@build_job)
+  - unless @build_job.full_version.nil?
+    %dt
+      %b Full version
+    %dd= @build_job.full_version.title
+  - if @build_job.build_artefacts.any? and @build_job.result == "success"
+    %dt
+      %b Downloads
+    %dd= artefacts_links(@build_job, true)
+  %dt
+    %b Build enviroment
+  %dd= @build_job.enviroment.title
+  - unless @build_job.comment.empty?
+    %dt
+      %b Comment
+    %dd= @build_job.comment
+
+%p= link_to "Click here to view more details.",  enviroment_build_job_url(:id => @build_job.id, :enviroment_title => @build_job.enviroment.title)

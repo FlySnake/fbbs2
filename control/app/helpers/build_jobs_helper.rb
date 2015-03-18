@@ -27,7 +27,7 @@ module BuildJobsHelper
       build_job.reload
     end
     build_job.build_artefacts.each do |a|
-      path = artefact_path(build_job.enviroment, a)
+      path = artefact_url(build_job.enviroment, a)
       if filename_text
         text = a.filename
       else
@@ -75,12 +75,12 @@ module BuildJobsHelper
   
   private
   
-    def artefact_path(enviroment, artefact)
+    def artefact_url(enviroment, artefact)
       # 'arguments passed to url_for can't be handled. Please require routes or provide your own implementation helper'
       # drives me crazy! in order to use link_to in model's callback I have to include ActionView::Helpers::UrlHelper, 
       # but withi this I get the error 
       #"/#{enviroment.title}/build_artefacts/#{artefact.filename}"
-      enviroment_build_artefact_path(:enviroment_title => enviroment.title, :filename => artefact.filename)
+      enviroment_build_artefact_url(:enviroment_title => enviroment.title, :filename => artefact.filename)
     end
     
     def artefact_link_text_short(artefact)

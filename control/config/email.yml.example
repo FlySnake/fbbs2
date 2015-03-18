@@ -1,0 +1,17 @@
+default: &default
+  address: localhost
+  port: 1025
+  sender: buildserver@example.com
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  address: smtp.example.com
+  port: 25
+  authentication: plain
+  user_name: user
+  password: pass

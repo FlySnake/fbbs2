@@ -120,6 +120,7 @@ class BuildJob < ActiveRecord::Base
           build_job.finalize_status
           build_job.finalize_time
           build_job.download_artefacts
+          build_job.send_notifications
   
         end
         
@@ -191,6 +192,13 @@ class BuildJob < ActiveRecord::Base
   
   def finalize_time
     self.finished_at = Time.now
+  end
+  
+  def send_notifications
+    unless self.notify_user.nil?
+      Rails.logger.info "Sending email to #{self.notify_user.email} on finished job"
+      SendNotifyUserEmailBuildJobFinishedJob.set(wait: 5.seconds).perform_later(self, self.notify_user)
+    end
   end
  
   private

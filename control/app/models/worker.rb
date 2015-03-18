@@ -23,38 +23,42 @@ class Worker < ActiveRecord::Base
       write_attribute(:address, val.nil? ? nil : val.chomp('/'))
   end
   
+  def humanize
+    "#{self.title}@#{self.address}"
+  end
+  
   def poll
-    Rails.logger.debug("Polling worker '#{self.title}@#{self.address}'")
+    Rails.logger.debug("Polling worker '#{humanize}'")
     
     begin
       msg = get_status
       update_status msg
     rescue => err
-      Rails.logger.error("Error updating worker status: #{err.to_s}")
+      Rails.logger.error("Error updating worker '#{humanize}' status: #{err.to_s}")
       set_to_failure
     end
   end
   
   def start!(params)
-    Rails.logger.info("Starting worker '#{self.title}@#{self.address}'")
+    Rails.logger.info("Starting worker '#{humanize}'")
     self.status = :busy #for sure
     begin
       msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version], params[:buildnum_service]))
       update_status msg
     rescue => err
-      Rails.logger.error("Error starting worker: #{err.to_s}")
+      Rails.logger.error("Error starting worker '#{humanize}': #{err.to_s}")
       set_to_failure
     end
   end
   
   def stop!
-    Rails.logger.info("Stopping worker '#{self.title}@#{self.address}'")
+    Rails.logger.info("Stopping worker '#{humanize}'")
     begin
       msg = stop_build
       update_status msg
       true
     rescue => err
-      Rails.logger.error("Error stopping worker: #{err.to_s}")
+      Rails.logger.error("Error stopping worker '#{humanize}': #{err.to_s}")
       set_to_failure
       false
     end
@@ -78,13 +82,13 @@ class Worker < ActiveRecord::Base
   end
   
   def get_artefact(name)
-    Rails.logger.info("Downloading artefact '#{name}' in worker '#{self.title}'")
+    Rails.logger.info("Downloading artefact '#{name}' in worker '#{humanize}'")
     begin
       data = download_artefact name
       delete_artefact name
       data
     rescue => err
-      Rails.logger.error("Error downloading artefact '#{name}' in worker '#{self.title}': #{err.to_s}")
+      Rails.logger.error("Error downloading artefact '#{name}' in worker '#{humanize}': #{err.to_s}")
       nil
     end
   end
@@ -155,9 +159,9 @@ class Worker < ActiveRecord::Base
     
     def create_json_client
       client = JSONClient.new
-      client.receive_timeout = 20
-      client.connect_timeout = 5
-      client.send_timeout = 5
+      client.receive_timeout = 35
+      client.connect_timeout = 10
+      client.send_timeout = 10
       client
     end
     
