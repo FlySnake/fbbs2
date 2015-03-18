@@ -35,7 +35,7 @@ class BuildCtl(object, metaclass=singleton.Singleton):
             return self.status()
         
     def status(self):
-        return {"busy": self.__busy,
+        st =   {"busy": self.__busy,
                 "error": self.__error,
                 "terminated": self.__terminated,
                 "run_duration": self.__run_duration,
@@ -43,6 +43,8 @@ class BuildCtl(object, metaclass=singleton.Singleton):
                 "build_log": self.__build_log,
                 "params": self.__params
                 }
+        log.debug("status: \n" + str(st))
+        return st
     
     @property        
     def __busy(self):
