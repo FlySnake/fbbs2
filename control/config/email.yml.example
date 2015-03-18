@@ -1,10 +1,13 @@
+# use mailcatcher gem
 default: &default
   address: localhost
   port: 1025
-  sender: buildserver@example.com
+  sender: buildserver@localhost
 
 development:
   <<: *default
+  host_for_url: localhost
+  port_for_url: 3000
 
 test:
   <<: *default
@@ -15,3 +18,5 @@ production:
   authentication: plain
   user_name: user
   password: pass
+  sender: buildserver@example.com
+  host_for_url: example.com
