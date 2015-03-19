@@ -3,6 +3,7 @@ class EnviromentsController < BaseAdminController
   before_filter :set_repositories, only: [:new, :edit, :create]
   before_filter :set_base_versions, only: [:new, :edit, :create]
   before_filter :set_issue_trackers, only: [:new, :edit, :create]
+  before_filter :set_target_platforms, only: [:new, :edit, :create]
 
   # GET /enviroments
   # GET /enviroments.json
@@ -81,10 +82,16 @@ class EnviromentsController < BaseAdminController
     def set_issue_trackers
       @issue_trackers = IssueTracker.all
     end
+    
+    def set_target_platforms
+      @target_platforms = TargetPlatform.all_ordered_by_mask @enviroment.target_platforms_order
+    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def enviroment_params
-      params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :issue_tracker_id, :base_version_ids => [])
+      p = params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :issue_tracker_id, :target_platforms_order, :base_version_ids => [])
+      p[:target_platforms_order] = JSON.parse p[:target_platforms_order]
+      p
     end
    
 end

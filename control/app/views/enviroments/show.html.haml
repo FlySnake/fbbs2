@@ -21,6 +21,9 @@
       %dd= @enviroment.branches_filter
       %dt Base versions
       %dd= @enviroment.base_versions.map{|b| b.name}.join(", ")
+      - unless @enviroment.target_platforms_order.nil?
+        %dt Target platfroms UI order
+        %dd= @enviroment.target_platforms_order.join(", ")
       %dt Created at
       %dd= localtime @enviroment.created_at
       %dt Updated at

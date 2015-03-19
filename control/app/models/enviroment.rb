@@ -9,4 +9,6 @@ class Enviroment < ActiveRecord::Base
   validates :default_build_number, numericality: { only_integer: true }, presence: true
   validates :repository, :presence => true
   
+  serialize :target_platforms_order
+  
 end

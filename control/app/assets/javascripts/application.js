@@ -18,5 +18,6 @@
 //= require select2
 //= require select2_locale_ru
 //= require filterrific/filterrific-jquery
+//= require jquery-ui
 //= require_tree .
 

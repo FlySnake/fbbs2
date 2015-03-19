@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150319064152) do
+ActiveRecord::Schema.define(version: 20150319105313) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -133,13 +133,14 @@ ActiveRecord::Schema.define(version: 20150319064152) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "enviroments", force: :cascade do |t|
-    t.string   "title",                limit: 1024,              null: false
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
-    t.integer  "default_build_number",              default: 0,  null: false
+    t.string   "title",                  limit: 1024,              null: false
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
+    t.integer  "default_build_number",                default: 0,  null: false
     t.integer  "repository_id"
-    t.string   "branches_filter",      limit: 2048, default: ""
+    t.string   "branches_filter",        limit: 2048, default: ""
     t.integer  "issue_tracker_id"
+    t.text     "target_platforms_order"
   end
 
   add_index "enviroments", ["issue_tracker_id"], name: "index_enviroments_on_issue_tracker_id"

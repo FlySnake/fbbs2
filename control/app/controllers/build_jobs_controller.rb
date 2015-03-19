@@ -109,7 +109,7 @@ class BuildJobsController < ApplicationController
         # TODO something meaningful like redirect to an error page
       end
       @users = User.order(:email => :asc).all
-      @target_platforms = TargetPlatform.all_with_worker
+      @target_platforms = TargetPlatform.all_ordered_by_mask @enviroment.target_platforms_order
       @branches = Branch.all_filtered(@enviroment.branches_filter)
     end
     
