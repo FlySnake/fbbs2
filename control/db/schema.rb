@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150318084112) do
+ActiveRecord::Schema.define(version: 20150319064152) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -28,13 +28,13 @@ ActiveRecord::Schema.define(version: 20150318084112) do
   add_index "base_versions_enviroments", ["enviroment_id"], name: "index_base_versions_enviroments_on_enviroment_id"
 
   create_table "branches", force: :cascade do |t|
-    t.string   "name",          limit: 512, null: false
+    t.string   "name",          limit: 512,                 null: false
     t.integer  "repository_id"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.boolean  "deleted",                   default: false, null: false
   end
 
-  add_index "branches", ["name"], name: "index_branches_on_name"
   add_index "branches", ["repository_id"], name: "index_branches_on_repository_id"
 
   create_table "build_artefacts", force: :cascade do |t|
@@ -212,10 +212,10 @@ ActiveRecord::Schema.define(version: 20150318084112) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
   create_table "workers", force: :cascade do |t|
-    t.string   "title",      limit: 512, null: false
-    t.string   "address",    limit: 512, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "title",      null: false
+    t.string   "address",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

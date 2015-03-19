@@ -3,9 +3,13 @@ class Branch < ActiveRecord::Base
   has_many :build_jobs
   
   scope :all_filtered, ->(filter) {
-    all = Branch.order(:name => :asc).all
+    all = all_active.order(:name => :asc)
     regex = Regexp.new filter
     all.select{|e| e.name =~ regex}
+  }
+  
+  scope :all_active, -> {
+    where(:deleted => false)
   }
   
   def self.options_for_select(filter="")

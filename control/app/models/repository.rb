@@ -56,8 +56,8 @@ class Repository < ActiveRecord::Base
     def fetch_branches(vcs)
       branches_names = vcs.branches
       unless branches_names.nil?
-        Branch.destroy_all(['name not in (?)', branches_names]) # remove deleted in repo branches
-        branches_to_create = branches_names - Branch.all.map {|b| b.name } # make a list of only new branches
+        Branch.where(['name not in (?)', branches_names]).update_all(:deleted => true) # mark as deleted branches deleted in repo
+        branches_to_create = branches_names - Branch.all_active.map {|b| b.name } # make a list of only new branches
         Branch.create(branches_to_create.map {|b| {name: b, repository: self} }) # insert them at once
       end
     end
