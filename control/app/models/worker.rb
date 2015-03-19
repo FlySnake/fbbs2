@@ -29,13 +29,11 @@ class Worker < ActiveRecord::Base
   
   def poll
     Rails.logger.debug("Polling worker '#{humanize}'")
-    
-    begin
-      msg = get_status
-      update_status msg
-    rescue => err
-      Rails.logger.error("Error updating worker '#{humanize}' status: #{error_string err}")
-    end
+    msg = get_status
+    update_status msg
+  rescue => err
+    Rails.logger.error("Error polling worker '#{humanize}': #{error_string err}")
+    set_to_failure
   end
   
   def start!(params)
@@ -52,44 +50,38 @@ class Worker < ActiveRecord::Base
   
   def stop!
     Rails.logger.info("Stopping worker '#{humanize}'")
-    begin
-      msg = stop_build
-      update_status msg
-      true
-    rescue => err
-      Rails.logger.error("Error stopping worker '#{humanize}': #{error_string err}")
-      set_to_failure
-      false
-    end
+    msg = stop_build
+    update_status msg
+    true
+  rescue => err
+    Rails.logger.error("Error stopping worker '#{humanize}': #{error_string err}")
+    set_to_failure
+    false
   end
   
   def request_config!
-    begin
-      worker_config = get_config
-  
-      platforms = []
-      worker_config['build']['platforms'].each do |p|
-        platforms << TargetPlatform.find_or_create_by!(title: p)
-      end
-      self.target_platforms = platforms
-      save
-    rescue => err
-      Rails.logger.error("Error fetching worker config: #{error_string err}")
-      self.errors.add(:worker_config, err.to_s)
-      false
+    worker_config = get_config
+
+    platforms = []
+    worker_config['build']['platforms'].each do |p|
+      platforms << TargetPlatform.find_or_create_by!(title: p)
     end
+    self.target_platforms = platforms
+    save
+  rescue => err
+    Rails.logger.error("Error fetching worker config: #{error_string err}")
+    self.errors.add(:worker_config, err.to_s)
+    false
   end
   
   def get_artefact(name)
     Rails.logger.info("Downloading artefact '#{name}' in worker '#{humanize}'")
-    begin
-      data = download_artefact name
-      delete_artefact name
-      data
-    rescue => err
-      Rails.logger.error("Error downloading artefact '#{name}' in worker '#{humanize}': #{error_string err}")
-      nil
-    end
+    data = download_artefact name
+    delete_artefact name
+    data
+  rescue => err
+    Rails.logger.error("Error downloading artefact '#{name}' in worker '#{humanize}': #{error_string err}")
+    nil
   end
   
   private 
@@ -153,7 +145,7 @@ class Worker < ActiveRecord::Base
     end
     
     def raise_on_error(data)
-      raise "http status #{data.status.to_s}" if data.status != 200
+      #raise "http status #{data.status.to_s}" if data.status != 200
     end
     
     def create_json_client
@@ -186,6 +178,8 @@ class Worker < ActiveRecord::Base
       
       # must be last 
       self.status = msg['busy'] ? :busy : :ready
+    rescue => err
+      Rails.logger.error("Error updating worker status '#{humanize}': #{error_string err}")
     end
 
 end
