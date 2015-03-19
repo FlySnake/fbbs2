@@ -34,8 +34,7 @@ class Worker < ActiveRecord::Base
       msg = get_status
       update_status msg
     rescue => err
-      Rails.logger.error("Error updating worker '#{humanize}' status: #{err.to_s}")
-      set_to_failure
+      Rails.logger.error("Error updating worker '#{humanize}' status: #{error_string err}")
     end
   end
   
@@ -46,7 +45,7 @@ class Worker < ActiveRecord::Base
       msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version], params[:buildnum_service]))
       update_status msg
     rescue => err
-      Rails.logger.error("Error starting worker '#{humanize}': #{err.to_s}")
+      Rails.logger.error("Error starting worker '#{humanize}': #{error_string err}")
       set_to_failure
     end
   end
@@ -58,7 +57,7 @@ class Worker < ActiveRecord::Base
       update_status msg
       true
     rescue => err
-      Rails.logger.error("Error stopping worker '#{humanize}': #{err.to_s}")
+      Rails.logger.error("Error stopping worker '#{humanize}': #{error_string err}")
       set_to_failure
       false
     end
@@ -75,7 +74,7 @@ class Worker < ActiveRecord::Base
       self.target_platforms = platforms
       save
     rescue => err
-      Rails.logger.error("Error fetching worker config: #{err.to_s}")
+      Rails.logger.error("Error fetching worker config: #{error_string err}")
       self.errors.add(:worker_config, err.to_s)
       false
     end
@@ -88,7 +87,7 @@ class Worker < ActiveRecord::Base
       delete_artefact name
       data
     rescue => err
-      Rails.logger.error("Error downloading artefact '#{name}' in worker '#{humanize}': #{err.to_s}")
+      Rails.logger.error("Error downloading artefact '#{name}' in worker '#{humanize}': #{error_string err}")
       nil
     end
   end
@@ -163,6 +162,10 @@ class Worker < ActiveRecord::Base
       client.connect_timeout = 50
       client.send_timeout = 40
       client
+    end
+    
+    def error_string(err)
+      "#{err.to_s} [#{err.class.to_s}]"
     end
     
     def update_status(msg)
