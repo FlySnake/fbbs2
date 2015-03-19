@@ -14,7 +14,7 @@ module NotifyUserMailerHelper
       result = "<b><font color='red'>#{text}</font></b>"
     else
       text = "Unknown"
-      result = "<b><font color='green'>#{text}</font></b>"
+      result = "<b><font color='red'>#{text}</font></b>"
     end
     result.html_safe
   end
