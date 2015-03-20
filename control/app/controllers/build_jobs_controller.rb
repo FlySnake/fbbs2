@@ -22,7 +22,7 @@ class BuildJobsController < ApplicationController
     ) or return
     @build_jobs_ready = @filterrific.find.page(params[:page]).per_page(params[:per_page] || 20).
                                      includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
-                                     where(:enviroment => @enviroment, :status => BuildJob.statuses[:ready]).
+                                     where(:enviroment => @enviroment, :status => BuildJob.statuses[:ready], :result => BuildJob.statuses[:success]).
                                      order(:created_at => :desc)
 
     respond_to do |format|
