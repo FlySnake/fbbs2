@@ -1,5 +1,4 @@
 module BuildJobsHelper
-  #include ActionView::Helpers::UrlHelper
   
   def build_job_tr_class(build_job)
     case build_job[:status]
@@ -71,7 +70,7 @@ module BuildJobsHelper
     text = ""
     text = link_to_commit(build_job) + " | " + 
            build_job.commit.author + " | " + 
-           build_job.commit.datetime.localtime + " | " + 
+           build_job.commit.datetime.localtime.to_s + " | " + 
            comment_with_link_to_issue(build_job).html_safe
   rescue
   ensure
@@ -92,6 +91,7 @@ module BuildJobsHelper
       text = ""
       text = build_job.commit.identifier
       link = build_job.enviroment.repository.full_weblink_to_commit(build_job.commit.identifier)
+      raise if link.empty? or link.nil?
       link_to(text, link, :target => "_blank")
     rescue
       text
