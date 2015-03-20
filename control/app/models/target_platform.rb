@@ -8,7 +8,7 @@ class TargetPlatform < ActiveRecord::Base
   
   scope :all_ordered_by_mask, ->(mask) {
     input = all_with_worker
-    return input if mask.nil? or mask.empty?
+    return input if mask.nil? or mask.empty? or mask.class != Array
     result = []
     mask.each do |v|
       found = input.find {|item| item.title == v}
