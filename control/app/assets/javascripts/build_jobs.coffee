@@ -1,8 +1,14 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
+        
+setup_select_notify_me = ->
+  $ ->
+    $('#select-me-button').click ->
+      if(gon? && gon.current_user_id?)
+        $("#select-user").val(gon.current_user_id).trigger("change")
 
-connect = ->
+connect_sse = ->
   console.log "Trying to start SSE..."
   if(gon? && gon.build_jobs_live_updates_path?)
     path = gon.build_jobs_live_updates_path
@@ -43,6 +49,12 @@ update_attr = (attr, build_job_id, new_value) ->
 refresh_tables = (json) ->
   if $("#status_for_" + json.build_job_id).html() != json.status
     location.reload()
+    
+ready = ->
+  connect_sse()
+  setup_select_notify_me()
         
-$(document).ready(connect)
-$(document).on('page:load', connect) # with turbolinks it causes multiple connection sse when walking across pages with sse
+$(document).ready(ready)
+$(document).on('page:load', ready) # with turbolinks it causes multiple connection sse when walking across pages with sse
+
+  

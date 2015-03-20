@@ -4,7 +4,8 @@
       = f.select :branch, options_from_collection_for_select(@branches, :id, :name), {}, :id => "select-branch"
       = select2js_for_id "select-branch"
     .col-md-1
-      = link_to "", fetch_branches_repository_path(@build_job.enviroment.repository), method: :post, class: "btn btn-default glyphicon glyphicon-refresh"
+      %span{:title => "Update branches list"}
+        = link_to "", fetch_branches_repository_path(@build_job.enviroment.repository), method: :post, class: "btn btn-default glyphicon glyphicon-refresh"
   .row
     .col-md-11
       = f.select :base_version, options_from_collection_for_select(@build_job.enviroment.base_versions, :id, :name), {}, :id => "select-base_version"
@@ -18,6 +19,10 @@
     .col-md-11
       = f.select :notify_user, options_from_collection_for_select(@users, :id, :email), {include_blank: 'None'}, :id => "select-user"
       = select2js_for_id "select-user"
+    .col-md-1
+      %span{:title => "Select me"}
+        .btn.btn-default.glyphicon.glyphicon-user#select-me-button
+      
   .row
     .col-md-11
       = f.text_field :comment

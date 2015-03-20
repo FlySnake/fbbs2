@@ -139,6 +139,9 @@ class BuildJobsController < ApplicationController
     
     def set_variables_for_js
       gon.build_jobs_live_updates_path = build_jobs_enviroment_live_updates_path(@enviroment.title)
+      if current_user
+        gon.current_user_id = current_user.id.to_s
+      end
     end
     
     def check_enviroments
