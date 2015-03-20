@@ -8,6 +8,9 @@ class Vcs::Base
   def branches
   end
   
+  def branches_with_last_commit
+  end
+  
   def check_correctness
   end
   

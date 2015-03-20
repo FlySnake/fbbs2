@@ -14,7 +14,7 @@ class Repository < ActiveRecord::Base
       vcs = vcs_by_type vcs_type
       
       if force_fetch
-        fetch_branches vcs
+        fetch_branches_with_last_commit vcs
       end
       
     rescue => e
@@ -53,12 +53,20 @@ class Repository < ActiveRecord::Base
       vcs
     end
     
-    def fetch_branches(vcs)
-      branches_names = vcs.branches
-      unless branches_names.nil?
-        Branch.where(['name not in (?)', branches_names]).update_all(:deleted => true) # mark as deleted branches deleted in repo
-        branches_to_create = branches_names - Branch.all_active.map {|b| b.name } # make a list of only new branches
-        Branch.create(branches_to_create.map {|b| {name: b, repository: self} }) # insert them at once
+    def fetch_branches_with_last_commit(vcs)
+       branches_with_commits = vcs.branches_with_last_commit
+       unless branches_with_commits.nil?
+        Branch.where(['name not in (?)', branches_with_commits.map{|f,s| f}]).update_all(:deleted => true) # mark as deleted branches deleted in repo
+        branches_to_create = branches_with_commits - Branch.all_active.map {|b| [b.name, b.last_commit_identifier] } # make a list of only new branches
+        branches_to_create.each do |name, commit|
+          found = Branch.find_by(:name => name)
+          if found
+            found.last_commit_identifier = commit
+            found.save
+          else
+            Branch.create(name: name, last_commit_identifier: commit, repository: self)
+          end
+        end
       end
     end
     
