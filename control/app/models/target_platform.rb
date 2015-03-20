@@ -18,8 +18,9 @@ class TargetPlatform < ActiveRecord::Base
     result += others
   }
   
-  def self.options_for_select
-    order('LOWER(title)').map { |e| [e.title, e.id] }
+  def self.options_for_select(order_mask=nil)
+    #order('LOWER(title)').map { |e| [e.title, e.id] }
+    all_ordered_by_mask(order_mask).map { |e| [e.title, e.id] }
   end
   
 end

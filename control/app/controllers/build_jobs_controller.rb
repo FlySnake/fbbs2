@@ -17,7 +17,7 @@ class BuildJobsController < ApplicationController
       select_options: {
         with_branch_id: Branch.options_for_select(@enviroment.branches_filter),
         with_base_version_id: BaseVersion.options_for_select,
-        with_target_platform_id: TargetPlatform.options_for_select
+        with_target_platform_id: TargetPlatform.options_for_select(@enviroment.target_platforms_order)
       }
     ) or return
     @build_jobs_ready = @filterrific.find.page(params[:page]).per_page(params[:per_page] || 20).
