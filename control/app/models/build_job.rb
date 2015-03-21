@@ -52,7 +52,7 @@ class BuildJob < ActiveRecord::Base
   end
   
   scope :busy_with_worker, ->(worker) {
-    where(:worker => worker, :status => BuildJob.statuses[:busy])
+    busy.where(:worker => worker)
   }
   
   scope :with_branch_id, ->(branches_ids) {
