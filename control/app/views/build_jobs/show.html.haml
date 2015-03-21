@@ -49,7 +49,7 @@
       %dt Updated at
       %dd= localtime @build_job.updated_at
       
-  - if @build_job.status != 'ready'
+  - unless @build_job.ready?
     = link_to 'Stop this job', stop_enviroment_build_job_path(enviroment_title: @enviroment.title, id: @build_job.id), :method => :delete, :class => "btn btn-danger", :data => { :confirm => 'Are you sure?' }
   
   = link_to 'Delete this job', enviroment_build_job_path(enviroment_title: @enviroment.title, id: @build_job.id), :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }

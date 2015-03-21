@@ -4,7 +4,7 @@ class BuildArtefactsController < ApplicationController
     if @artefact.nil?
       render :show
     else
-      if @artefact.build_job.status == 'busy'
+      if @artefact.build_job.busy?
         redirect_to enviroment_build_job_path(:id => @artefact.build_job.id, :enviroment_title => params[:enviroment_title]), 
                     flash: {warning: "The job is not finished yet."}
       else
