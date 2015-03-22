@@ -13,6 +13,7 @@ class Worker < ActiveRecord::Base
   after_save :reload_pool
   after_destroy :reload_pool
   after_create :request_config_on_create
+  after_initialize { @failed_requests_count = 0 }
   
   attr_accessor_with_onchange_callback :status, :result, :artefacts, :full_version, :commit_info, :build_log, :run_duration do |attr_name, value, old_value|
     #Rails.logger.debug "#{attr_name} changed from #{old_value.to_s} to #{value.to_s} in worker with id:#{self.id.to_s}"
@@ -87,8 +88,16 @@ class Worker < ActiveRecord::Base
   private 
   
     def set_to_failure
-      self.result = :failure
-      self.status = :offline
+      if @failed_requests_count >= 3
+        @failed_requests_count = 0
+        if self.status != :offline
+          Rails.logger.error("Worker '#{humanize}' goes offline after 3 retries")
+          self.result = :failure
+          self.status = :offline
+        end
+      else
+        @failed_requests_count = @failed_requests_count + 1
+      end
     end
   
     def request_config_on_create
@@ -151,7 +160,7 @@ class Worker < ActiveRecord::Base
     def create_json_client
       client = JSONClient.new
       client.receive_timeout = 60
-      client.connect_timeout = 50
+      client.connect_timeout = 30
       client.send_timeout = 40
       client
     end
