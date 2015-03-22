@@ -18,7 +18,7 @@
     %dt
       %b Downloads
     %dd= artefacts_links(@build_job, true)
-  - else
+  - elsif not @build_job.build_log.nil?
     %dt
       %b Build log
     %dd= link_to "full", enviroment_build_log_url(@build_job.enviroment, @build_job.build_log)
