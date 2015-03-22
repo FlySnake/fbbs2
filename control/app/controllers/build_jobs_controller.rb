@@ -131,7 +131,7 @@ class BuildJobsController < ApplicationController
     def set_build_jobs_ready
       @build_jobs_ready = BuildJob.
           includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
-          where(:enviroment => @enviroment).ready
+          where(:enviroment => @enviroment).ready.
           order(:created_at => :desc).
           paginate(:page => params[:page], :per_page => 10)
       
