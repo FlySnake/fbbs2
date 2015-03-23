@@ -56,7 +56,7 @@ class Repository < ActiveRecord::Base
     def fetch_branches_with_last_commit(vcs)
        branches_with_commits = vcs.branches_with_last_commit
        unless branches_with_commits.nil?
-        Branch.where(['name not in (?)', branches_with_commits.map{|f,s| f}]).update_all(:deleted => true) # mark as deleted branches deleted in repo
+        Branch.destroy_all(['name not in (?)', branches_with_commits.map{|f,s| f}]) # remove deleted in repo branches
         branches_to_create = branches_with_commits - Branch.all_active.map {|b| [b.name, b.last_commit_identifier] } # make a list of only new branches
         branches_to_create.each do |name, commit|
           found = Branch.find_by(:name => name)

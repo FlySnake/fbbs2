@@ -2,7 +2,8 @@ class Branch < ActiveRecord::Base
   belongs_to :repository
   has_many :build_jobs
   
-  after_initialize :set_new_commits
+  before_destroy { self.update_attribute(:deleted_at, Time.now); false}
+
   
   scope :all_filtered, ->(filter) {
     all = all_active.order(:name => :asc)
@@ -11,7 +12,7 @@ class Branch < ActiveRecord::Base
   }
   
   scope :all_active, -> {
-    where(:deleted => false)
+    where(:deleted_at => nil)
   }
   
   def self.options_for_select(filter="")
@@ -19,22 +20,12 @@ class Branch < ActiveRecord::Base
   end
   
   def new_commits?
-    @new_commits
-  end
-  
-  private
-  
-    def set_new_commits
-      found = self.build_jobs.find { |b|
-        unless b.commit.nil?
-          self.last_commit_identifier.start_with? b.commit.identifier and b.result == BuildJob.results[:success]
-        end
-      }
-      if found.nil?
-        @new_commits = true
-      else
-        @new_commits = false
+    found = self.build_jobs.find do |b|
+      unless b.commit.nil?
+        self.last_commit_identifier.start_with? b.commit.identifier and b.success?
       end
     end
+    found.nil? ? true : false
+  end
     
 end
