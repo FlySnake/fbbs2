@@ -52,7 +52,7 @@ class BuildJob < ActiveRecord::Base
   end
   
   scope :busy_with_worker, ->(worker) {
-    where(:worker => worker, :status => BuildJob.statuses[:busy])
+    busy.where(:worker => worker)
   }
   
   scope :with_branch_id, ->(branches_ids) {
@@ -87,9 +87,9 @@ class BuildJob < ActiveRecord::Base
   
   def stop!
     BuildJobQueue.dequeue self
-    if self.status == 'busy'
+    if self.busy?
       self.worker.stop!
-    elsif self.status == 'fresh'
+    elsif self.fresh?
       self.status = BuildJob.statuses[:ready]
       save
     end

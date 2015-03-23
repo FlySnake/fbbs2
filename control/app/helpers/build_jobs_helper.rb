@@ -1,5 +1,4 @@
 module BuildJobsHelper
-  #include ActionView::Helpers::UrlHelper
   
   def build_job_tr_class(build_job)
     case build_job[:status]
@@ -44,7 +43,7 @@ module BuildJobsHelper
   end
   
   def calculate_duration(build_job)
-    if build_job.status == 'busy'
+    if build_job.busy?
       end_time = Time.now
     else
       end_time = build_job.finished_at.nil? ? build_job.updated_at : build_job.finished_at
@@ -52,26 +51,27 @@ module BuildJobsHelper
    
     start_time = build_job.started_at
     return "" if start_time.nil? 
-    diff = TimeDifference.between(start_time, end_time).in_general
-    result = ""
-    if diff[:days] != 0
-      result << " #{diff[:days]}" + "d"
-    end
-    if diff[:hours] != 0
-      result << " #{diff[:hours]}" + "h"
-    end
-    if diff[:minutes] != 0
-      result << " #{diff[:minutes]}" + "m"
-    end
-    result << " #{diff[:seconds]}" + "s"
-    sanitize result
+    distance_of_time_in_words start_time, end_time, include_seconds: true
+    #diff = TimeDifference.between(start_time, end_time).in_general
+    #result = ""
+    #if diff[:days] != 0
+    #  result << " #{diff[:days]}" + "d"
+    #end
+    #if diff[:hours] != 0
+    #  result << " #{diff[:hours]}" + "h"
+    #end
+    #if diff[:minutes] != 0
+    #  result << " #{diff[:minutes]}" + "m"
+    #end
+    #result << " #{diff[:seconds]}" + "s"
+    #sanitize result
   end
   
   def revision_text(build_job)
     text = ""
     text = link_to_commit(build_job) + " | " + 
            build_job.commit.author + " | " + 
-           build_job.commit.datetime.localtime + " | " + 
+           build_job.commit.datetime.localtime.to_s + " | " + 
            comment_with_link_to_issue(build_job).html_safe
   rescue
   ensure
@@ -92,6 +92,7 @@ module BuildJobsHelper
       text = ""
       text = build_job.commit.identifier
       link = build_job.enviroment.repository.full_weblink_to_commit(build_job.commit.identifier)
+      raise if link.empty? or link.nil?
       link_to(text, link, :target => "_blank")
     rescue
       text

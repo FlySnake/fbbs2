@@ -28,4 +28,4 @@ control/public/assets
 control/config/database.yml
 control/secret_key
 control/config/email.yml
-
+*.local

@@ -13,7 +13,7 @@ module NotifyUserMailerHelper
       text = "Terminated"
       result = "<b><font color='red'>#{text}</font></b>"
     else
-      text = "Unknown"
+      text = "Unknown status"
       result = "<b><font color='red'>#{text}</font></b>"
     end
     result.html_safe
