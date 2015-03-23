@@ -4,7 +4,7 @@ class HomePageContentsController < BaseAdminController
   # GET /home_page_contents
   # GET /home_page_contents.json
   def index
-    @home_page_contents = HomePageContent.all
+    @home_page_contents = HomePageContent.order(:position => :asc)
   end
 
   # GET /home_page_contents/new
@@ -64,6 +64,6 @@ class HomePageContentsController < BaseAdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def home_page_content_params
-      params.require(:home_page_content).permit(:title, :link)
+      params.require(:home_page_content).permit(:title, :link, :position)
     end
 end
