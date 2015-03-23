@@ -13,7 +13,7 @@ class HomeController < ApplicationController
     end
     
     def set_home_page_contents
-      @home_page_contents = HomePageContent.all
+      @home_page_contents = HomePageContent.order(:position => :asc)
     end
   
 end
