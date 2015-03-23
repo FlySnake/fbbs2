@@ -52,19 +52,6 @@ module BuildJobsHelper
     start_time = build_job.started_at
     return "" if start_time.nil? 
     distance_of_time_in_words start_time, end_time, include_seconds: true
-    #diff = TimeDifference.between(start_time, end_time).in_general
-    #result = ""
-    #if diff[:days] != 0
-    #  result << " #{diff[:days]}" + "d"
-    #end
-    #if diff[:hours] != 0
-    #  result << " #{diff[:hours]}" + "h"
-    #end
-    #if diff[:minutes] != 0
-    #  result << " #{diff[:minutes]}" + "m"
-    #end
-    #result << " #{diff[:seconds]}" + "s"
-    #sanitize result
   end
   
   def revision_text(build_job)
@@ -76,6 +63,10 @@ module BuildJobsHelper
   rescue
   ensure
     sanitize text, tags: ['a']
+  end
+  
+  def new_commits?(build_job)
+    build_job.branch.new_commits? build_job.target_platform
   end
   
   private

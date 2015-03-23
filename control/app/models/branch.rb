@@ -3,8 +3,7 @@ class Branch < ActiveRecord::Base
   has_many :build_jobs
   
   before_destroy { self.update_attribute(:deleted_at, Time.now); false}
-
-  
+ 
   scope :all_filtered, ->(filter) {
     all = all_active.order(:name => :asc)
     regex = Regexp.new filter
@@ -19,10 +18,10 @@ class Branch < ActiveRecord::Base
     all_filtered(filter).map { |e| [e.name, e.id] }
   end
   
-  def new_commits?
+  def new_commits?(target_platform=nil)
     found = self.build_jobs.find do |b|
       unless b.commit.nil?
-        self.last_commit_identifier.start_with? b.commit.identifier and b.success?
+        self.last_commit_identifier.start_with? b.commit.identifier and b.success? and (target_platform.nil? ? true : b.target_platform == target_platform)
       end
     end
     found.nil? ? true : false

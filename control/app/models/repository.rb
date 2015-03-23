@@ -20,7 +20,7 @@ class Repository < ActiveRecord::Base
     rescue => e
       self.errors.add(:branches, e.to_s)
     end
-    Branch.all
+    Branch.all_active
   end
   
   def remote_url
