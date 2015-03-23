@@ -22,6 +22,10 @@ else
     WorkersPool::Timeout.new.check!
   end
   
+  scheduler.every '2h' do
+    Repository.fetch_branches_all_in_backgroud
+  end
+  
   #scheduler.every '2s' do
   #  without_sql_logging do
   #    begin

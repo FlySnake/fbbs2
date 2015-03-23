@@ -41,6 +41,12 @@ class Repository < ActiveRecord::Base
     end
   end
   
+  def self.fetch_branches_all_in_backgroud
+    Repository.each do |r|
+      FetchBranchesJob.perform_later r
+    end
+  end
+  
   protected
   
     def vcs_by_type(type)
@@ -54,8 +60,9 @@ class Repository < ActiveRecord::Base
     end
     
     def fetch_branches_with_last_commit(vcs)
-       branches_with_commits = vcs.branches_with_last_commit
-       unless branches_with_commits.nil?
+      Rails.logger.info "Fetching remote branches"
+      branches_with_commits = vcs.branches_with_last_commit
+      unless branches_with_commits.nil?
         Branch.destroy_all(['name not in (?)', branches_with_commits.map{|f,s| f}]) # remove deleted in repo branches
         branches_to_create = branches_with_commits - Branch.all_active.map {|b| [b.name, b.last_commit_identifier] } # make a list of only new branches
         branches_to_create.each do |name, commit|

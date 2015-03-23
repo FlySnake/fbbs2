@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     end
     resources :repositories do
       post :fetch_branches, :on => :member
+      post :post_hook, :on => :member
     end
     resources :enviroments
     resources :base_versions

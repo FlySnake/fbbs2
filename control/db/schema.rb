@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150323093405) do
+ActiveRecord::Schema.define(version: 20150323140117) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -174,12 +174,15 @@ ActiveRecord::Schema.define(version: 20150323093405) do
   end
 
   create_table "repositories", force: :cascade do |t|
-    t.string   "title",             limit: 512,  default: "", null: false
-    t.string   "path",              limit: 4096,              null: false
-    t.integer  "vcs_type",                                    null: false
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.string   "title",             limit: 512,  default: "",    null: false
+    t.string   "path",              limit: 4096,                 null: false
+    t.integer  "vcs_type",                                       null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
     t.string   "weblink_to_commit", limit: 4096
+    t.boolean  "hook_enabled",                   default: false, null: false
+    t.string   "hook_login",        limit: 128
+    t.string   "hook_password",     limit: 128
   end
 
   create_table "target_platforms", force: :cascade do |t|

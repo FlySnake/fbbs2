@@ -15,6 +15,8 @@
       %dd= "(#{@repository.remote_name}) #{@repository.remote_url}"
       %dt Weblink to commit
       %dd= @repository.weblink_to_commit
+      %dt Hook
+      %dd= @repository.hook_enabled ? "yes (#{post_hook_full_url @repository})" : "no"
       %dt Created at
       %dd= localtime @repository.created_at
       %dt Updated at
