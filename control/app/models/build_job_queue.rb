@@ -25,7 +25,8 @@ class BuildJobQueue < ActiveRecord::Base
         end
       end
     rescue => err
-      Rails.logger.error("Error checking queue: #{err.to_s}")
+      Rails.logger.error("Error checking queue: #{err.to_s} [#{err.class.to_s}]")
+      Rails.logger.error err.backtrace.join("\n")
     end
   end
   
