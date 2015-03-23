@@ -4,6 +4,7 @@ class LiveUpdatesController < ApplicationController
   include ActionController::Live
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::SanitizeHelper
+  include ActionView::Helpers::DateHelper
   include BuildJobsHelper
   include ModelHelpers
   
