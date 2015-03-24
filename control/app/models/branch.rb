@@ -1,8 +1,6 @@
 class Branch < ActiveRecord::Base
   belongs_to :repository
   has_many :build_jobs
-  
-  before_destroy { self.update_attribute(:deleted_at, Time.now); false}
  
   scope :all_filtered, ->(filter) {
     all = all_active.order(:name => :asc)
@@ -13,6 +11,18 @@ class Branch < ActiveRecord::Base
   scope :all_active, -> {
     where(:deleted_at => nil)
   }
+  
+  def destroy
+    run_callbacks :destroy do
+      update_attribute(:deleted_at, Time.now) or return false
+      @destroyed = true
+      freeze
+    end
+  end
+  
+  def destroy!
+    raise ActiveRecord::RecordNotDestroyed unless destroy
+  end
   
   def self.options_for_select(filter="")
     all_filtered(filter).map { |e| [e.name, e.id] }
