@@ -93,7 +93,7 @@ class BuildJobsController < ApplicationController
   
   # get /build_jobs/check_existing.json
   def check_existing
-    result = {'exists' => true, 'path' => '#'}
+    result = {'exists' => false, 'path' => '#'}
     branch = Branch.find(params[:branch_id])
     unless branch.new_commits? TargetPlatform.find(params[:target_platform_id]), BaseVersion.find(params[:base_version_id])
       #existing_job = BuildJob.where(:branch)
