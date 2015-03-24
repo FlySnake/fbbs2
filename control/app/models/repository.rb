@@ -42,6 +42,7 @@ class Repository < ActiveRecord::Base
   end
   
   def self.fetch_branches_all_in_backgroud
+    Rails.logger.debug "Fetching remote branches initialized for each repository"
     Repository.each do |r|
       FetchBranchesJob.perform_later r
     end
