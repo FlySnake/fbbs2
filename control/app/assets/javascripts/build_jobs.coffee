@@ -30,6 +30,44 @@ connect_sse = ->
   else 
     console.log "Error starting SSE"  
 
+process_submit_form = ->
+  $('#start_build_job_form').submit ->
+    console.log "on start build job clicked"
+    # check if this commit is built already
+    show_question = true
+    check_existing_build()
+    if not show_question
+      return true
+    
+    $('#modal_existing_build_job').modal('show')
+   
+    $('#button_start_anyway').click ->
+      console.log "clicked start anyway"
+      $('#start_build_job_form').unbind() # prevent recursion on submit since we are already in submit handler
+      $('#start_build_job_form').submit()
+
+    $('#button_show_existing').click ->
+      console.log "clicked show existing"
+    false
+    
+check_existing_build = ->
+  branch_id = $('#select-branch').val()
+  base_version_id = $('#select-base_version').val()
+  target_platform_id = $('#select-target_platform').val()
+  console.log "branch_id=" + branch_id
+  console.log "base_version_id=" + base_version_id
+  console.log "target_platform_id=" + target_platform_id
+  
+  url = gon.check_existing_path
+  params = {branch_id: branch_id, base_version_id: base_version_id, target_platform_id: target_platform_id}
+
+  is_exists = false
+  $.ajax type: 'GET', url: url, data: params, async: false, success: (data, status, xhr) -> 
+      console.log("ajax request " + status + ", build exists: " + data.is_exists)   
+      is_exists = true
+  console.log("is_exists=" + is_exists)
+  is_exists
+
 onevent = (event) ->
   json = JSON.parse(event.data)
   console.log json
@@ -53,8 +91,10 @@ refresh_tables = (json) ->
 ready = ->
   connect_sse()
   setup_select_notify_me()
+  process_submit_form()
         
 $(document).ready(ready)
 $(document).on('page:load', ready) # with turbolinks it causes multiple connection sse when walking across pages with sse
+
 
   

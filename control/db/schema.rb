@@ -28,17 +28,15 @@ ActiveRecord::Schema.define(version: 20150323140117) do
   add_index "base_versions_enviroments", ["enviroment_id"], name: "index_base_versions_enviroments_on_enviroment_id"
 
   create_table "branches", force: :cascade do |t|
-    t.string   "name",                   limit: 512,                 null: false
+    t.string   "name",                   limit: 512,              null: false
     t.integer  "repository_id"
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
-    t.string   "last_commit_identifier",             default: "",    null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.string   "last_commit_identifier",             default: "", null: false
     t.datetime "deleted_at"
-    t.boolean  "deleted",                            default: false, null: false
   end
 
   add_index "branches", ["deleted_at"], name: "index_branches_on_deleted_at"
-  add_index "branches", ["name"], name: "index_branches_on_name"
   add_index "branches", ["repository_id"], name: "index_branches_on_repository_id"
 
   create_table "build_artefacts", force: :cascade do |t|

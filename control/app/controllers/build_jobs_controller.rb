@@ -90,6 +90,15 @@ class BuildJobsController < ApplicationController
       end
     end
   end
+  
+  # get /build_jobs/check_existing
+  def check_existing
+    result = {'is_exists' => false, 'existing_path' => nil}
+    puts "params " + params.inspect
+    respond_to do |format|
+      format.json { render json: result }
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -139,6 +148,7 @@ class BuildJobsController < ApplicationController
     
     def set_variables_for_js
       gon.build_jobs_live_updates_path = build_jobs_enviroment_live_updates_path(@enviroment.title)
+      gon.check_existing_path = check_existing_enviroment_build_jobs_path(@enviroment.title, format: :json)
       if current_user
         gon.current_user_id = current_user.id.to_s
       end

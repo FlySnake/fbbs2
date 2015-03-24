@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :enviroments, param: :title, path: "/", only: [] do
     resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
       delete :stop, :on => :member
+      get :check_existing, :on => :collection
     end
     resources :build_logs, only: [:show]
     resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false
