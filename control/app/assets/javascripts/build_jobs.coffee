@@ -60,6 +60,7 @@ set_build_exists = (href)->
 set_build_not_exists = ->
   console.log "no existing builds"
   $('#existing_build_notification').hide()
+  $('#existing_build_path').attr('href', '#')
 
 onevent = (event) ->
   json = JSON.parse(event.data)

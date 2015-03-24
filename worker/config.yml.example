@@ -1,5 +1,5 @@
 logging:
-    file: /home/o.antonyan/Desktop/worker.log
+    file: /home/flysnake/Desktop/worker.log
     level: debug
 
 repository:
