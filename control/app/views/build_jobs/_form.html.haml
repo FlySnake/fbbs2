@@ -1,6 +1,4 @@
-= render 'modal_existing_build_job' 
-
-= bootstrap_form_for @build_job, url: enviroment_build_jobs_path(enviroment_title: @enviroment.title), method: :post, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10", :html => {:id => "start_build_job_form"} do |f|
+= bootstrap_form_for @build_job, url: enviroment_build_jobs_path(enviroment_title: @enviroment.title), method: :post, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10" do |f|
   .row
     .col-md-11
       = f.select :branch, options_from_collection_for_select(@branches, :id, :name), {}, :id => "select-branch"
@@ -28,6 +26,9 @@
   .row
     .col-md-11
       = f.text_field :comment
-
-  = f.submit "Start build", class: "btn btn-success"
   
+  = f.submit "Start build", class: "btn btn-success"
+  %span{:class => "triangle-isosceles left", :id => "existing_build_notification"}
+    %span= "The build is already exists. Grab it "
+    %a{:href => "#", :id => "existing_build_path"}= "here"
+    %span= " or start a new one if you absolutely sure you need it"

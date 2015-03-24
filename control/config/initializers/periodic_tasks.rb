@@ -25,15 +25,5 @@ else
   scheduler.every '2h' do
     Repository.fetch_branches_all_in_backgroud
   end
-  
-  #scheduler.every '2s' do
-  #  without_sql_logging do
-  #    begin
-  #      BuildJobQueue.scheduler
-  #    rescue => err
-  #      Rails.logger.error("Unhandled exception in 'BuildJobQueue.scheduler': #{err.to_s}")
-  #    end
-  #  end
-  #end
  
 end

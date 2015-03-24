@@ -66,7 +66,7 @@ module BuildJobsHelper
   end
   
   def new_commits?(build_job)
-    build_job.branch.new_commits? build_job.target_platform
+    build_job.branch.new_commits? build_job.target_platform, build_job.base_version
   end
   
   private

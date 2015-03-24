@@ -28,10 +28,13 @@ class Branch < ActiveRecord::Base
     all_filtered(filter).map { |e| [e.name, e.id] }
   end
   
-  def new_commits?(target_platform=nil)
+  def new_commits?(target_platform=nil, base_version=nil)
     found = self.build_jobs.find do |b|
       unless b.commit.nil?
-        self.last_commit_identifier.start_with? b.commit.identifier and b.success? and (target_platform.nil? ? true : b.target_platform == target_platform)
+        self.last_commit_identifier.start_with? b.commit.identifier \
+          and b.success? \
+          and (target_platform.nil? ? true : b.target_platform == target_platform) \
+          and (base_version.nil? ? true : b.base_version == base_version)
       end
     end
     found.nil? ? true : false

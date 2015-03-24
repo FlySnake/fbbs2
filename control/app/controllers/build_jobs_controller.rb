@@ -91,10 +91,18 @@ class BuildJobsController < ApplicationController
     end
   end
   
-  # get /build_jobs/check_existing
+  # get /build_jobs/check_existing.json
   def check_existing
-    result = {'is_exists' => false, 'existing_path' => nil}
-    puts "params " + params.inspect
+    result = {'exists' => true, 'path' => '#'}
+    branch = Branch.find(params[:branch_id])
+    unless branch.new_commits? TargetPlatform.find(params[:target_platform_id]), BaseVersion.find(params[:base_version_id])
+      #existing_job = BuildJob.where(:branch)
+      result['exists'] = true
+      result['path'] = enviroment_build_job_path(:enviroment_title => @enviroment.title, :id => existing_job.id)
+    end
+  rescue => err
+    Rails.logger.error "Error processing AJAX request for check_existing: #{err.to_s}"
+  ensure
     respond_to do |format|
       format.json { render json: result }
     end

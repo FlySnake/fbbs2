@@ -30,43 +30,36 @@ connect_sse = ->
   else 
     console.log "Error starting SSE"  
 
-process_submit_form = ->
-  $('#start_build_job_form').submit ->
-    console.log "on start build job clicked"
-    # check if this commit is built already
-    show_question = true
-    check_existing_build()
-    if not show_question
-      return true
+check_existing_builds = ->
+  set_build_not_exists()
+  on_change_form_check_existing()
+  $('#select-branch, #select-base_version, #select-target_platform').change ->
+    on_change_form_check_existing()
     
-    $('#modal_existing_build_job').modal('show')
-   
-    $('#button_start_anyway').click ->
-      console.log "clicked start anyway"
-      $('#start_build_job_form').unbind() # prevent recursion on submit since we are already in submit handler
-      $('#start_build_job_form').submit()
-
-    $('#button_show_existing').click ->
-      console.log "clicked show existing"
-    false
-    
-check_existing_build = ->
+on_change_form_check_existing = ->
   branch_id = $('#select-branch').val()
   base_version_id = $('#select-base_version').val()
   target_platform_id = $('#select-target_platform').val()
   console.log "branch_id=" + branch_id
   console.log "base_version_id=" + base_version_id
   console.log "target_platform_id=" + target_platform_id
-  
   url = gon.check_existing_path
   params = {branch_id: branch_id, base_version_id: base_version_id, target_platform_id: target_platform_id}
-
-  is_exists = false
-  $.ajax type: 'GET', url: url, data: params, async: false, success: (data, status, xhr) -> 
-      console.log("ajax request " + status + ", build exists: " + data.is_exists)   
-      is_exists = true
-  console.log("is_exists=" + is_exists)
-  is_exists
+  $.ajax type: 'GET', url: url, data: params, success: (data, status, xhr) -> 
+      console.log("ajax request " + status + ", build exists: " + data.exists)
+      if data.exists
+        set_build_exists(data.path)
+      else
+        set_build_not_exists()
+      
+set_build_exists = (href)->
+  console.log "the build is already exists"
+  $('#existing_build_notification').show()
+  $('#existing_build_path').attr('href', href)
+  
+set_build_not_exists = ->
+  console.log "no existing builds"
+  $('#existing_build_notification').hide()
 
 onevent = (event) ->
   json = JSON.parse(event.data)
@@ -91,7 +84,7 @@ refresh_tables = (json) ->
 ready = ->
   connect_sse()
   setup_select_notify_me()
-  process_submit_form()
+  check_existing_builds() 
         
 $(document).ready(ready)
 $(document).on('page:load', ready) # with turbolinks it causes multiple connection sse when walking across pages with sse
