@@ -6,19 +6,16 @@
   .col-md-12
     %table.table.table-striped.table-bordered.table-hover.table-responsive.table-condensed
       %tr
+        %th Position
         %th Title
         %th Link
         %th More
     
       - @home_page_contents.each do |c|
         %tr
+          %td= c.position
           %td= c.title
           %td= (c.link.nil? ? "" : link_to(c.link, c.link))
-          %td
-            .btn-group
-              %button.btn.dropdown-toggle.btn-default{"type" => "button", "data-toggle" => "dropdown"}
-                %span.glyphicon.glyphicon-list
-              %ul.dropdown-menu{:role => "menu"}
-                %li= link_to "Edit", edit_home_page_content_path(c)
+          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), edit_home_page_content_path(c), :class => "btn btn-default"
     
     = link_to "Add new home page content", new_home_page_content_path, class: "btn btn-primary"
