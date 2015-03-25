@@ -10,7 +10,12 @@ class Vcs::Git < Vcs::Base
   
   def branches
     remotes = Git.ls_remote remote_url
-    remotes['branches'].map {|k,v| k }
+    remotes['branches'].map {|f,s| f }
+  end
+  
+  def branches_with_last_commit
+    remotes = Git.ls_remote remote_url
+    remotes['branches'].map {|f,s| [f, s[:sha]] }
   end
   
   def remote_url

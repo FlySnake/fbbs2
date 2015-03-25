@@ -13,7 +13,12 @@
       
     - build_jobs.each do |b|
       %tr{:class => build_job_tr_class(b), :id => "build_job_id_" + b.id.to_s }
-        %td= b.branch.name
+        %td
+          - if new_commits? b
+            %span{class: "glyphicon glyphicon-asterisk"}
+          /- else
+          /  %span{class: "glyphicon glyphicon-ok"}
+          %span= b.branch.name
         %td= b.full_version.title unless b.full_version.nil? 
         %td= b.target_platform.title
         %td= artefacts_links(b)

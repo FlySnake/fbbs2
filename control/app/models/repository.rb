@@ -1,6 +1,6 @@
 class Repository < ActiveRecord::Base
   enum vcs_type: [:git]
-  has_many :branches, :dependent => :destroy
+  has_many :branches
   has_one :enviroment
   
   validates :title, length: {in: 1..100}, uniqueness: true
@@ -14,13 +14,13 @@ class Repository < ActiveRecord::Base
       vcs = vcs_by_type vcs_type
       
       if force_fetch
-        fetch_branches vcs
+        fetch_branches_with_last_commit vcs
       end
       
     rescue => e
       self.errors.add(:branches, e.to_s)
     end
-    Branch.all
+    Branch.all_active
   end
   
   def remote_url
@@ -41,6 +41,13 @@ class Repository < ActiveRecord::Base
     end
   end
   
+  def self.fetch_branches_all_in_backgroud
+    Rails.logger.debug "Fetching remote branches initialized for each repository"
+    Repository.all.each do |r|
+      FetchBranchesJob.perform_later r
+    end
+  end
+  
   protected
   
     def vcs_by_type(type)
@@ -53,12 +60,21 @@ class Repository < ActiveRecord::Base
       vcs
     end
     
-    def fetch_branches(vcs)
-      branches_names = vcs.branches
-      unless branches_names.nil?
-        Branch.where(['name not in (?)', branches_names]).update_all(:deleted => true) # mark as deleted branches deleted in repo
-        branches_to_create = branches_names - Branch.all_active.map {|b| b.name } # make a list of only new branches
-        Branch.create(branches_to_create.map {|b| {name: b, repository: self} }) # insert them at once
+    def fetch_branches_with_last_commit(vcs)
+      Rails.logger.info "Fetching remote branches"
+      branches_with_commits = vcs.branches_with_last_commit
+      unless branches_with_commits.nil?
+        Branch.destroy_all(['name not in (?)', branches_with_commits.map{|f,s| f}]) # remove deleted in repo branches
+        branches_to_create = branches_with_commits - Branch.all_active.map {|b| [b.name, b.last_commit_identifier] } # make a list of only new branches
+        branches_to_create.each do |name, commit|
+          found = Branch.find_by(:name => name)
+          if found
+            found.last_commit_identifier = commit
+            found.save
+          else
+            Branch.create(name: name, last_commit_identifier: commit, repository: self)
+          end
+        end
       end
     end
     

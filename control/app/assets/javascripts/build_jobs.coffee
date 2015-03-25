@@ -30,6 +30,39 @@ connect_sse = ->
   else 
     console.log "Error starting SSE"  
 
+check_existing_builds = ->
+  set_build_not_exists()
+  on_change_form_check_existing()
+  $('#select-branch, #select-base_version, #select-target_platform').change ->
+    on_change_form_check_existing()
+    
+on_change_form_check_existing = ->
+  branch_id = $('#select-branch').val()
+  base_version_id = $('#select-base_version').val()
+  target_platform_id = $('#select-target_platform').val()
+  console.log "branch_id=" + branch_id
+  console.log "base_version_id=" + base_version_id
+  console.log "target_platform_id=" + target_platform_id
+  if(gon? && gon.check_existing_path?)
+    url = gon.check_existing_path
+    params = {branch_id: branch_id, base_version_id: base_version_id, target_platform_id: target_platform_id}
+    $.ajax type: 'GET', url: url, data: params, success: (data, status, xhr) -> 
+        console.log("ajax request " + status + ", build exists: " + data.exists)
+        if data.exists
+          set_build_exists(data.path)
+        else
+          set_build_not_exists()
+      
+set_build_exists = (href)->
+  console.log "the build is already exists"
+  $('#existing_build_notification').show()
+  $('#existing_build_path').attr('href', href)
+  
+set_build_not_exists = ->
+  console.log "no existing builds"
+  $('#existing_build_notification').hide()
+  $('#existing_build_path').attr('href', '#')
+
 onevent = (event) ->
   json = JSON.parse(event.data)
   console.log json
@@ -53,8 +86,10 @@ refresh_tables = (json) ->
 ready = ->
   connect_sse()
   setup_select_notify_me()
+  check_existing_builds() 
         
 $(document).ready(ready)
 $(document).on('page:load', ready) # with turbolinks it causes multiple connection sse when walking across pages with sse
+
 
   

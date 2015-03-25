@@ -40,4 +40,28 @@ RSpec.describe Branch, type: :model do
     
   end
   
+  describe "soft deletion" do
+    it "is not really destroyed from the database after calling destroy" do
+      b = create(:branch)
+      b.destroy
+      b.reload
+      expect{ Branch.find(b.id) }.not_to raise_error
+    end
+    
+    it "is marked as deleted after destoy call" do
+      b = create(:branch)
+      b.destroy
+      b.reload
+      expect(b.deleted_at).not_to eq nil
+    end
+    
+    it "is 'destoyed?' after destroy call" do
+      b = create(:branch)
+      b.destroy
+      b.reload
+      expect(b.destroyed?).to eq true
+    end
+    
+  end
+  
 end

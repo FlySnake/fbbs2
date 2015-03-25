@@ -1,6 +1,10 @@
 class RepositoriesController < BaseAdminController
-  before_filter :set_repository, only: [:show, :edit, :update, :destroy, :fetch_branches]
+  before_filter :set_repository, only: [:show, :edit, :update, :destroy, :fetch_branches, :post_hook]
   skip_before_filter :check_user_admin, only: [:fetch_branches]
+  skip_before_filter :authenticate_user!, only: [:post_hook]
+  skip_before_filter :check_user_admin, only: [:post_hook]
+  skip_before_filter :verify_authenticity_token, only: [:post_hook]
+  before_filter :authenticate_hook, only: [:post_hook]
   
   # GET /repositories
   def index
@@ -55,14 +59,32 @@ class RepositoriesController < BaseAdminController
     end
   end
   
+  # POST /repositories/1/post_hook
+  def post_hook
+    Rails.logger.info "Repository POST hook triggerd"
+    if @repository.hook_enabled
+      # here we only updating branches list, in future it's a good idea to parse the message body and update specific branches
+      FetchBranchesJob.perform_later @repository
+    end
+    render nothing: true
+  end
+  
   private
   
-  def set_repository
-    @repository = Repository.find(params[:id])
-  end
-  
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def repository_params
-    params.require(:repository).permit(:title, :path, :vcs_type, :weblink_to_commit)
-  end
+    def set_repository
+      @repository = Repository.find(params[:id])
+    end
+    
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def repository_params
+      params.require(:repository).permit(:title, :path, :vcs_type, :weblink_to_commit, :hook_enabled, :hook_login, :hook_password)
+    end
+    
+    def authenticate_hook
+      return true if @repository.hook_login.blank? or @repository.hook_password.blank?
+      authenticate_or_request_with_http_basic('Hook') do |username, password|
+        username == @repository.hook_login && password == @repository.hook_password
+      end
+    end
+    
 end

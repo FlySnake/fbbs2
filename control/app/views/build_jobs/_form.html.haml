@@ -26,5 +26,9 @@
   .row
     .col-md-11
       = f.text_field :comment
-
+  
   = f.submit "Start build", class: "btn btn-success"
+  %span{:class => "triangle-isosceles left", :id => "existing_build_notification"}
+    %span= "The build is already exists. Grab it "
+    %a{:href => "#", :id => "existing_build_path"}= "here"
+    %span= " or start a new one if you absolutely sure you need it"
