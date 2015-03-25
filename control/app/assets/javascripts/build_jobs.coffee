@@ -43,14 +43,15 @@ on_change_form_check_existing = ->
   console.log "branch_id=" + branch_id
   console.log "base_version_id=" + base_version_id
   console.log "target_platform_id=" + target_platform_id
-  url = gon.check_existing_path
-  params = {branch_id: branch_id, base_version_id: base_version_id, target_platform_id: target_platform_id}
-  $.ajax type: 'GET', url: url, data: params, success: (data, status, xhr) -> 
-      console.log("ajax request " + status + ", build exists: " + data.exists)
-      if data.exists
-        set_build_exists(data.path)
-      else
-        set_build_not_exists()
+  if(gon? && gon.check_existing_path?)
+    url = gon.check_existing_path
+    params = {branch_id: branch_id, base_version_id: base_version_id, target_platform_id: target_platform_id}
+    $.ajax type: 'GET', url: url, data: params, success: (data, status, xhr) -> 
+        console.log("ajax request " + status + ", build exists: " + data.exists)
+        if data.exists
+          set_build_exists(data.path)
+        else
+          set_build_not_exists()
       
 set_build_exists = (href)->
   console.log "the build is already exists"
