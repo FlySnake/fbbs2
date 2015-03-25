@@ -22,7 +22,7 @@ else
     WorkersPool::Timeout.new.check!
   end
   
-  scheduler.every '2h' do
+  scheduler.every '4h' do
     Repository.fetch_branches_all_in_backgroud
   end
  
