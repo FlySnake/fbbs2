@@ -45,6 +45,7 @@ Rails.application.configure do
   #config.action_mailer.delivery_method = :smtp
   #config.action_mailer.smtp_settings = {:address => "localhost", :port => 1025}
   
+  # NOTE: causes freezes with Live Streaming (http://stackoverflow.com/questions/28966821/rails-live-streaming-not-working-freezes-request)
   #config.after_initialize do
   #  Bullet.enable = true
   #  Bullet.alert = true

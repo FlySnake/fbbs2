@@ -32,7 +32,7 @@ class Branch < ActiveRecord::Base
     build_job_with_existing_commit.nil? ? true : false
   end
   
-  def build_job_with_existing_commit(target_platform=nil, base_version=nil)
+  def build_job_with_existing_commit(target_platform=nil, base_version=nil) # Needs optimization/refactoring
     found = self.build_jobs.find do |b|
       unless b.commit.nil?
         self.last_commit_identifier.start_with? b.commit.identifier \

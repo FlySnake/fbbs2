@@ -21,7 +21,7 @@ class BuildJobsController < ApplicationController
       }
     ) or return
     @build_jobs_ready = @filterrific.find.page(params[:page]).per_page(params[:per_page] || 20).
-                                     includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
+                                     includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment, :base_version).
                                      where(:enviroment => @enviroment).ready.success.
                                      order(:created_at => :desc)
 
@@ -113,7 +113,7 @@ class BuildJobsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_build_job
-      @build_job = BuildJob.includes(:enviroment).find(params[:id])
+      @build_job = BuildJob.includes(:enviroment, :base_version, :commit).find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -129,7 +129,7 @@ class BuildJobsController < ApplicationController
       end
       @users = User.order(:email => :asc).all
       @target_platforms = TargetPlatform.all_ordered_by_mask @enviroment.target_platforms_order
-      @branches = Branch.all_filtered(@enviroment.branches_filter)
+      @branches = Branch.includes(:build_jobs).all_filtered(@enviroment.branches_filter)
     end
     
     def set_enviroments
@@ -142,14 +142,14 @@ class BuildJobsController < ApplicationController
     
     def set_build_jobs_active
       @build_jobs_active = BuildJob.
-          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
+          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment, :base_version).
           where(:status => [BuildJob.statuses[:busy], BuildJob.statuses[:fresh]]).
           order(:created_at => :desc)
     end
           
     def set_build_jobs_ready
       @build_jobs_ready = BuildJob.
-          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment).
+          includes(:branch, :commit, :full_version, :target_platform, :build_artefacts, :enviroment, :base_version).
           where(:enviroment => @enviroment).ready.
           order(:created_at => :desc).
           paginate(:page => params[:page], :per_page => 10)
