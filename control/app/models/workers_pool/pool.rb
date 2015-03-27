@@ -29,7 +29,7 @@ class WorkersPool::Pool
   def load_workers
     Rails.logger.debug("Loading all workers")
     @semaphore.synchronize {
-      @workers = Worker.all
+      @workers = Worker.order(:priority => :desc).all
     }
   end
   

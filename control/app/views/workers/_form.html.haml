@@ -1,6 +1,7 @@
 = bootstrap_form_for(@worker, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
   = f.text_field :title
   = f.text_field :address
+  = f.number_field :priority
   .row
     .col-sm-10.col-sm-offset-2
       %ul
