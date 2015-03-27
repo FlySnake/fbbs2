@@ -1,7 +1,7 @@
 require 'model_helpers'
 
 class BuildJob < ActiveRecord::Base
-  extend ModelHelpers
+  include ModelHelpers
   
   belongs_to :branch
   belongs_to :base_version
@@ -39,9 +39,7 @@ class BuildJob < ActiveRecord::Base
       end
       loop do
         @@notify_queues.each do
-          #with_connection_threaded do
-            yield
-          #end
+          yield
         end
       end
     end
