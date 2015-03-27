@@ -39,9 +39,9 @@ class BuildJob < ActiveRecord::Base
       end
       loop do
         @@notify_queues.each do
-          with_connection_threaded do
+          #with_connection_threaded do
             yield
-          end
+          #end
         end
       end
     end
@@ -51,6 +51,7 @@ class BuildJob < ActiveRecord::Base
     @@notify_queues_mutex.synchronize do
       @@notify_queues.delete(queue)
     end
+    ActiveRecord::Base.connection.close if ActiveRecord::Base.connection
   end
   
   scope :busy_with_worker, ->(worker) {
