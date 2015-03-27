@@ -154,7 +154,7 @@ class Worker < ActiveRecord::Base
     end
     
     def raise_on_error(data)
-      #raise "http status #{data.status.to_s}" if data.status != 200
+      raise "http status #{data.status.to_s}" if data.status != 200
     end
     
     def create_json_client
