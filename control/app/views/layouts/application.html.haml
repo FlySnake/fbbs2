@@ -40,9 +40,8 @@
               = render 'layouts/messages'
             .col-md-12.col-lg-12
               = yield
-            %footer
+              = tag :br
+            .footer{:style => "clear:both;margin-top:5px;"}
               = tag :hr
-              .container
-                .col-md-12
-                  = link_to "Project page", "https://bitbucket.org/antlabs_dev/fbbs2"
-                  /<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+              = link_to "Project page", "https://bitbucket.org/antlabs_dev/fbbs2"
+              
