@@ -9,6 +9,7 @@ class Worker < ActiveRecord::Base
   
   validates :title, length: {in: 1..100}, uniqueness: true
   validates :address, length: {in: 2..100}, uniqueness: true
+  validates :priority, numericality: { only_integer: true }
   
   after_save :reload_pool
   after_destroy :reload_pool
@@ -16,7 +17,6 @@ class Worker < ActiveRecord::Base
   after_initialize { @failed_requests_count = 0 }
   
   attr_accessor_with_onchange_callback :status, :result, :artefacts, :full_version, :commit_info, :build_log, :run_duration do |attr_name, value, old_value|
-    #Rails.logger.debug "#{attr_name} changed from #{old_value.to_s} to #{value.to_s} in worker with id:#{self.id.to_s}"
     BuildJob.on_worker_status_changed self, attr_name.to_sym, value, old_value
   end
   
@@ -96,7 +96,7 @@ class Worker < ActiveRecord::Base
           self.status = :offline
         end
       else
-        @failed_requests_count = @failed_requests_count + 1
+        @failed_requests_count += + 1
       end
     end
     

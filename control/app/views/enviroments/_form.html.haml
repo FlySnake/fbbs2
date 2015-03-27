@@ -6,6 +6,7 @@
   = f.text_field :branches_filter, :placeholder => "enter a regexp, empty to disable filtering"
   = f.select :issue_tracker_id, @issue_trackers.map{ |p| ["#{p.title}", p.id] }, {include_blank: 'None'}, :id => "select-issue_tracker"
   = select2js_for_id "select-issue_tracker"
+  = f.number_field :delete_build_jobs_older_than, min: 0, title: "Delete build jobs older than [days]. 0 to keep them forever"
   = f.collection_check_boxes :base_version_ids, @base_versions, :id, :name, label: "Base versions"
   - if @target_platforms.any?
     %label.control-label.col-sm-2= "Target platforms UI order"

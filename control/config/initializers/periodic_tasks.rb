@@ -19,11 +19,27 @@ else
   end
  
   scheduler.every '30s' do
-    WorkersPool::Timeout.new.check!
+    begin
+      WorkersPool::Timeout.new.check!
+    rescue => err
+      Rails.logger.error("Unhandled exception in 'WorkersPool::Timeout.new.check!': #{err.to_s}")
+    end
   end
   
   scheduler.every '4h' do
-    Repository.fetch_branches_all_in_backgroud
+    begin
+      Repository.fetch_branches_all_in_backgroud
+    rescue => err
+      Rails.logger.error("Unhandled exception in 'Repository.fetch_branches_all_in_backgroud': #{err.to_s}")
+    end
+  end
+  
+  scheduler.every '24h' do
+    begin
+      Enviroment.rotate_build_jobs
+    rescue => err
+      Rails.logger.error("Unhandled exception in 'Enviroment.rotate_build_jobs': #{err.to_s}")
+    end
   end
  
 end

@@ -28,4 +28,3 @@ production:
   password: secret
   host: localhost
   pool: 1024
-  reaping_frequency: 40
