@@ -9,6 +9,7 @@
         %th Title
         %th Address
         %th Priority
+        %th Disabled
         %th Platforms
         %th Current status
         %th More info
@@ -18,6 +19,7 @@
           %td= worker.title
           %td= worker.address
           %td= worker.priority
+          %td= worker.disabled
           %td
             %ul
               - worker.target_platforms.each do |platform|

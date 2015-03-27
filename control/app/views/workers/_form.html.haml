@@ -2,6 +2,8 @@
   = f.text_field :title
   = f.text_field :address
   = f.number_field :priority
+  = f.form_group title: "Check to disable this worker. It will be listed, but not used" do
+    = f.check_box :disabled
   .row
     .col-sm-10.col-sm-offset-2
       %ul

@@ -14,7 +14,11 @@ class WorkersPool::Pool
   end
   
   def ready
-    @workers.select {|w| w.status == :ready}
+    @workers.select {|w| w.status == :ready and w.disabled == false }
+  end
+  
+  def enabled
+    @workers.select {|w| w.disabled == false}
   end
   
   def find(worker)
@@ -34,12 +38,12 @@ class WorkersPool::Pool
   end
   
   def poll_all
-    @workers.each do |w|
+    enabled.each do |w|
       begin
         w.poll
       rescue => err
         Rails.logger.error "Error polling worker '#{w.title}@#{w.address}': #{err.to_s}"
-        puts err.backtrace
+        Rails.logger.error err.backtrace.join("\n")
       end
     end
   end
