@@ -38,8 +38,8 @@ class BuildJob < ActiveRecord::Base
         @@notify_queues << queue
       end
       loop do
-        with_connection_threaded do
-          @@notify_queues.each do
+        @@notify_queues.each do
+          with_connection_threaded do
             yield
           end
         end
