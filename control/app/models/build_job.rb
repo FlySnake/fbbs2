@@ -49,7 +49,6 @@ class BuildJob < ActiveRecord::Base
     @@notify_queues_mutex.synchronize do
       @@notify_queues.delete(queue)
     end
-    #ActiveRecord::Base.connection.close if ActiveRecord::Base.connection
   end
   
   scope :busy_with_worker, ->(worker) {
