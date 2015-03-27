@@ -19,7 +19,7 @@ class Enviroment < ActiveRecord::Base
         build_jobs_to_delete = BuildJob.where("enviroment_id = ? and finished_at <= ?", e.id, Time.now - e.delete_build_jobs_older_than.days)
         ids = build_jobs_to_delete.map{|b| b.id}
         if ids.count > 0
-          Rails.logger.warn "Number of BuildJobs to be deleted: #{ids.count}, their ids: #{ids.join(', ')}"
+          Rails.logger.warn "Number of BuildJobs to be deleted (older than #{e.delete_build_jobs_older_than.days.to_s}): #{ids.count}, their ids: #{ids.join(', ')}"
           RotateBuildJobsJob.perform_later ids
         else
           Rails.logger.info "Nothing to rotate in enviroment '#{e.title}'"
