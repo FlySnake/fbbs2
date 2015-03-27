@@ -32,6 +32,7 @@ class LiveUpdatesController < ApplicationController
     sse.close
     BuildJob.on_change_cleanup(build_jobs_queue)
     Rails.logger.info "Closed SSE stream"
+    ActiveRecord::Base.connection.close
   end
   
   private
