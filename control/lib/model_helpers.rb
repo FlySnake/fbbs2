@@ -23,6 +23,17 @@ module ModelHelpers
     end
   end
   
+  def with_connection_threaded(&block)
+    begin
+      yield block
+    rescue => e
+      raise e
+    ensure
+      # Check the connection back in to the connection pool
+      ActiveRecord::Base.connection.close if ActiveRecord::Base.connection
+    end
+  end
+  
   class QueueWithTimeout
     def initialize
       @mutex = Mutex.new
@@ -56,5 +67,5 @@ module ModelHelpers
       end
     end
   end
-
+  
 end

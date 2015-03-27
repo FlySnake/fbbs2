@@ -12,7 +12,7 @@ class Worker < ActiveRecord::Base
   
   after_save :reload_pool
   after_destroy :reload_pool
-  after_create :request_config_on_create
+  after_create { request_config!; true }
   after_initialize { @failed_requests_count = 0 }
   
   attr_accessor_with_onchange_callback :status, :result, :artefacts, :full_version, :commit_info, :build_log, :run_duration do |attr_name, value, old_value|
@@ -98,11 +98,6 @@ class Worker < ActiveRecord::Base
       else
         @failed_requests_count = @failed_requests_count + 1
       end
-    end
-  
-    def request_config_on_create
-      request_config!
-      true # always ok because we don't care in create callback
     end
     
     def reload_pool
