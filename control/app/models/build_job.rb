@@ -13,7 +13,7 @@ class BuildJob < ActiveRecord::Base
   belongs_to :build_log
   belongs_to :worker
   belongs_to :full_version
-  has_many :build_artefacts
+  has_many :build_artefacts, :dependent => :destroy
   has_one :build_job_queue
   
   validates :branch, presence: true
@@ -38,9 +38,9 @@ class BuildJob < ActiveRecord::Base
         @@notify_queues << queue
       end
       loop do
-       @@notify_queues.each do
-         yield
-       end
+        @@notify_queues.each do
+          yield
+        end
       end
     end
   end

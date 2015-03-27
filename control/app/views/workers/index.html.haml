@@ -8,6 +8,8 @@
       %tr
         %th Title
         %th Address
+        %th Priority
+        %th Disabled
         %th Platforms
         %th Current status
         %th More info
@@ -16,6 +18,8 @@
         %tr{:class => tr_class_by_status(worker.status) }
           %td= worker.title
           %td= worker.address
+          %td= worker.priority
+          %td= worker.disabled
           %td
             %ul
               - worker.target_platforms.each do |platform|

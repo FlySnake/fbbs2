@@ -9,6 +9,10 @@
       %dd= @worker.title
       %dt Address
       %dd= @worker.address
+      %dt Priority
+      %dd= @worker.priority
+      %dt Disabled?
+      %dd= @worker.disabled
       %dt Platforms
       %dd= @worker.target_platforms.map {|p| p.title}.join(", ")
       %dt Current status

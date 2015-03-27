@@ -11,7 +11,7 @@ class LiveUpdatesController < ApplicationController
   def build_jobs
     Rails.logger.info "Starting SSE for new client"
     response.headers['Content-Type'] = 'text/event-stream'
-    sse = SSE.new(response.stream, retry: 3000, event: "update_build_jobs")
+    sse = SSE.new(response.stream, retry: 60, event: "update_build_jobs")
     build_jobs_queue = QueueWithTimeout.new
     Timeout::timeout(14400) do # kick the client after 4 hours
       BuildJob.on_change(build_jobs_queue) do
@@ -32,7 +32,6 @@ class LiveUpdatesController < ApplicationController
     sse.close
     BuildJob.on_change_cleanup(build_jobs_queue)
     Rails.logger.info "Closed SSE stream"
-    ActiveRecord::Base.connection.close # hunting leaked connections
   end
   
   private

@@ -34,4 +34,12 @@ RSpec.describe Enviroment, type: :model do
     expect(build(:enviroment, :title => "hello world")).to be_invalid
   end
   
+  it "is invalid with non-numerical :delete_build_jobs_older_than" do
+    expect(build(:enviroment, :delete_build_jobs_older_than => "hello")).to be_invalid
+  end
+  
+  it "is invalid with negative :delete_build_jobs_older_than" do
+    expect(build(:enviroment, :delete_build_jobs_older_than => -1)).to be_invalid
+  end
+  
 end

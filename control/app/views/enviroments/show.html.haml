@@ -24,6 +24,8 @@
       - unless @enviroment.target_platforms_order.nil?
         %dt Target platfroms UI order
         %dd= @enviroment.target_platforms_order.join(", ")
+      %dt Delete build jobs older than [days]
+      %dd= @enviroment.delete_build_jobs_older_than
       %dt Created at
       %dd= localtime @enviroment.created_at
       %dt Updated at

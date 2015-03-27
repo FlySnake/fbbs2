@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150323140117) do
+ActiveRecord::Schema.define(version: 20150327125446) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -28,12 +28,13 @@ ActiveRecord::Schema.define(version: 20150323140117) do
   add_index "base_versions_enviroments", ["enviroment_id"], name: "index_base_versions_enviroments_on_enviroment_id"
 
   create_table "branches", force: :cascade do |t|
-    t.string   "name",                   limit: 512,              null: false
+    t.string   "name",                   limit: 512,                 null: false
     t.integer  "repository_id"
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
-    t.string   "last_commit_identifier",             default: "", null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.string   "last_commit_identifier",             default: "",    null: false
     t.datetime "deleted_at"
+    t.boolean  "deleted",                            default: false, null: false
   end
 
   add_index "branches", ["deleted_at"], name: "index_branches_on_deleted_at"
@@ -136,14 +137,15 @@ ActiveRecord::Schema.define(version: 20150323140117) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "enviroments", force: :cascade do |t|
-    t.string   "title",                  limit: 1024,              null: false
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.integer  "default_build_number",                default: 0,  null: false
+    t.string   "title",                        limit: 1024,              null: false
+    t.datetime "created_at",                                             null: false
+    t.datetime "updated_at",                                             null: false
+    t.integer  "default_build_number",                      default: 0,  null: false
     t.integer  "repository_id"
-    t.string   "branches_filter",        limit: 2048, default: ""
+    t.string   "branches_filter",              limit: 2048, default: ""
     t.integer  "issue_tracker_id"
     t.text     "target_platforms_order"
+    t.integer  "delete_build_jobs_older_than",              default: 0,  null: false
   end
 
   add_index "enviroments", ["issue_tracker_id"], name: "index_enviroments_on_issue_tracker_id"
@@ -220,10 +222,12 @@ ActiveRecord::Schema.define(version: 20150323140117) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
   create_table "workers", force: :cascade do |t|
-    t.string   "title",      limit: 512, null: false
-    t.string   "address",    limit: 512, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "title",                      null: false
+    t.string   "address",                    null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "priority",   default: 0,     null: false
+    t.boolean  "disabled",   default: false, null: false
   end
 
 end

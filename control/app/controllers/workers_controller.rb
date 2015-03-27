@@ -65,7 +65,7 @@ class WorkersController < BaseAdminController
   
   # Never trust parameters from the scary internet, only allow the white list through.
   def worker_params
-    params.require(:worker).permit(:title, :address)
+    params.require(:worker).permit(:title, :address, :priority, :disabled)
   end
   
 end
