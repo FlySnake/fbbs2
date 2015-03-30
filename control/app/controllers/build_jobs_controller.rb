@@ -125,7 +125,6 @@ class BuildJobsController < ApplicationController
       @enviroment = Enviroment.includes(:repository).find_by(:title => params[:enviroment_title])
       if @enviroment.nil?
         raise "Unknown build enviroment '#{params[:enviroment_title]}'. Available: #{Enviroment.all.to_a.map{|e| e.title}.join(', ')}"
-        # TODO something meaningful like redirect to an error page
       end
       @users = User.order(:email => :asc).all
       @target_platforms = TargetPlatform.all_ordered_by_mask @enviroment.target_platforms_order
