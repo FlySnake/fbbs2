@@ -12,7 +12,7 @@
       %dt Platform
       %dd= @build_log.build_job.target_platform.title
       %dt Built on
-      %dd= @build_log.build_job.worker.title + "@" + @build_log.build_job.worker.address
+      %dd= @build_log.build_job.worker.humanize
 
-%pre= highlight(@build_log.text, "Error")
+%pre= highlight(@build_log.text, "error", highlighter: '<b><mark class="bg-danger">\1</mark></b>')
 
