@@ -1,23 +1,23 @@
 = bootstrap_form_for @build_job, url: enviroment_build_jobs_path(enviroment_title: @enviroment.title), method: :post, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10" do |f|
   .row
     .col-md-11
-      = f.select :branch, options_from_collection_for_select(@branches, :id, :name), {}, :id => "select-branch"
+      = f.select :branch, options_from_collection_for_select(@branches, :id, :name, @build_job.branch.nil? ? "" : @build_job.branch.id), {}, :id => "select-branch"
       = select2js_for_id "select-branch"
     .col-md-1
       %span{:title => "Update branches list"}
         = link_to "", fetch_branches_repository_path(@build_job.enviroment.repository), method: :post, class: "btn btn-default glyphicon glyphicon-refresh"
   .row
     .col-md-11
-      = f.select :base_version, options_from_collection_for_select(@build_job.enviroment.base_versions, :id, :name), {}, :id => "select-base_version"
+      = f.select :base_version, options_from_collection_for_select(@build_job.enviroment.base_versions, :id, :name, @build_job.base_version.nil? ? "" : @build_job.base_version.id), {}, :id => "select-base_version"
       = select2js_for_id "select-base_version"
   
   .row
     .col-md-11
-      = f.select :target_platform, options_from_collection_for_select(@target_platforms, :id, :title), {}, :id => "select-target_platform"
+      = f.select :target_platform, options_from_collection_for_select(@target_platforms, :id, :title, @build_job.target_platform.nil? ? "" : @build_job.target_platform.id), {}, :id => "select-target_platform"
       = select2js_for_id "select-target_platform"
   .row
     .col-md-11
-      = f.select :notify_user, options_from_collection_for_select(@users, :id, :email), {include_blank: 'None'}, :id => "select-user"
+      = f.select :notify_user, options_from_collection_for_select(@users, :id, :email, @build_job.notify_user.nil? ? "" : @build_job.notify_user.id), {include_blank: 'None'}, :id => "select-user"
       = select2js_for_id "select-user"
     .col-md-1
       %span{:title => "Select me"}
