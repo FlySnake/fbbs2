@@ -81,7 +81,13 @@ update_attr = (attr, build_job_id, new_value) ->
 
 refresh_tables = (json) ->
   if $("#status_for_" + json.build_job_id).html() != json.status
-    location.reload()
+    #location.reload()
+    #disable page scrolling to top after loading page content
+    Turbolinks.enableTransitionCache(true)
+    # pass current page url to visit method
+    Turbolinks.visit(location.toString())
+    #enable page scroll reset in case user clicks other link
+    Turbolinks.enableTransitionCache(false)
     
 ready = ->
   connect_sse()
