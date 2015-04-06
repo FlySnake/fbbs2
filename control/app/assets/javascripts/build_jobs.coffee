@@ -75,9 +75,10 @@ onevent = (event) ->
     
 update_attr = (attr, build_job_id, new_value) ->
   attr_id = "#" + attr + build_job_id
-  if $(attr_id).html() != new_value && new_value.length > 0
-    console.log "updating " + attr + " to " + new_value
-    $(attr_id).html(new_value)
+  if new_value?
+    if $(attr_id).html() != new_value && new_value.length > 0
+      console.log "updating " + attr + " to " + new_value
+      $(attr_id).html(new_value)
 
 refresh_tables = (json) ->
   if $("#status_for_" + json.build_job_id).html() != json.status
