@@ -17,6 +17,9 @@
       - unless @enviroment.issue_tracker.nil?
         %dt Issue tracker
         %dd= link_to @enviroment.issue_tracker.title, @enviroment.issue_tracker
+      - unless @enviroment.tests_executor.nil?
+        %dt Tests executor
+        %dd= link_to @enviroment.tests_executor.title, @enviroment.tests_executor
       %dt Branches filter regex
       %dd= @enviroment.branches_filter
       %dt Base versions

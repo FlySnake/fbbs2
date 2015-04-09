@@ -1,7 +1,7 @@
 class Repository < ActiveRecord::Base
   enum vcs_type: [:git]
   has_many :branches
-  has_one :enviroment
+  has_many :enviroments
   
   validates :title, length: {in: 1..100}, uniqueness: true
   validates :path, length: {in: 1..4000}

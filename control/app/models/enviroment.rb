@@ -4,6 +4,7 @@ class Enviroment < ActiveRecord::Base
   has_and_belongs_to_many :base_versions
   has_many :build_jobs
   belongs_to :issue_tracker
+  belongs_to :tests_executor
   
   validates :title, length: {in: 1..100}, uniqueness: true
   validates :default_build_number, numericality: { only_integer: true }, presence: true
