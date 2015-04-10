@@ -95,7 +95,8 @@ class EnviromentsController < BaseAdminController
     # Never trust parameters from the scary internet, only allow the white list through.
     def enviroment_params
       p = params.require(:enviroment).permit(:title, :default_build_number, :repository_id, :branches_filter, :issue_tracker_id, 
-                                             :target_platforms_order, :tests_executor_id, :delete_build_jobs_older_than, :base_version_ids => [])
+                                             :target_platforms_order, :tests_executor_id, :tests_enabled_by_default, 
+                                             :delete_build_jobs_older_than, :base_version_ids => [])
       p[:target_platforms_order] = JSON.parse p[:target_platforms_order]
       p
     end

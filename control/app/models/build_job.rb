@@ -21,6 +21,7 @@ class BuildJob < ActiveRecord::Base
   validates :target_platform, presence: true
   validates :base_version, presence: true
   validates :comment, length: {in: 0..256}
+  validate :target_platform_tests
   
   enum status: [:fresh, :busy, :ready]
   enum result: [:unknown, :success, :failure, :terminated]
@@ -215,6 +216,15 @@ class BuildJob < ActiveRecord::Base
     def notify
       @@notify_queues.each do |q|
         q.push self
+      end
+    end
+    
+    def target_platform_tests
+      if self.run_tests
+        potential_workers = WorkersPool::Pool.instance.select_by_platform(self.target_platform)
+        if potential_workers.empty? or not potential_workers.find {|w| w.tests_support }
+          errors.add(:run_tests, "cannot run because there is no workers supporting them on selected platform")
+        end
       end
     end
     

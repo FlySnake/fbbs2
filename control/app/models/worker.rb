@@ -68,6 +68,7 @@ class Worker < ActiveRecord::Base
       platforms << TargetPlatform.find_or_create_by!(title: p)
     end
     self.target_platforms = platforms
+    self.tests_support = worker_config['build']['tests_support']
     save
   rescue => err
     Rails.logger.error("Error fetching worker config: #{error_string err}")

@@ -30,6 +30,10 @@ class WorkersPool::Pool
     end
   end
   
+  def select_by_platform(platform)
+    @workers.select {|w| w.target_platforms.include? platform}
+  end
+  
   def load_workers
     Rails.logger.debug("Loading all workers")
     @semaphore.synchronize {

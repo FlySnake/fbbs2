@@ -27,6 +27,14 @@
     .col-md-11
       = f.text_field :comment
   
+  .row
+    .col-md-11
+      .row.form-group
+        .control-label.col-sm-2
+          = f.label :run_tests
+        .col-sm-10
+          = f.check_box :run_tests, label: "all"
+  
   = f.submit "Start build", class: "btn btn-success"
   %span{:class => "triangle-isosceles left", :id => "existing_build_notification"}
     %span= "The build is already exists. Grab it "

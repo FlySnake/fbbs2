@@ -16,7 +16,8 @@ class BuildJobQueue < ActiveRecord::Base
   
       fresh_jobs.each do |build_job|
         available_workers.each do |worker|
-          if worker.target_platforms.include? build_job.target_platform and BuildJob.busy_with_worker(worker).empty?
+          if worker.target_platforms.include? build_job.target_platform and BuildJob.busy_with_worker(worker).empty? \
+                and (build_job.run_tests ? worker.tests_support : true)
             build_job.start! worker
             dequeue build_job
             available_workers.delete worker

@@ -55,14 +55,15 @@ class BuildJobsController < ApplicationController
                               :status => BuildJob.statuses[:fresh],
                               :result => BuildJob.results[:unknown],
                               :comment => params[:build_job][:comment],
-                              :generate_build_numbers_url => generate_build_numbers_url(:json))
+                              :generate_build_numbers_url => generate_build_numbers_url(:json),
+                              :run_tests => params[:build_job][:run_tests])
 
     respond_to do |format|
       if @build_job.save
         format.html { redirect_to home_enviroments_path, notice: 'Build job was successfully created.' }
         format.json { render :show, status: :created, location: @build_job }
       else
-        format.html { render :new }
+        format.html { flash[:alert] = @build_job.errors.full_messages.join(', '); render :new }
         format.json { render json: @build_job.errors, status: :unprocessable_entity }
       end
     end
@@ -118,7 +119,7 @@ class BuildJobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def build_job_params
-      params.require(:build_job).permit(:branch, :base_version, :target_platform, :notify_user, :started_by_user, :comment, :status)
+      params.require(:build_job).permit(:branch, :base_version, :target_platform, :notify_user, :started_by_user, :comment, :status, :run_tests)
     end
     
     def set_enviroment

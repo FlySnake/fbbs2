@@ -17,6 +17,13 @@
       %ul{:id => "sortable_target_platorms", :class => "ui-sortable btn-group-vertical list-unstyled"}
         - @target_platforms.each_with_index do |p, i|
           %li{:class => "ui-state-default btn", :id => "item_#{i}"}= p.title
+  .row
+    .col-md-11
+      .row.form-group
+        .control-label.col-sm-2
+          = f.label :enable_tests_by_default
+        .col-sm-10
+          = f.check_box :tests_enabled_by_default, label: "when starting build job checkbox will be checked by default"
     
   = f.primary 'Save'
   - if not defined?(delete_disabled) or not delete_disabled

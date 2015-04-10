@@ -69,6 +69,6 @@ class TestsExecutorsController < BaseAdminController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def tests_executor_params
-      params.require(:tests_executor).permit(:title)
+      params.require(:tests_executor).permit(:title, :run_params, :artefact_name)
     end
 end
