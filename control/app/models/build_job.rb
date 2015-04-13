@@ -50,7 +50,7 @@ class BuildJob < ActiveRecord::Base
     @@notify_queues_mutex.synchronize do
       @@notify_queues.delete(queue)
     end
-    ActiveRecord::Base.clear_active_connections!
+    #ActiveRecord::Base.clear_active_connections!
   end
   
   scope :busy_with_worker, ->(worker) {
