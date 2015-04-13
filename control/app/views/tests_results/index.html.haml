@@ -1,0 +1,19 @@
+- title "List tests results"
+  
+%h1.page-header= yield(:title)
+
+.row
+  .col-md-12
+    %table.table.table-striped.table-bordered.table-hover.table-responsive
+      %tr
+        %th Short description
+        %th Result
+        %th Time
+        %th More info
+        
+      - @tests_results.each do |t|
+        %tr
+          %td= t.short_description
+          %td= t.result
+          %td= t.time
+          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), t, :class => "btn btn-default"

@@ -13,8 +13,9 @@ class BuildJob < ActiveRecord::Base
   belongs_to :build_log
   belongs_to :worker
   belongs_to :full_version
-  has_many :build_artefacts, :dependent => :destroy
+  has_many :build_artefacts, dependent: :destroy
   has_one :build_job_queue
+  has_many :tests_results, dependent: :destroy
   
   validates :branch, presence: true
   validates :enviroment, presence: true
@@ -83,7 +84,8 @@ class BuildJob < ActiveRecord::Base
                   :enviroment_id => self.enviroment.id, 
                   :branch_name => self.branch.name, 
                   :base_version => self.base_version.name,
-                  :buildnum_service => self.generate_build_numbers_url)
+                  :buildnum_service => self.generate_build_numbers_url,
+                  :tests => (self.run_tests ? {:run_params => self.enviroment.tests_executor.run_params, :artefact_name => self.enviroment.tests_executor.artefact_name} : nil))
     update_attributes(:started_at => Time.now, :worker => worker, :status => BuildJob.statuses[:busy])
   end
   

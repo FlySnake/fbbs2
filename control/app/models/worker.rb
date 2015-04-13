@@ -41,7 +41,7 @@ class Worker < ActiveRecord::Base
     Rails.logger.info("Starting worker '#{humanize}'")
     self.status = :busy #for sure
     begin
-      msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version], params[:buildnum_service]))
+      msg = start_build(start_params(params[:branch_name], params[:target_platform_name], params[:enviroment_id], params[:base_version], params[:buildnum_service], params[:tests]))
       update_status msg
     rescue => err
       Rails.logger.error("Error starting worker '#{humanize}': #{error_string err}")
@@ -145,8 +145,17 @@ class Worker < ActiveRecord::Base
       data.content
     end
     
-    def start_params(branch, platform, enviroment_id, base_version, buildnum_service)
-      {'branch' => branch, 'platform' => platform, 'enviroment_id' => enviroment_id, 'base_version' => base_version, 'buildnum_service' => buildnum_service}
+    def start_params(branch, platform, enviroment_id, base_version, buildnum_service, tests)
+      result = {'branch' => branch, 
+                'platform' => platform, 
+                'enviroment_id' => enviroment_id, 
+                'base_version' => base_version, 
+                'buildnum_service' => buildnum_service
+                }
+       unless tests.blank?
+         result['params'] = {'tests_run_params' => tests[:run_params], 'tests_artefact_name' => tests[:artefact_name]}
+       end
+       result
     end
     
     def raise_on_error(data)

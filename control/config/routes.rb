@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  
+
   devise_for :users
   scope "/admin" do
     resources :users, except: [:new, :create] do
@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
       delete :stop, :on => :member
       get :check_existing, :on => :collection
+      resources :tests_results, only: [:index, :show]
     end
     resources :build_logs, only: [:show]
     resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false

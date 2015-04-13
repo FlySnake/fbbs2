@@ -40,7 +40,10 @@
         %dd= localtime @build_job.finished_at
       - unless @build_job.build_log.nil?
         %dt Log
-        %dd= link_to "full", enviroment_build_log_path(@enviroment, @build_job.build_log)
+        %dd= link_to "full", enviroment_build_log_path(@build_job.enviroment.title, @build_job.build_log)
+      - if @build_job.run_tests
+        %dt Tests results
+        %dd= link_to "all", enviroment_build_job_tests_results_path(@build_job.enviroment.title, @build_job.id)
       - unless @build_job.worker.nil?
         %dt Worker
         %dd= link_to @build_job.worker.title, @build_job.worker

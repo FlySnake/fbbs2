@@ -4,5 +4,18 @@
 
 .row
   .col-md-12
+    %table.table.table-striped.table-bordered.table-hover.table-responsive
+      %tr
+        %th Title
+        %th Run params
+        %th Artefact name
+        %th More info
+        
+      - @tests_executors.each do |t|
+        %tr
+          %td= t.title
+          %td= t.run_params
+          %td= t.artefact_name
+          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), t, :class => "btn btn-default"
   
     = link_to 'Add new tests executor', new_tests_executor_path, class: "btn btn-primary"

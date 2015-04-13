@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150410130138) do
+ActiveRecord::Schema.define(version: 20150413081209) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -204,16 +204,6 @@ ActiveRecord::Schema.define(version: 20150410130138) do
   add_index "target_platforms_workers", ["target_platform_id"], name: "index_target_platforms_workers_on_target_platform_id"
   add_index "target_platforms_workers", ["worker_id"], name: "index_target_platforms_workers_on_worker_id"
 
-  create_table "tests_build_jobs_runs", force: :cascade do |t|
-    t.integer  "build_job_id"
-    t.integer  "tests_result_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-  end
-
-  add_index "tests_build_jobs_runs", ["build_job_id"], name: "index_tests_build_jobs_runs_on_build_job_id"
-  add_index "tests_build_jobs_runs", ["tests_result_id"], name: "index_tests_build_jobs_runs_on_tests_result_id"
-
   create_table "tests_executors", force: :cascade do |t|
     t.string   "title",         limit: 1024, default: "", null: false
     t.datetime "created_at",                              null: false
@@ -228,8 +218,10 @@ ActiveRecord::Schema.define(version: 20150410130138) do
     t.integer  "tests_executor_id"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "build_job_id"
   end
 
+  add_index "tests_results", ["build_job_id"], name: "index_tests_results_on_build_job_id"
   add_index "tests_results", ["tests_executor_id"], name: "index_tests_results_on_tests_executor_id"
 
   create_table "users", force: :cascade do |t|

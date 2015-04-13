@@ -17,5 +17,5 @@ build:
       - android-qt4-arm
       - android-qt5-arm
       - android-qt5-x86
-    tests_support: false 
+    tests_support: true 
     
