@@ -13,7 +13,11 @@ connect_sse = ->
   if(gon? && gon.build_jobs_live_updates_path?)
     path = gon.build_jobs_live_updates_path
     console.log "SSE path " + path
+    if window.event_source
+      console.log "Stopping SSE before restarting"
+      window.event_source.close()
     source = new EventSource(path)
+    window.event_source = source
     
     $(document).on 'page:before-change', ->
        console.log "Stopping SSE on page change"
@@ -83,6 +87,9 @@ update_attr = (attr, build_job_id, new_value) ->
 refresh_tables = (json) ->
   if $("#status_for_" + json.build_job_id).html() != json.status
     #location.reload()
+    if window.event_source
+      console.log "Stopping SSE before reloading page contents"
+      window.event_source.close()
     #disable page scrolling to top after loading page content
     Turbolinks.enableTransitionCache(true)
     # pass current page url to visit method
@@ -91,7 +98,7 @@ refresh_tables = (json) ->
     Turbolinks.enableTransitionCache(false)
     
 ready = ->
-  setTimeout (-> connect_sse()), 1500
+  setTimeout (-> connect_sse()), 1000
   setup_select_notify_me()
   check_existing_builds() 
         
