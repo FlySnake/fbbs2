@@ -3,17 +3,19 @@
 %h1.page-header= yield(:title)
 
 .row
-  .col-md-12
-    %table.table.table-striped.table-bordered.table-hover.table-responsive
-      %tr
-        %th Short description
-        %th Result
-        %th Time
-        %th More info
-        
-      - @tests_results.each do |t|
+  .col-md-12    
+    - @tests_results.each do |tests_result|
+      %h3= tests_result.title
+      %table.table.table-striped.table-bordered.table-hover.table-responsive
         %tr
-          %td= t.short_description
-          %td= t.result
-          %td= t.time
-          %td= link_to content_tag(:span, "", :class => "glyphicon glyphicon glyphicon-list"), t, :class => "btn btn-default"
+          %th Suite
+          %th Short description
+          %th Result
+          %th Time
+          - tests_result.cases.each do |t|
+            %tr
+              %td= t.suite
+              %td= t.short_description
+              %td= result_text(t)
+              %td= t.time
+              
