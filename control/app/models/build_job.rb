@@ -163,8 +163,14 @@ class BuildJob < ActiveRecord::Base
         raise "nil data returned by worker" if data.nil?
         file.write(data)
         file.flush
-        artefact.file = file
-        artefact.save
+        if self.run_tests and not self.enviroment.tests_executor.nil?
+          if self.enviroment.tests_executor.artefact_name == artefact.filename #this is a tests result
+            TestsResult.process_artefact file
+          end
+        else
+          artefact.file = file
+          artefact.save
+        end
       rescue => err
         Rails.logger.error("Error downloading artefact '#{artefact.filename}': #{err.to_s}")
       ensure
