@@ -91,7 +91,7 @@ refresh_tables = (json) ->
     Turbolinks.enableTransitionCache(false)
     
 ready = ->
-  connect_sse()
+  setTimeout (-> connect_sse()), 1500
   setup_select_notify_me()
   check_existing_builds() 
         
