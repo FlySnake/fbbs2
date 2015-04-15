@@ -3,7 +3,7 @@ class TestsResult < ActiveRecord::Base
   belongs_to :build_job
   
   def self.process_artefact(filepath, build_job, tests_executor)
-    if filepath.end_with? ".zip"
+    if filepath.end_with? tests_executor.artefact_name
       Rails.logger.info "Processing tests artefact '#{filepath}'"
       begin
         tmp_dir = "#{Dir.tmpdir}/#{Pathname.new(filepath).basename}_#{Time.now.to_s}"
@@ -21,7 +21,7 @@ class TestsResult < ActiveRecord::Base
         FileUtils.rm_rf(tmp_dir)
       end
     else
-      Rails.logger.error "Tests result cannot be in a file #{filepath}"
+      Rails.logger.error "Tests result cannot be in a file '#{filepath}', valid tests results file is '#{tests_executor.artefact_name}'"
     end
   end
   
