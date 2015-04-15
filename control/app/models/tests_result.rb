@@ -1,9 +1,12 @@
+require 'rubygems'
+require 'zip'
+
 class TestsResult < ActiveRecord::Base
   belongs_to :tests_executor
   belongs_to :build_job
   
   def self.process_artefact(filepath, build_job, tests_executor)
-    if filepath.end_with? tests_executor.artefact_name
+    if tests_artefact? filepath, tests_executor
       Rails.logger.info "Processing tests artefact '#{filepath}'"
       begin
         tmp_dir = "#{Dir.tmpdir}/#{Pathname.new(filepath).basename}_#{Time.now.to_s}"
@@ -23,6 +26,11 @@ class TestsResult < ActiveRecord::Base
     else
       Rails.logger.error "Tests result cannot be in a file '#{filepath}', valid tests results file is '#{tests_executor.artefact_name}'"
     end
+  end
+  
+  def self.tests_artefact? artefact, tests_executor
+    return false if tests_executor.nil?
+    artefact.end_with? tests_executor.artefact_name
   end
   
   def cases
@@ -63,7 +71,7 @@ class TestsResult < ActiveRecord::Base
     end
     
     def self.title_from_filename filename
-      filename.gsub(".xml", "").gsub("tests_", "").capitalize
+      filename.gsub(".xml", "").gsub("tests_", "").gsub(".exe", "").capitalize
     end
   
 end

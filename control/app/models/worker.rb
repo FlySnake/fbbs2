@@ -97,7 +97,7 @@ class Worker < ActiveRecord::Base
           self.status = :offline
         end
       else
-        @failed_requests_count += + 1
+        @failed_requests_count += 1
       end
     end
     

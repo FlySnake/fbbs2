@@ -26,6 +26,7 @@ module BuildJobsHelper
       build_job.reload
     end
     build_job.build_artefacts.each do |a|
+      next if not a.visible?
       path = artefact_url(build_job.enviroment, a)
       if filename_text
         text = a.filename
