@@ -138,6 +138,7 @@ class BuildJobsController < ApplicationController
     
     def create_build_job
       @build_job = BuildJob.new(:enviroment => @enviroment)
+      @build_job.run_tests = @enviroment.tests_enabled_by_default
     end
     
     def set_build_jobs_active
