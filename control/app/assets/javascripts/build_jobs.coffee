@@ -13,9 +13,9 @@ connect_sse = ->
   if(gon? && gon.build_jobs_live_updates_path?)
     path = gon.build_jobs_live_updates_path
     console.log "SSE path " + path
-    #if window.event_source
-    #  console.log "Stopping SSE before restarting"
-    #  window.event_source.close()
+    if window.event_source
+      console.log "Stopping SSE before restarting"
+      window.event_source.close()
     source = new EventSource(path)
     window.event_source = source
     
@@ -86,6 +86,7 @@ update_attr = (attr, build_job_id, new_value) ->
 
 refresh_tables = (json) ->
   if $("#status_for_" + json.build_job_id).html() != json.status
+    console.log "status " + json.build_job_id).html() + " != " + json.status
     #location.reload()
     if window.event_source
       console.log "Stopping SSE before reloading page contents"
