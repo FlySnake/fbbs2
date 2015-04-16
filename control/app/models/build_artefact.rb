@@ -6,7 +6,7 @@ class BuildArtefact < ActiveRecord::Base
     if self.build_job.nil?
       true
     else
-      not TestsResult.tests_artefact? self.filename, build_job.enviroment.tests_executor
+      not TestsResult.tests_artefact? self.filename, self.build_job.enviroment.tests_executor
     end
   end
   
