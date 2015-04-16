@@ -140,7 +140,7 @@ class BuildJob < ActiveRecord::Base
         end
      
         if attr_name == :artefacts and not new_value.nil?
-          build_job.build_artefacts = new_value.map {|a| BuildArtefact.find_or_create_by(:filename => a)}
+          build_job.build_artefacts = new_value.map {|a| BuildArtefact.find_or_create_by(:filename => a, :build_job => build_job)}
         end
      
         if attr_name == :run_duration
