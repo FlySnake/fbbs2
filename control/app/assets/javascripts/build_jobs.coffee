@@ -86,7 +86,7 @@ update_attr = (attr, build_job_id, new_value) ->
 
 refresh_tables = (json) ->
   if $("#status_for_" + json.build_job_id).html() != json.status
-    console.log("status " + json.build_job_id).html() + " != " + json.status)
+    console.log("status " + json.build_job_id.html() + " != " + json.status)
     #location.reload()
     if window.event_source
       console.log "Stopping SSE before reloading page contents"
