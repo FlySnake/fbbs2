@@ -86,7 +86,7 @@ update_attr = (attr, build_job_id, new_value) ->
 
 refresh_tables = (json) ->
   current_status = $("#status_for_" + json.build_job_id).html()
-  if current_status != json.status
+  if current_status and current_status != json.status
     console.log("current status " + current_status + " != " + json.status + "; refreshing...")
     #location.reload()
     if window.event_source
