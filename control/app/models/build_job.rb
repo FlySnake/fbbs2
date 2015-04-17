@@ -30,7 +30,7 @@ class BuildJob < ActiveRecord::Base
   after_save :call_scheduler
   after_save :notify
   before_destroy :stop!
-  before_create :target_platform_tests
+  before_save :target_platform_tests
   
   @@notify_queues = []
   @@notify_queues_mutex = Mutex.new
