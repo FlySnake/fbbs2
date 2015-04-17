@@ -6,7 +6,7 @@ class BuildJobsController < ApplicationController
   before_filter :set_build_jobs_ready, only: [:enviroments]
   before_filter :set_build_jobs_active, only: [:enviroments]
   before_filter :check_enviroments
-  before_filter :set_variables_for_js, only: [:enviroments]
+  before_filter :set_variables_for_js, only: [:enviroments, :show]
 
   # GET /build_jobs
   # GET /build_jobs.json
