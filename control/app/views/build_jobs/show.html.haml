@@ -51,6 +51,10 @@
       %dd= localtime @build_job.created_at
       %dt Updated at
       %dd= localtime @build_job.updated_at
+  
+  - if tests_enabled?(@enviroment) and @build_job.run_tests
+    %h2 Test results
+    = render partial: 'tests_results/list', locals: {tests_results: @build_job.tests_results}
       
   - unless @build_job.ready?
     = link_to 'Stop this job', stop_enviroment_build_job_path(enviroment_title: @enviroment.title, id: @build_job.id), :method => :delete, :class => "btn btn-danger", :data => { :confirm => "This is very painful operation which might cause unpredictable errors. Are you absolutely sure it's necessary?" }

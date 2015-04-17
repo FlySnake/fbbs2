@@ -34,31 +34,35 @@ class TestsResult < ActiveRecord::Base
   end
   
   def cases
-    return [] if self.id.nil?
-    doc = Nokogiri::XML(self.data)
-    #f = File.open("/home/o.antonyan/Desktop/tests_common.xml", "r")
-    #doc = Nokogiri::XML(File.open("/home/o.antonyan/Desktop/tests_common.xml", "r"))
-    testcases = []
-    doc.xpath('//testcase').each do |t|
-      suite = t.parent['name']
-      short_description = t['name']
-      if t.xpath('failure').any?
-        status = :fail
-        failure_message = ""
-        t.xpath('failure').each do |f|
-          failure_message += f['message']
-        end
-      else
-        status = :ok
-        failure_message = ""
-      end
-      time = t['time']
-      testcases << TestCaseResult.new(suite, short_description, status, time, failure_message)
-    end
-    testcases
+    return @cases unless @cases.nil?
+    @cases = parse_cases
+    @cases
   end
   
   private
+  
+    def parse_cases
+      return [] if self.id.nil?
+      doc = parse_xml
+      testcases = []
+      doc.xpath('//testcase').each do |t|
+        suite = t.parent['name']
+        short_description = t['name']
+        if t.xpath('failure').any?
+          status = :fail
+          failure_message = ""
+          t.xpath('failure').each do |f|
+            failure_message += f['message']
+          end
+        else
+          status = :ok
+          failure_message = ""
+        end
+        time = t['time']
+        testcases << TestCaseResult.new(suite, short_description, status, time, failure_message)
+      end
+      testcases
+    end
     
     def self.unzip_file(file, destination)
       Zip::File.open(file) do |zip_file|
@@ -72,6 +76,11 @@ class TestsResult < ActiveRecord::Base
     
     def self.title_from_filename filename
       filename.gsub(".xml", "").gsub("tests_", "").gsub(".exe", "").capitalize
+    end
+    
+    def parse_xml
+      @xml_doc ||= Nokogiri::XML(self.data)
+      @xml_doc
     end
   
 end

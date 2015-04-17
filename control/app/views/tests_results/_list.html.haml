@@ -1,0 +1,25 @@
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Failed
+      %dd= failed_tests_with_style(failed_tests(tests_results))
+      %dt Total
+      %dd= total_tests(tests_results)
+      %dt Run time
+      %dd= total_time(tests_results)
+        
+- if tests_results.any?    
+  - tests_results.each do |tests_result|
+    %h3= tests_result.title
+    %table.table.table-striped.table-bordered.table-hover.table-responsive
+      %tr
+        %th Suite
+        %th Short description
+        %th Result
+        %th Time
+        - tests_result.cases.each do |t|
+          %tr
+            %td= t.suite
+            %td= t.short_description
+            %td= result_text(t)
+            %td= t.time
