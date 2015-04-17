@@ -232,6 +232,7 @@ class BuildJob < ActiveRecord::Base
           self.run_tests = false
         end
       end
+      true
     end
     
 end
