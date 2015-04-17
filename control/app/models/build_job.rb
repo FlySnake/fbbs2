@@ -22,7 +22,6 @@ class BuildJob < ActiveRecord::Base
   validates :target_platform, presence: true
   validates :base_version, presence: true
   validates :comment, length: {in: 0..256}
-  validate :target_platform_tests
   
   enum status: [:fresh, :busy, :ready]
   enum result: [:unknown, :success, :failure, :terminated]
@@ -31,6 +30,7 @@ class BuildJob < ActiveRecord::Base
   after_save :call_scheduler
   after_save :notify
   before_destroy :stop!
+  before_create :target_platform_tests
   
   @@notify_queues = []
   @@notify_queues_mutex = Mutex.new
@@ -229,7 +229,7 @@ class BuildJob < ActiveRecord::Base
       if self.run_tests
         potential_workers = WorkersPool::Pool.instance.select_by_platform(self.target_platform)
         if potential_workers.empty? or not potential_workers.find {|w| w.tests_support }
-          errors.add(:run_tests, "cannot run because there is no workers supporting them on selected platform")
+          self.run_tests = false
         end
       end
     end

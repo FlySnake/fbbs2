@@ -160,6 +160,7 @@ class BuildJobsController < ApplicationController
     def set_variables_for_js
       gon.build_jobs_live_updates_path = build_jobs_enviroment_live_updates_path(@enviroment.title)
       gon.check_existing_path = check_existing_enviroment_build_jobs_path(@enviroment.title, format: :json)
+      gon.platfroms_with_tests_support = TargetPlatform.joins(:workers).where("workers.tests_support = ?", true).map {|p| p.id}
       if current_user
         gon.current_user_id = current_user.id.to_s
       end

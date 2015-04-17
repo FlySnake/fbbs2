@@ -56,7 +56,7 @@ on_change_form_check_existing = ->
           set_build_exists(data.path)
         else
           set_build_not_exists()
-      
+          
 set_build_exists = (href)->
   console.log "the build is already exists"
   $('#existing_build_notification').show()
@@ -99,10 +99,34 @@ refresh_tables = (json) ->
     #enable page scroll reset in case user clicks other link
     Turbolinks.enableTransitionCache(false)
     
+check_platforms_tests = ->
+  on_change_form_check_platforms_tests()
+  $('#select-target_platform').change -> 
+    on_change_form_check_platforms_tests()
+    
+on_change_form_check_platforms_tests = ->
+  target_platform_id = $('#select-target_platform').val()
+  console.log "checking if the platform " + target_platform_id + " supports tests"
+  if gon? and gon.platfroms_with_tests_support?
+    console.log "platfroms with tests support: " + gon.platfroms_with_tests_support
+    if parseInt(target_platform_id) in gon.platfroms_with_tests_support
+      restore_run_tests()
+    else
+      hide_run_tests()
+
+hide_run_tests = ->
+  console.log "Hide run tests checkbox"
+  $('#tests_enabled_control').hide()
+  
+restore_run_tests = ->
+  console.log "Show run tests checkbox"
+  $('#tests_enabled_control').show()
+    
 ready = ->
   setTimeout (-> connect_sse()), 1000
   setup_select_notify_me()
-  check_existing_builds() 
+  check_existing_builds()
+  check_platforms_tests()
         
 $(document).ready(ready)
 $(document).on('page:load', ready) # with turbolinks it causes multiple connection sse when walking across pages with sse
