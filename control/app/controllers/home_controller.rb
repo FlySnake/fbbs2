@@ -9,7 +9,7 @@ class HomeController < ApplicationController
   private
   
     def set_enviroments
-      @enviroments = Enviroment.all
+      @enviroments = Enviroment.order(:title => :asc)
     end
     
     def set_home_page_contents

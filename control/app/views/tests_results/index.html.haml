@@ -1,0 +1,6 @@
+- title "List tests results"
+  
+%h1.page-header= yield(:title)
+
+= render partial: 'list', locals: {tests_results: @tests_results}
+              

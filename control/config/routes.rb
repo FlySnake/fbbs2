@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     resources :base_versions
     resources :issue_trackers
     resources :home_page_contents, except: [:show]
+    resources :tests_executors
   end
   get 'users/profile', as: 'user_root'
   
@@ -28,6 +29,7 @@ Rails.application.routes.draw do
     resources :build_jobs, only: [:index, :show, :new, :create, :destroy] do
       delete :stop, :on => :member
       get :check_existing, :on => :collection
+      resources :tests_results, only: [:index, :show]
     end
     resources :build_logs, only: [:show]
     resources :build_artefacts, only: [:show], :param => :filename, :filename => /.*/, :format => false

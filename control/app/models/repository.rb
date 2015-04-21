@@ -1,7 +1,7 @@
 class Repository < ActiveRecord::Base
   enum vcs_type: [:git]
   has_many :branches
-  has_one :enviroment
+  has_many :enviroments
   
   validates :title, length: {in: 1..100}, uniqueness: true
   validates :path, length: {in: 1..4000}
@@ -63,8 +63,9 @@ class Repository < ActiveRecord::Base
     def fetch_branches_with_last_commit(vcs)
       Rails.logger.info "Fetching remote branches"
       branches_with_commits = vcs.branches_with_last_commit
+      branches_with_commits_names = branches_with_commits.map{|f,s| f}
       unless branches_with_commits.nil?
-        Branch.destroy_all(['name not in (?)', branches_with_commits.map{|f,s| f}]) # remove deleted in repo branches
+        Branch.remove_deleted self, branches_with_commits_names # remove deleted in repo branches
         branches_to_create = branches_with_commits - Branch.all_active.map {|b| [b.name, b.last_commit_identifier] } # make a list of only new branches
         branches_to_create.each do |name, commit|
           found = Branch.find_by(:name => name)
@@ -75,6 +76,7 @@ class Repository < ActiveRecord::Base
             Branch.create(name: name, last_commit_identifier: commit, repository: self)
           end
         end
+        Branch.restore_deleted self, branches_with_commits_names
       end
     end
     

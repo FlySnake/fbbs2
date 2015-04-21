@@ -1,0 +1,17 @@
+- title "Tests executor info"
+
+%h1.page-header= yield(:title)
+
+.row
+  .col-md-12
+    %dl.dl-horizontal
+      %dt Title
+      %dd= @tests_executor.title
+      %dt Run params
+      %dd= @tests_executor.run_params
+      %dt Result artefact name
+      %dd= @tests_executor.artefact_name
+
+.row
+  .col-md-12
+    = link_to 'Edit tests executor', edit_tests_executor_path(@tests_executor), class: "btn btn-primary"

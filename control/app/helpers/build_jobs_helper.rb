@@ -20,12 +20,17 @@ module BuildJobsHelper
     end
   end
   
+  def tests_enabled? enviroment
+    not enviroment.tests_executor.nil?
+  end
+  
   def artefacts_links(build_job, filename_text=false)
     html = ""
     if build_job.build_artefacts.empty?
       build_job.reload
     end
     build_job.build_artefacts.each do |a|
+      next if not a.visible?
       path = artefact_url(build_job.enviroment, a)
       if filename_text
         text = a.filename

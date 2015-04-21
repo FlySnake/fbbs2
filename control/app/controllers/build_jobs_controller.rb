@@ -6,7 +6,7 @@ class BuildJobsController < ApplicationController
   before_filter :set_build_jobs_ready, only: [:enviroments]
   before_filter :set_build_jobs_active, only: [:enviroments]
   before_filter :check_enviroments
-  before_filter :set_variables_for_js, only: [:enviroments]
+  before_filter :set_variables_for_js, only: [:enviroments, :show]
 
   # GET /build_jobs
   # GET /build_jobs.json
@@ -55,14 +55,15 @@ class BuildJobsController < ApplicationController
                               :status => BuildJob.statuses[:fresh],
                               :result => BuildJob.results[:unknown],
                               :comment => params[:build_job][:comment],
-                              :generate_build_numbers_url => generate_build_numbers_url(:json))
+                              :generate_build_numbers_url => generate_build_numbers_url(:json),
+                              :run_tests => params[:build_job][:run_tests])
 
     respond_to do |format|
       if @build_job.save
         format.html { redirect_to home_enviroments_path, notice: 'Build job was successfully created.' }
         format.json { render :show, status: :created, location: @build_job }
       else
-        format.html { render :new }
+        format.html { flash[:alert] = @build_job.errors.full_messages.join(', '); render :new }
         format.json { render json: @build_job.errors, status: :unprocessable_entity }
       end
     end
@@ -118,7 +119,7 @@ class BuildJobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def build_job_params
-      params.require(:build_job).permit(:branch, :base_version, :target_platform, :notify_user, :started_by_user, :comment, :status)
+      params.require(:build_job).permit(:branch, :base_version, :target_platform, :notify_user, :started_by_user, :comment, :status, :run_tests)
     end
     
     def set_enviroment
@@ -137,6 +138,7 @@ class BuildJobsController < ApplicationController
     
     def create_build_job
       @build_job = BuildJob.new(:enviroment => @enviroment)
+      @build_job.run_tests = @enviroment.tests_enabled_by_default
     end
     
     def set_build_jobs_active
@@ -158,6 +160,7 @@ class BuildJobsController < ApplicationController
     def set_variables_for_js
       gon.build_jobs_live_updates_path = build_jobs_enviroment_live_updates_path(@enviroment.title)
       gon.check_existing_path = check_existing_enviroment_build_jobs_path(@enviroment.title, format: :json)
+      gon.platfroms_with_tests_support = TargetPlatform.joins(:workers).where("workers.tests_support = ?", true).map {|p| p.id}
       if current_user
         gon.current_user_id = current_user.id.to_s
       end

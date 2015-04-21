@@ -4,6 +4,7 @@
 QT4_PATH = "/home/o.antonyan/android/qt/4.8.3/"
 QT5_PATH = "/home/builder/android/qt/5.4.1/"
 BUILD_CMD_PATTERN = "./build-android.sh -v {full_version} -f {artefact_name} -d {artefacts_path} -q {qt_path}"
+BUILD_CMD_PATTERN_WITH_TESTS = BUILD_CMD_PATTERN + " -testsMask {tests_run_params} -testsResults {tests_artefact_name}"
 ARTEFACT_NAME_PATTERN = "STMobile-android-{full_version}-{branch}-{date}-{commit}-{platform}"
 
 from requests import post
@@ -54,10 +55,20 @@ def get_build_cmd(**kwargs):
     artefact_name = kwargs["artefacts_names"][0].replace(".apk", "")
     artefacts_path = kwargs["artefacts_path"]
     platform = kwargs["platform"]
-    return BUILD_CMD_PATTERN.format(full_version=full_version,
-                 artefact_name=artefact_name,
-                 artefacts_path=artefacts_path,
-                 qt_path=(QT5_PATH if "qt5" in platform else QT4_PATH))
+    if 'params' in kwargs:
+        tests_run_params = kwargs['params']['tests_run_params']
+        tests_artefact_name =  kwargs['params']['tests_artefact_name']
+        return BUILD_CMD_PATTERN_WITH_TESTS.format(full_version=full_version,
+                     artefact_name=artefact_name,
+                     artefacts_path=artefacts_path,
+                     qt_path=(QT5_PATH if "qt5" in platform else QT4_PATH),
+                     tests_run_params=tests_run_params,
+                     tests_artefact_name=tests_artefact_name)
+    else:
+        return BUILD_CMD_PATTERN.format(full_version=full_version,
+                     artefact_name=artefact_name,
+                     artefacts_path=artefacts_path,
+                     qt_path=(QT5_PATH if "qt5" in platform else QT4_PATH))
 
 def get_artefacts_names(**kwargs):
     full_version = kwargs["full_version"]
@@ -69,7 +80,11 @@ def get_artefacts_names(**kwargs):
                  branch=branch,
                  date=strftime("%Y.%m.%d_%H.%M.%S", localtime()),
                  commit=commit)
-    return [basename + ".apk", basename + ".zip"]
+    if 'params' in kwargs:
+        tests_artefact_name =  kwargs['params']['tests_artefact_name']
+        return [basename + ".apk", basename + ".zip", tests_artefact_name]
+    else:
+        return [basename + ".apk", basename + ".zip"]
 
 def get_version(**kwargs):
     commercial_version = kwargs["base_version"]

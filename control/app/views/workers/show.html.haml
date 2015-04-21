@@ -15,6 +15,8 @@
       %dd= @worker.disabled
       %dt Platforms
       %dd= @worker.target_platforms.map {|p| p.title}.join(", ")
+      %dt Tests support
+      %dd= @worker.tests_support
       %dt Current status
       %dd= @worker.status
       %dt Created at

@@ -13,8 +13,9 @@ class BuildJob < ActiveRecord::Base
   belongs_to :build_log
   belongs_to :worker
   belongs_to :full_version
-  has_many :build_artefacts, :dependent => :destroy
+  has_many :build_artefacts, dependent: :destroy
   has_one :build_job_queue
+  has_many :tests_results, dependent: :destroy
   
   validates :branch, presence: true
   validates :enviroment, presence: true
@@ -29,6 +30,7 @@ class BuildJob < ActiveRecord::Base
   after_save :call_scheduler
   after_save :notify
   before_destroy :stop!
+  before_save :target_platform_tests
   
   @@notify_queues = []
   @@notify_queues_mutex = Mutex.new
@@ -49,6 +51,7 @@ class BuildJob < ActiveRecord::Base
     @@notify_queues_mutex.synchronize do
       @@notify_queues.delete(queue)
     end
+    #ActiveRecord::Base.clear_active_connections!
   end
   
   scope :busy_with_worker, ->(worker) {
@@ -81,7 +84,8 @@ class BuildJob < ActiveRecord::Base
                   :enviroment_id => self.enviroment.id, 
                   :branch_name => self.branch.name, 
                   :base_version => self.base_version.name,
-                  :buildnum_service => self.generate_build_numbers_url)
+                  :buildnum_service => self.generate_build_numbers_url,
+                  :tests => (self.run_tests ? {:run_params => self.enviroment.tests_executor.run_params, :artefact_name => self.enviroment.tests_executor.artefact_name} : nil))
     update_attributes(:started_at => Time.now, :worker => worker, :status => BuildJob.statuses[:busy])
   end
   
@@ -136,7 +140,7 @@ class BuildJob < ActiveRecord::Base
         end
      
         if attr_name == :artefacts and not new_value.nil?
-          build_job.build_artefacts = new_value.map {|a| BuildArtefact.find_or_create_by(:filename => a)}
+          build_job.build_artefacts = new_value.map {|a| BuildArtefact.find_or_create_by(:filename => a, :build_job => build_job)}
         end
      
         if attr_name == :run_duration
@@ -159,8 +163,12 @@ class BuildJob < ActiveRecord::Base
         raise "nil data returned by worker" if data.nil?
         file.write(data)
         file.flush
-        artefact.file = file
-        artefact.save
+        if self.run_tests and TestsResult.tests_artefact?(artefact.filename, self.enviroment.tests_executor) #this is a tests result
+          TestsResult.process_artefact file.path, self, self.enviroment.tests_executor
+        else
+          artefact.file = file
+          artefact.save
+        end
       rescue => err
         Rails.logger.error("Error downloading artefact '#{artefact.filename}': #{err.to_s}")
       ensure
@@ -215,6 +223,16 @@ class BuildJob < ActiveRecord::Base
       @@notify_queues.each do |q|
         q.push self
       end
+    end
+    
+    def target_platform_tests
+      if self.run_tests
+        potential_workers = WorkersPool::Pool.instance.select_by_platform(self.target_platform)
+        if potential_workers.empty? or not potential_workers.find {|w| w.tests_support }
+          self.run_tests = false
+        end
+      end
+      true
     end
     
 end

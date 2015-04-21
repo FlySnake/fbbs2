@@ -1,0 +1,7 @@
+= bootstrap_form_for(@tests_executor, layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10") do |f|
+  = f.text_field :title
+  = f.text_field :run_params
+  = f.text_field :artefact_name
+  = f.primary 'Save'
+  - if not defined?(delete_disabled) or not delete_disabled
+    = link_to 'Delete this tests executor', @tests_executor, :method => :delete, :class => "btn btn-danger pull-right", :data => { :confirm => 'Are you sure?' }

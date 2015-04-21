@@ -24,6 +24,18 @@ class Branch < ActiveRecord::Base
     raise ActiveRecord::RecordNotDestroyed unless destroy
   end
   
+  def self.restore_deleted(repository, repo_branches_names) 
+    prev_deleted = Branch.where(name: repo_branches_names, repository: repository).where.not(deleted_at: nil)
+    prev_deleted.each do |b| # todo maybe use update_attributes or somethng like that to bulk update
+      b.deleted_at = nil
+      b.save
+    end
+  end
+  
+  def self.remove_deleted(repository, repo_branches_names) 
+    Branch.destroy_all(['name not in (?)', repo_branches_names])
+  end
+  
   def self.options_for_select(filter="")
     all_filtered(filter).map { |e| [e.name, e.id] }
   end

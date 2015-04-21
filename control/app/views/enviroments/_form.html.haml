@@ -6,6 +6,8 @@
   = f.text_field :branches_filter, :placeholder => "enter a regexp, empty to disable filtering"
   = f.select :issue_tracker_id, @issue_trackers.map{ |p| ["#{p.title}", p.id] }, {include_blank: 'None'}, :id => "select-issue_tracker"
   = select2js_for_id "select-issue_tracker"
+  = f.select :tests_executor_id, @tests_executors.map{ |p| ["#{p.title}", p.id] }, {include_blank: 'None'}, :id => "select-tests_executor"
+  = select2js_for_id "select-tests_executor"
   = f.number_field :delete_build_jobs_older_than, min: 0, title: "Delete build jobs older than [days]. 0 to keep them forever"
   = f.collection_check_boxes :base_version_ids, @base_versions, :id, :name, label: "Base versions"
   - if @target_platforms.any?
@@ -15,6 +17,13 @@
       %ul{:id => "sortable_target_platorms", :class => "ui-sortable btn-group-vertical list-unstyled"}
         - @target_platforms.each_with_index do |p, i|
           %li{:class => "ui-state-default btn", :id => "item_#{i}"}= p.title
+  .row
+    .col-md-11
+      .row.form-group
+        .control-label.col-sm-2
+          = f.label :enable_tests_by_default
+        .col-sm-10
+          = f.check_box :tests_enabled_by_default, label: "when starting build job checkbox will be checked by default"
     
   = f.primary 'Save'
   - if not defined?(delete_disabled) or not delete_disabled

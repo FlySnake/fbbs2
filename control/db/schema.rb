@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327125446) do
+ActiveRecord::Schema.define(version: 20150413081209) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -60,24 +60,25 @@ ActiveRecord::Schema.define(version: 20150327125446) do
   add_index "build_job_queues", ["build_job_id"], name: "index_build_job_queues_on_build_job_id"
 
   create_table "build_jobs", force: :cascade do |t|
-    t.integer  "branch_id",                               null: false
-    t.integer  "base_version_id",                         null: false
-    t.integer  "enviroment_id",                           null: false
-    t.integer  "target_platform_id",                      null: false
+    t.integer  "branch_id",                                  null: false
+    t.integer  "base_version_id",                            null: false
+    t.integer  "enviroment_id",                              null: false
+    t.integer  "target_platform_id",                         null: false
     t.integer  "notify_user_id"
-    t.integer  "started_by_user_id",                      null: false
-    t.string   "comment",                    default: "", null: false
-    t.integer  "status",                                  null: false
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
-    t.integer  "result",                     default: 0,  null: false
+    t.integer  "started_by_user_id",                         null: false
+    t.string   "comment",                    default: "",    null: false
+    t.integer  "status",                                     null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.integer  "result",                     default: 0,     null: false
     t.integer  "commit_id"
     t.integer  "build_log_id"
     t.integer  "worker_id"
     t.datetime "started_at"
     t.datetime "finished_at"
     t.integer  "full_version_id"
-    t.string   "generate_build_numbers_url", default: "", null: false
+    t.string   "generate_build_numbers_url", default: "",    null: false
+    t.boolean  "run_tests",                  default: false, null: false
   end
 
   add_index "build_jobs", ["base_version_id"], name: "index_build_jobs_on_base_version_id"
@@ -137,19 +138,22 @@ ActiveRecord::Schema.define(version: 20150327125446) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "enviroments", force: :cascade do |t|
-    t.string   "title",                        limit: 1024,              null: false
-    t.datetime "created_at",                                             null: false
-    t.datetime "updated_at",                                             null: false
-    t.integer  "default_build_number",                      default: 0,  null: false
+    t.string   "title",                        limit: 1024,                 null: false
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+    t.integer  "default_build_number",                      default: 0,     null: false
     t.integer  "repository_id"
     t.string   "branches_filter",              limit: 2048, default: ""
     t.integer  "issue_tracker_id"
     t.text     "target_platforms_order"
-    t.integer  "delete_build_jobs_older_than",              default: 0,  null: false
+    t.integer  "delete_build_jobs_older_than",              default: 0,     null: false
+    t.integer  "tests_executor_id"
+    t.boolean  "tests_enabled_by_default",                  default: false, null: false
   end
 
   add_index "enviroments", ["issue_tracker_id"], name: "index_enviroments_on_issue_tracker_id"
   add_index "enviroments", ["repository_id"], name: "index_enviroments_on_repository_id"
+  add_index "enviroments", ["tests_executor_id"], name: "index_enviroments_on_tests_executor_id"
   add_index "enviroments", ["title"], name: "index_enviroments_on_title"
 
   create_table "full_versions", force: :cascade do |t|
@@ -200,6 +204,26 @@ ActiveRecord::Schema.define(version: 20150327125446) do
   add_index "target_platforms_workers", ["target_platform_id"], name: "index_target_platforms_workers_on_target_platform_id"
   add_index "target_platforms_workers", ["worker_id"], name: "index_target_platforms_workers_on_worker_id"
 
+  create_table "tests_executors", force: :cascade do |t|
+    t.string   "title",         limit: 1024, default: "", null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.string   "run_params",                 default: "", null: false
+    t.string   "artefact_name",              default: "", null: false
+  end
+
+  create_table "tests_results", force: :cascade do |t|
+    t.string   "title",             default: "", null: false
+    t.text     "data"
+    t.integer  "tests_executor_id"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.integer  "build_job_id"
+  end
+
+  add_index "tests_results", ["build_job_id"], name: "index_tests_results_on_build_job_id"
+  add_index "tests_results", ["tests_executor_id"], name: "index_tests_results_on_tests_executor_id"
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "encrypted_password",     default: "",    null: false
@@ -222,12 +246,13 @@ ActiveRecord::Schema.define(version: 20150327125446) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
   create_table "workers", force: :cascade do |t|
-    t.string   "title",                      null: false
-    t.string   "address",                    null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.integer  "priority",   default: 0,     null: false
-    t.boolean  "disabled",   default: false, null: false
+    t.string   "title",                         null: false
+    t.string   "address",                       null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "priority",      default: 0,     null: false
+    t.boolean  "disabled",      default: false, null: false
+    t.boolean  "tests_support", default: false, null: false
   end
 
 end
