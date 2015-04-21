@@ -80,11 +80,11 @@ class UsersController < BaseAdminController
   
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:admin, :approved, :background_image, :background_image_opacity)
+    params.require(:user).permit(:admin, :approved, :background_image, :background_image_opacity, :remove_background_image)
   end
   
   def user_params_profile
-    params.require(:user).permit(:background_image, :background_image_opacity)
+    params.require(:user).permit(:background_image, :background_image_opacity, :remove_background_image)
   end
   
 end
