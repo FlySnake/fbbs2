@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   scope "/admin" do
     resources :users, except: [:new, :create] do
       patch :approve, :on => :member
+      patch :update_profile, :on => :member
     end
     resources :workers do
       post :request_config, :on => :member
@@ -37,6 +38,8 @@ Rails.application.routes.draw do
       get :build_jobs, :on => :collection
     end
   end
+  resources :dynamic_stylesheets, only: [:index]
+  
   get '/:enviroment_title', to: 'build_jobs#enviroments', as: 'home_enviroments'
 
   root 'home#index'

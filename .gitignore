@@ -24,6 +24,7 @@ control/log/*
 !control/log/.keep
 control/tmp
 control/public/downloads
+control/public/uploads
 control/public/assets
 control/config/database.yml
 control/secret_key

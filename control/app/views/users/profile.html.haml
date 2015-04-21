@@ -4,3 +4,6 @@
 
 .row
   .col-md-12
+    = render partial: 'form_profile', locals: {delete_disabled: true}
+    = tag :br
+    = link_to 'Edit account', edit_user_registration_path, :class => "btn btn-warning"

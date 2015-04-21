@@ -1,6 +1,6 @@
 class UsersController < BaseAdminController
-  before_filter :set_user, only: [:show, :edit, :update, :destroy, :approve]
-  skip_before_filter :check_user_admin, only: [:profile]
+  before_filter :set_user, only: [:show, :edit, :update, :destroy, :approve, :update_profile]
+  skip_before_filter :check_user_admin, only: [:profile, :update_profile]
   
   # GET /users/profile
   def profile
@@ -50,15 +50,19 @@ class UsersController < BaseAdminController
 
   # PUT /users/1
   def update
-    #if params[:user][:password].blank?
-    #  params[:user].delete(:password)
-    #  params[:user].delete(:password_confirmation)
-    #end
-
     if @user.update_attributes(user_params)
       redirect_to @user, notice: 'User was successfully updated.'
     else
       render action: "edit"
+    end
+  end
+  
+  def update_profile
+    # warning! this action may be called by any user
+    if @user.update_attributes(user_params_profile)
+      redirect_to user_root_path, notice: 'Your profile was successfully updated.'
+    else
+      render action: "profile"
     end
   end
   
@@ -76,7 +80,11 @@ class UsersController < BaseAdminController
   
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:admin, :approved)
+    params.require(:user).permit(:admin, :approved, :background_image, :background_image_opacity)
+  end
+  
+  def user_params_profile
+    params.require(:user).permit(:background_image, :background_image_opacity)
   end
   
 end

@@ -1,0 +1,4 @@
+= bootstrap_form_for(@user, url:  update_profile_user_path(@user), layout: :horizontal, label_col: "col-sm-2", control_col: "col-sm-10", html: {multipart: true}) do |f|
+  = f.file_field :background_image
+  = f.number_field :background_image_opacity, :min => 0.0, :max => 1.0, :step => 0.1
+  = f.primary 'Save'

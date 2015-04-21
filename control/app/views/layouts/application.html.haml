@@ -8,6 +8,7 @@
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
     = favicon_link_tag 'favicon.ico'
+    = stylesheet_link_tag dynamic_stylesheets_path
     = yield(:head)
   %body
     #main{:role => "main"}
@@ -25,7 +26,7 @@
                 = succeed "." do
                   %strong= current_user.email
                   = image_tag current_user.gravatar_url, size: "24x24", alt: "gravatar", class: "img-rounded"
-                = link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link'
+                = link_to 'My profile', user_root_path, :class => 'navbar-link'
                 |
                 = link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'
               - else

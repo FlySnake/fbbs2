@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150413081209) do
+ActiveRecord::Schema.define(version: 20150421153342) do
 
   create_table "base_versions", force: :cascade do |t|
     t.string   "name",       limit: 128, null: false
@@ -225,20 +225,22 @@ ActiveRecord::Schema.define(version: 20150413081209) do
   add_index "tests_results", ["tests_executor_id"], name: "index_tests_results_on_tests_executor_id"
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  default: "",    null: false
-    t.string   "encrypted_password",     default: "",    null: false
+    t.string   "email",                    default: "",    null: false
+    t.string   "encrypted_password",       default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,     null: false
+    t.integer  "sign_in_count",            default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "admin",                  default: false, null: false
-    t.boolean  "approved",               default: false, null: false
+    t.boolean  "admin",                    default: false, null: false
+    t.boolean  "approved",                 default: false, null: false
+    t.string   "background_image"
+    t.string   "background_image_opacity", default: "0.0", null: false
   end
 
   add_index "users", ["approved"], name: "index_users_on_approved"
