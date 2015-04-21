@@ -6,7 +6,7 @@
         = f.label :remove_background_image
       .col-sm-10
         = f.check_box :remove_background_image, label: "yes"
-        = image_tag(@user.background_image_url, size: 512, alt: "current backgroung image")
+        = image_tag(@user.background_image_url, size: 128, alt: "current backgroung image")
         
   = f.number_field :background_image_opacity, :min => 0.0, :max => 1.0, :step => 0.1
   = f.primary 'Save'
