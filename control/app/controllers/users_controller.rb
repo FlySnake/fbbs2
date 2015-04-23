@@ -51,7 +51,7 @@ class UsersController < BaseAdminController
   # PUT /users/1
   def update
     if @user.update_attributes(user_params)
-      redirect_to @user, notice: 'User was successfully updated.'
+      redirect_to :back, notice: 'User was successfully updated.'
     else
       render action: "edit"
     end
@@ -60,7 +60,7 @@ class UsersController < BaseAdminController
   def update_profile
     # warning! this action may be called by any user
     if @user.update_attributes(user_params_profile)
-      redirect_to :back, notice: 'Your profile was successfully updated.'
+      redirect_to user_root_path, notice: 'Your profile was successfully updated.'
     else
       render action: "profile"
     end
