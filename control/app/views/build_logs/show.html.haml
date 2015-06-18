@@ -1,4 +1,4 @@
-- title "Build log"
+- title 'Build log'
 
 %h1.page-header= yield(:title)
 
@@ -14,5 +14,6 @@
       %dt Built on
       %dd= @build_log.build_job.worker.humanize
 
-%pre= highlight(@build_log.text, "error", highlighter: '<b><mark class="bg-danger">\1</mark></b>')
+%pre= highlight(@build_log.text, 'error', highlighter: '<b><mark class="bg-danger">\1</mark></b>')
 
+= link_to 'Unformatted log', enviroment_build_log_path(@build_job.enviroment.title, @build_log, format: :text), :class => 'btn btn-primary'
