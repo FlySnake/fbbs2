@@ -1,60 +1,60 @@
-## Назначение
+## Purpose
 
-Сервер сборок как continuous integration только для произвольных веток, выбираемых пользователем, а не заранее предопределённых. Помогает реализовать [feature branches workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) в команде. 
+Build server like continuous integration, but for arbitrary branches. Helps to implement [feature branches workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) in a team.
 
-Feature branches != continuous integration. В случае с continuous intergation процесс разработки выглядит примерно так:
+Feature branches != continuous integration. In case of continuous integration, a development workflow looks like this:
 
-1. Разработчик делает какой-то функционал в своей ветке (или даже в основной).
-2. Разработчик вливает его в основную ветку и запускает сборку/деплой/автотесты на сервере continuous integration.
-3. Тестировщик проверяет что влитый функционал работает и ничего не ломает.
-4. Функционал идёт в релиз (например, вливается в релизную ветку).
+1. Developer implements a feature in some branch (or even in master).
+2. Developer merges it into master and starts build/test/deploy on continuous integration.
+3. QA tests it manually.
+4. Feature goes in production.
 
-В случае же с feature branches несколько иначе:
+In case of feature branches it's a little bit different:
 
-1. Разработчик делает какой-то функционал в своей ветке специално под этот функционал.
-2. Разработчик запускает сборку/автотесты на сервере feature branches своей ветки.
-3. Тестировщик проверяет полученную от разработчика сборку с новым функционалом.
-4. Ветка с этим функционалом вливается в основную/релизную и ещё раз поверхностно проверяется что ничего не сломалось при мердже.
+1. Developer implements a feature in some branch, especially created for this feature.
+2. Developer starts build/test/deploy on feature branches server and pass the build to QA.
+3. QA tests this particular build.
+4. This branch gets merged into master, QA tests it once again a little bit after merge.
 
-## Мотивация
+## Why
 
-Проект зародился в компании [Системные Технологии](http://www.sys4tec.com/) в команде разработки крупного мобильного приложения на C++/Qt. Полная сборка проекта на рабочих станциях занимала порядка 15 минут, так же требовалась под 2 платформы что было неудобно. Использовавшийся continuous integration частично решал проблему долгой сборки под несколько платформ, но не устраивал из-за принятого в команде feature branches workfow (невозможность выбрать произвольную ветку для сборки). Так как существующих решений найти не удалось пришлось писать своё. Проект хорошо зарекомендовал себя и со временем полностью заменил continuous integration.
+The project has been created in [System Technologies](http://www.sys4tec.com/) company in a mobile development team for a large C++/Qt mobile/desktop application. Full build took about 15 minutes on a developers' workstations, also usually 2 builds for 2 platforms were required. Back in that time continuous integration was used. It was good for speed and crodd-platform builds, but inconvenient because of feature branches workflow (you cannot chose arbitrary branch to build). We were unable to find existing solution. The original continious integration was replaced by this project very soon and it works pretty good now.
 
-## Архитектура
+## Architecture
 
-Сервер состоит из 2-х компонентов:
+There are 2 components:
 
-1. Управляющий хост. Веб-интерфейс и вся логика тут.
-2. Воркер(ы). Связующее звено между Вашим shell-скриптом, выполняющим сборку проекта и управляющим хостом.
+1. Control host. Web UI and business logic.
+2. Workers. A glue between you build shell script and control host.
 
-Воркеров может быть много на разных физических машинах. У каждого воркера есть настройки под какие платформы он умеет собирать и умеет ли выполнять автотесты (если они есть в Вашем проекте под заданную платформу). Управляющий хост предоставляет интерфейс пользователю и следит за воркерами. Когда пользователь запускает сборку, то управляющий в порядке приоритетов ищет первого свободного воркера, подходящего под выбранную конфигурацию сборки и отдаёт ему задание. Управляющий раз 4 секунды опрашивает всех воркеров на предмет их состояния. Воркеры лишь принимают задания и отчитываются о текущем состоянии.
+You can have as many workers as you need parallel builds on a different machines. Each worker has its own set of options about platforms, testing environment, etc. Control host gives you an interface to control the workers. When you start the build, control host seeks for the first free worker suitable for your build (platform, tests, etc) by priority and sends this worker a command to start. Control host observes all workers and shows you information about a build status in real-time.
 
-## Возможности
+## Features
 
-1. Запуск сборки произвольной ветки из git-репозитория. 
-2. Параллельная сборка на нескольких серверах (воркерах).
-3. Очередь сборок (если нет свободных воркеров то задание на сборку ставится в очередь).
-4. Возможность создания различных конфигураций сборки (например: release, development, test и т.д.).
-5. Возможность создания различных версий для более гранулированного управления конфигурациями сборок. Например, если из одних исходников собираются разные коммерческие версии, то можно задать эти коммерческие версии и выбирать их при запуске сборки.
-6. Встроенный механизм генерации номера сборки, который может использоваться в вашем приложении как номер сборки. Привязан к коммиту и ветке, т.е. будет инкрементирован только если в ветке есть новые коммиты, не зависит от платформы. Значение по умолчанию для новых веток задаётся в настройках.
-7. Преобразование хэшей коммитов в ссылки на репозиторий чтобы из списка сборок быстро перейти к коммиту и посмотреть его состав. 
-8. Преобразование чисел(или других символов - используется regex) в комментариях к коммиту в ссылки на систему управления проектами.
-9. Отслеживание изменений в репозитории (с помощью хуков) для отображения наличия новых коммитов в ветке. Рядом с именем ветки в списке сборок будет звёздочка если в этой ветке есть новые коммиты.
-10. Уведомление выбранного полььзователя об окончании сборки.
-11. Запуск и визуализация результатов автотестов.
+1. Build an arbitrary branch form a git repository.
+2. Parallel builds on different workers.
+3. Build queue (when there is no available workers, you build task will be queued).
+4. Ability to create different build environments with different set of options (i.e.: release, development, test).
+5. Ability to create a different versions for your build (i.e.: different commercial versions from the same source code with different set of features).
+6. Build-in mechanism for creating build numbers. Bind to commit in a branch, i.e. will be incremented each time you build a new commit in your branch. Transparent for all platforms. Can be configured.
+7. Convert commit sha into a link to repository where you can see online diff (bitbucket, github and any other systems supported if the allows to set a commit in url).
+8. Convert numbers or any other symbols (regex is used) into a link to your project management system.
+9. Watching for new commits in each branch (using hooks). Whenever there is a new commit in a branch you'll see a small start near its name.
+10. User notifications.
+11. Visualising tests results.
 
-## Демо
+## Demo
 
-Тут будет ссылка на демо в облаке. Пока не готово.
+TODO.
 
-## Установка
+## Installation
 
-Этот раздел ещё не готов. Пожалуйста, свяжитесь со мной если Вам нужна помощь с развёртыванием сервера.
+TODO. Please, contact the author if you are interested in this project.
 
-## Разработка
+## Development
 
-Пожалуйста, не стесняйтесь писать автору если Вы находите проект полезным для себя, но Вам необходимы дополнительные возможности.
+Please, contact me.
 
-## Лицензия
+## License
 
 AGPL
